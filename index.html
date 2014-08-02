@@ -1,33 +1,55 @@
-<html>
-  <head>
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    
     <title>Cooler than Open Season</title>
-
+    
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- + maybe add modernizr js -->
+    
     <script src="script/lib/jquery-1.8.2.min.js"></script>
     <script src="script/lib/recorderjs/recorder.js"></script>
 
     <script src="script/main.js"></script>
-
-  </head>
-
-  <body>
+</head>
+<body>
     <div id="shown">
-      Awaiting permission...
+        Awaiting permission...
     </div>
     <div id="hidden" style="display:none"> 
-      <button id="record0" type="button" >Rec</button>
+        <button id="record0" type="button" >Rec</button>
         <button id="play0" type="button">Play</button>
         Bass drum
         </br>
-      <button id="record1" type="button">Rec</button>
+        <button id="record1" type="button">Rec</button>
         <button id="play1" type="button">Play</button>
         Snare
         </br>
-      <button id="record2" type="button">Rec</button>
+        <button id="record2" type="button">Rec</button>
         <button id="play2" type="button">Play</button>
         Hihat
         </br>
-      </br>
-      <button id="song" type="button">Play Song</button>
+        </br>
+        <button id="song" type="button">Play Song</button>
     </div>
-  </body>
+    
+
+<!-- + insert ga code and domain -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+    ga('create', 'UA-XXXXXXXX-X', '????');
+    ga('send', 'pageview');
+</script>
+</body>
 </html>

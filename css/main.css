@@ -1,0 +1,137 @@
+@charset "UTF-8";
+@import url("//hello.myfonts.net/count/2a41fa");
+/*!==========================================================================
+ * Main Style Sheet (Sassy)
+ * Open Season Web-App 2014
+ * --------------------------------------------------------------------------
+ * Author: Tobias Vogler www.tvdesign.ch
+ * --------------------------------------------------------------------------
+ * Sass compiled with CodeKit incident57.com/codekit
+ * ========================================================================== 
+ */
+/**
+ * @license
+ * MyFonts Webfont Build ID 2769402, 2014-03-14T06:15:07-0400
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: Brandon Grotesque Regular by HVD Fonts
+ * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/regular/
+ * 
+ * Webfont: Brandon Grotesque Bold by HVD Fonts
+ * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/bold/
+ * 
+ * Webfont: Brandon Grotesque Black by HVD Fonts
+ * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/black/ 
+ * 
+ * License: http://www.myfonts.com/viewlicense?type=web&buildid=2769402
+ * Licensed pageviews: 10,000
+ * Webfonts copyright: Copyright (c) 2009 by Hannes von Doehren. All rights reserved.
+ * 
+ * © 2014 MyFonts Inc
+*/
+@font-face {
+  font-family: 'BrandonGrotesque-Regular';
+  src: url("fonts/2A41FA_0_0.eot");
+  src: url("fonts/2A41FA_0_0.eot?#iefix") format("embedded-opentype"), url("fonts/2A41FA_0_0.woff") format("woff"), url("fonts/2A41FA_0_0.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'BrandonGrotesque-Bold';
+  src: url("fonts/2A41FA_1_0.eot");
+  src: url("fonts/2A41FA_1_0.eot?#iefix") format("embedded-opentype"), url("fonts/2A41FA_1_0.woff") format("woff"), url("fonts/2A41FA_1_0.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'BrandonGrotesque-Black';
+  src: url("fonts/2A41FA_2_0.eot");
+  src: url("fonts/2A41FA_2_0.eot?#iefix") format("embedded-opentype"), url("fonts/2A41FA_2_0.woff") format("woff"), url("fonts/2A41FA_2_0.ttf") format("truetype"); }
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'BrandonGrotesque-Regular', Helvetica, Arial, sans-serif;
+  line-height: 1.4; }
+
+button {
+  width: 40px;
+  height: 40px;
+  margin: 0 10px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  border: 1px solid gray;
+  background-color: transparent; }
+  button span {
+    display: inline-block;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg); }
+  button.record {
+    border-color: red;
+        /*
+span {
+            text-indent: -999em;
+            background: red;
+            border-radius: 20px;
+            width: 12px;
+            height: 12px;
+        }
+*/ }
+  button.play {
+    border-color: green; }
+
+#app-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: table;
+  width: 100%;
+  padding: 10px 5px;
+  background: #bbb; }
+  #app-bar [class^="bar-"] {
+    display: table-cell;
+    vertical-align: middle; }
+  #app-bar .bar-center {
+    font-family: 'BrandonGrotesque-Bold';
+    font-size: .8em;
+    letter-spacing: 0.05em;
+    text-align: center;
+    text-transform: uppercase; }
+    #app-bar .bar-center span {
+      color: gray; }
+  #app-bar input {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    font-size: inherit;
+    text-align: center;
+    text-transform: uppercase; }
+
+.scroll-panel {
+  position: absolute;
+  top: 75px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  padding: 15px 5px; }
+
+.tracklist {
+  list-style: none; }
+  .tracklist li {
+    margin-bottom: 25px; }

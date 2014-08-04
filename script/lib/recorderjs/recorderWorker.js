@@ -1,7 +1,9 @@
 var recLength = 0,
   recBuffersL = [],
   recBuffersR = [],
-  sampleRate;
+  sampleRate,
+  THRESHOLD = .2,
+  lastAboveThreshold;
 
 this.onmessage = function(e){
   switch(e.data.command){
@@ -32,7 +34,12 @@ function record(inputBuffer){
   var monoChannel = inputBuffer[0];
   var gatedBuffer = [ ];
   for (var i = 0; i < monoChannel.length; i++) {
-    if (Math.abs(monoChannel[i]) > .1) {
+      //console.log('yeah ' + Date.now() + " " +lastAboveThreshold + " " + Math.abs(monoChannel[i]));
+    if (Math.abs(monoChannel[i]) > THRESHOLD) {
+      lastAboveThreshold = Date.now();
+      gatedBuffer.push(monoChannel[i]);
+    } else if (Date.now()-lastAboveThreshold < 50) {
+        //console.log('yeah');
       gatedBuffer.push(monoChannel[i]);
     }
   }

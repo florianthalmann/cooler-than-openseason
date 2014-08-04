@@ -3,7 +3,7 @@ $(function () {
   var audioContext, tuna;
   var sounds = [ ];
   var channels = [ ];
-  var tempo = 100;
+  var tempo = 70;
 
   function startRecorder(recorder) {
     recorder.clear();
@@ -36,7 +36,7 @@ $(function () {
   
   function playSong() {
   	 var tempoFactor = (60/tempo);
-  	 for (var bar = 0; bar < 4; bar++) {
+  	 for (var bar = 0; bar < 2; bar++) {
   	 	var offset = bar*2*tempoFactor+audioContext.currentTime;
       //bassdrum every half note
       for (var bassdrum = 0; bassdrum < 2; bassdrum+=1) {

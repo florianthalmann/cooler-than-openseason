@@ -76,6 +76,7 @@ $font-stack-black:          'BrandonGrotesque-Black', $font-stack;
     padding: 0;
 }
 
+// Common elements
 body {
     font-family: $font-stack-regular;
     line-height: 1.4;
@@ -86,14 +87,26 @@ strong {
     font-weight: normal;
 }
 
-p, ul {
+p,
+ul {
     margin-bottom: 10px;
 }
 
 ul {
     padding-left: 18px;
-    list-style: square;
+    list-style: none;
 }
+
+button {
+    @include box-sizing(border-box);
+    border: 0;
+    cursor: pointer;
+}
+
+input {
+    @include box-sizing(border-box);
+}
+
 
 // Square Buttons
 // class .active for spinning effect
@@ -102,8 +115,7 @@ ul {
     width: 40px;
     height: 40px;
     margin: 0 10px;
-    
-    border: 0;
+
     outline: 1px solid transparent;
     background-color: $color-button-default;
     
@@ -117,17 +129,19 @@ ul {
     }
     
     &:before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        
         display: inline-block;
         @include transform(rotate(-45deg));
+        
     }
     
     &.record {
         background: $color-button-record;
         
         &:before {
-            position: absolute;
-            top: 50%;
-            left: 50%;
             width: 12px;
             height: 12px;
             margin-left: -6px;
@@ -154,9 +168,6 @@ ul {
         background-color: $color-button-play;
         
         &:before {
-            position: absolute;
-            top: 50%;
-            left: 50%;
             margin-left: -3px;
             margin-top: -9px;
             
@@ -167,11 +178,9 @@ ul {
     }
     
     &.menu {
+        background-color: $color-button-default;
         
         &:before {
-            position: absolute;
-            top: 50%;
-            left: 50%;
             margin-left: -7px;
             margin-top: -16px;
             
@@ -183,15 +192,16 @@ ul {
     
 }
 
-
+// App title bar
 #app-bar {
+    @include box-sizing(border-box);
+    
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 71px;
     
-    @include box-sizing(border-box);
     display: table;
     width: 100%;
     padding: 5px 5px 4px 5px;
@@ -203,12 +213,6 @@ ul {
         vertical-align: middle;
     }
     
-    .wrapper {
-        height: 60px;   
-        max-height: 60px;
-        overflow-y: hidden;
-    }
-    
     .bar-center {        
         font-size: .9em;
         letter-spacing: 0.05em;
@@ -218,22 +222,35 @@ ul {
         text-align: center;
         text-transform: uppercase;
         
+    
+        // Wrapper element for scrolling between title and name-input
+        .wrapper {
+            height: 60px;   
+            max-height: 60px;
+            max-width: 340px;
+            margin: 0 auto;
+            overflow-y: hidden;
+        }
+        
+        // Display name in title section
         #producer-name {
             color: $color-text-default;
             font-family: $font-stack-bold;
         }
+        
+        // Input panel div
         #name-input {
             padding-top: 1px;
         }
         
         input {
-            @include box-sizing(border-box);
             margin: 2px 0 3px;
             padding: 0 5px;
             height: 25px;
             line-height: 25px;
             
             border: 0;
+            outline: 0;
             background: white;
             box-shadow: none;
             color: $color-text-default;
@@ -251,13 +268,16 @@ ul {
         }
         
         button {
-            display: inline-block;
             width: 14%;
             height: 25px;
             line-height: 25px;
+            
             margin-left: 2%;
             
-            border: 0;
+            // Hack?
+            position: relative;
+            top: -1px;
+
             background: $color-button-default;
             color: $color-text-default;
             
@@ -273,7 +293,8 @@ ul {
 
 
 
-
+// Panel contained scrolling
+// Check with iOS7 Safari for fullscreen problems!
 .scroll-panel {
     position: absolute;
     top: 71px;
@@ -285,15 +306,15 @@ ul {
     padding: 0;
 }
 
+// Fallback content when there is no microphone access
 #shown {
     padding: 15px 10px;
     text-align: center;
 }
 
-
+// Tracklist/tracks with controls and status
 .tracklist {
     padding: 0;
-    list-style: none;
     
     li {
         height: 57px;

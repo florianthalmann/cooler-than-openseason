@@ -85,7 +85,9 @@
 
 * {
   margin: 0;
-  padding: 0;
+  padding: 0; }
+
+body {
   font-family: "BrandonGrotesque-Regular", Helvetica, Arial, sans-serif;
   line-height: 1.4; }
 
@@ -100,14 +102,14 @@ ul {
   padding-left: 18px;
   list-style: square; }
 
-button {
+.sqbutton {
   position: relative;
   width: 40px;
   height: 40px;
   margin: 0 10px;
   border: 0;
   outline: 1px solid transparent;
-  background-color: gray;
+  background-color: #fcf9ab;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -116,20 +118,20 @@ button {
   -webkit-transition: all 0.3s ease-out;
   -moz-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out; }
-  button.active {
+  .sqbutton.active {
     -webkit-animation: spin 5s linear infinite;
     -moz-animation: spin 5s linear infinite;
     animation: spin 5s linear infinite; }
-  button:before {
+  .sqbutton:before {
     display: inline-block;
     -webkit-transform: rotate(-45deg);
     -moz-transform: rotate(-45deg);
     -ms-transform: rotate(-45deg);
     -o-transform: rotate(-45deg);
     transform: rotate(-45deg); }
-  button.record {
+  .sqbutton.record {
     background: #efb5d5; }
-    button.record:before {
+    .sqbutton.record:before {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -143,16 +145,16 @@ button {
       -webkit-transition: border-radius 0.3s linear;
       -moz-transition: border-radius 0.3s linear;
       transition: border-radius 0.3s linear; }
-    button.record.active {
+    .sqbutton.record.active {
       background: #e68bbd; }
-      button.record.active.active:before {
+      .sqbutton.record.active.active:before {
         border-radius: 0;
         -webkit-animation: spin-reverse 5s linear infinite;
         -moz-animation: spin-reverse 5s linear infinite;
         animation: spin-reverse 5s linear infinite; }
-  button.play {
+  .sqbutton.play {
     background-color: #54b290; }
-    button.play:before {
+    .sqbutton.play:before {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -161,14 +163,14 @@ button {
       content: '\25b6';
       color: white;
       font-size: 13px; }
-  button.menu:before {
+  .sqbutton.menu:before {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-left: -6px;
+    margin-left: -7px;
     margin-top: -16px;
     content: '\2261';
-    color: white;
+    color: #222222;
     font-size: 24px; }
 
 #app-bar {
@@ -176,6 +178,7 @@ button {
   top: 0;
   left: 0;
   right: 0;
+  height: 71px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -186,37 +189,60 @@ button {
   #app-bar [class^="bar-"] {
     display: table-cell;
     vertical-align: middle; }
+  #app-bar .wrapper {
+    height: 60px;
+    max-height: 60px;
+    overflow-y: hidden; }
   #app-bar .bar-center {
-    padding-top: 2px;
-    font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
     font-size: .9em;
     letter-spacing: 0.05em;
     color: white;
     text-align: center;
     text-transform: uppercase; }
-  #app-bar input {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-    color: #222222;
-    font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
-    font-size: inherit;
-    line-height: 1;
-    text-align: center;
-    text-transform: uppercase; }
+    #app-bar .bar-center #producer-name {
+      color: #222222;
+      font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif; }
+    #app-bar .bar-center #name-input {
+      padding-top: 1px; }
+    #app-bar .bar-center input {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 2px 0 3px;
+      padding: 0 5px;
+      height: 25px;
+      line-height: 25px;
+      border: 0;
+      background: white;
+      box-shadow: none;
+      color: #222222;
+      font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
+      font-size: inherit;
+      text-transform: uppercase; }
+    #app-bar .bar-center input[type="text"] {
+      width: 90%; }
+    #app-bar .bar-center input[type="email"] {
+      width: 74%; }
+    #app-bar .bar-center button {
+      display: inline-block;
+      width: 14%;
+      height: 25px;
+      line-height: 25px;
+      margin-left: 2%;
+      border: 0;
+      background: #fcf9ab;
+      color: #222222;
+      font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif; }
+  #app-bar .bar-right {
+    text-align: right; }
 
 .scroll-panel {
   position: absolute;
-  top: 73px;
+  top: 71px;
   left: 0;
   right: 0;
   bottom: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 0; }
 
 #shown {

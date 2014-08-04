@@ -129,4 +129,26 @@ $(function () {
     };
   }
   
+  
+  // Toggle name and e-mail inputs
+  $('#title').click( function() {
+      
+    $('.wrapper').scroll();
+    $('.wrapper').animate({ scrollTop: 62 }, 300);
+      
+  });
+
+  
+  $('#name-input button').click( function() {
+  
+    var pname = $('#input-producer-name').val();
+    if( pname.length == 0 ) pname = '(Tap to enter name)';
+
+    $('#producer-name').html( pname );
+    
+    $('.wrapper').scroll();
+    $('.wrapper').animate({ scrollTop: 0 }, 300);
+      
+  });
+  
 })

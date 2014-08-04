@@ -28,9 +28,17 @@ function init(config){
 }
 
 function record(inputBuffer){
-  recBuffersL.push(inputBuffer[0]);
+  console.log(inputBuffer);
+  var monoChannel = inputBuffer[0];
+  var gatedBuffer = [ ];
+  for (var i = 0; i < monoChannel.length; i++) {
+    if (Math.abs(monoChannel[i]) > .1) {
+      gatedBuffer.push(monoChannel[i]);
+    }
+  }
+  recBuffersL.push(gatedBuffer);
   //recBuffersR.push(inputBuffer[1]);
-  recLength += inputBuffer[0].length;
+  recLength += gatedBuffer.length;
 }
 
 function exportWAV(type){

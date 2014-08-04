@@ -1,44 +1,54 @@
 $(function () {
-	
+  
+  var audioContext, tuna;
   var sounds = [ ];
-  var tempo = 120;
+  var channels = [ ];
+  var tempo = 100;
 
-  var startRecorder = function(recorder) {
+  function startRecorder(recorder) {
     recorder.clear();
     recorder.record();
   }
 
-  var stopRecorder = function(recorder, soundIndex, context) {
+  function stopRecorder(recorder, soundIndex) {
     recorder.stop();
     recorder.getBuffer(function (buffers) {
-      var newBuffer = context.createBuffer(1, buffers[0].length, 44100);
+      var newBuffer = audioContext.createBuffer(1, buffers[0].length, 44100);
       newBuffer.getChannelData(0).set(buffers[0]);
       sounds[soundIndex] = newBuffer;
     });
   }
   
-  function playSoundAt(time, soundIndex, context) {
-    var source = context.createBufferSource();
-    source.buffer = sounds[soundIndex];
-    source.connect(context.destination);
+  function playSoundAt(time, soundIndex) {
+  	 var source = audioContext.createBufferSource();
+  	 source.buffer = sounds[soundIndex];
+  	 if (!channels[soundIndex]) {
+  	 	initChannel(soundIndex);
+  	 }
+  	 source.connect(channels[soundIndex].input);
     source.start(time);
   }
   
-  function playSong(context) {
+  function initChannel(soundIndex) {
+    channels[soundIndex] = new ChannelBus();
+    channels[soundIndex].connect(audioContext.destination);
+  }
+  
+  function playSong() {
   	 var tempoFactor = (60/tempo);
-  	 for (var bar = 0; bar < 2; bar++) {
-  	 	var offset = bar*2*tempoFactor+context.currentTime;
+  	 for (var bar = 0; bar < 4; bar++) {
+  	 	var offset = bar*2*tempoFactor+audioContext.currentTime;
       //bassdrum every half note
       for (var bassdrum = 0; bassdrum < 2; bassdrum+=1) {
-      	  playSoundAt(bassdrum*tempoFactor+offset, 0, context);
+      	  playSoundAt(bassdrum*tempoFactor+offset, 0);
       	}
       	//snare every dotted quarter note
       	for (var snare = 0.75; snare < 2; snare+=0.75) {
-      	  playSoundAt(snare*tempoFactor+offset, 1, context);
+      	  playSoundAt(snare*tempoFactor+offset, 1);
       	}
       	//hihat every eighth note
       for (var hihat = 0; hihat < 2; hihat+=0.25) {
-      	  playSoundAt(hihat*tempoFactor+offset, 2, context);
+      	  playSoundAt(hihat*tempoFactor+offset, 2);
       	}
     }
   }
@@ -50,11 +60,12 @@ $(function () {
     $("#hidden").toggle();
 
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    var audioContext = new AudioContext();
-    window.mediaStreamSource = audioContext.createMediaStreamSource( stream );
+    audioContext = new AudioContext();
+    tuna = new Tuna(audioContext);
+    window.mediaStreamSource = audioContext.createMediaStreamSource(stream);
 
     var recorder = new Recorder(window.mediaStreamSource, {
-      workerPath: "http://localhost/~flo/script/lib/recorderjs/recorderWorker.js"
+      workerPath: "script/lib/recorderjs/recorderWorker.js"
     });
     var recording = false;
 
@@ -66,7 +77,7 @@ $(function () {
         startRecorder(recorder);
         recording = true;
       } else {
-        stopRecorder(recorder, buttonIndex, audioContext);
+        stopRecorder(recorder, buttonIndex);
         recording = false;
       }
 
@@ -75,12 +86,12 @@ $(function () {
     $('[id^="play"]').click(function (e) {
       e.preventDefault();
       var buttonIndex = $(e.target).attr('id').slice(-1);
-      playSoundAt(0, buttonIndex, audioContext);
+      playSoundAt(0, buttonIndex);
     })
     
     $("button#song").click(function (e) {
       e.preventDefault();
-      playSong(audioContext);
+      playSong();
     })
 
   }, 
@@ -88,4 +99,30 @@ $(function () {
   function(error) {
     $("body").text("Error: you need to allow this sample to use the microphone.")
   });
+  
+  
+  function ChannelBus() {
+    this.input = audioContext.createGain();
+    var output = audioContext.createGain();
+  
+    var delay = new tuna.Delay();
+    var convolver = new tuna.Convolver();
+    var compressor = new tuna.Compressor();
+  
+    //equalizer -> delay -> convolver
+    this.input.connect(compressor.input);
+    //this.input.connect(output);
+    compressor.connect(delay.input);
+    delay.connect(convolver.input);
+    convolver.connect(output);
+  
+    delay.delayTime = 300;
+    delay.feedback = .2;
+    convolver.wetLevel = .2;
+  
+    this.connect = function(target){
+      output.connect(target);
+    };
+  }
+  
 })

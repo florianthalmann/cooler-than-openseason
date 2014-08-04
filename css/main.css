@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import url("//hello.myfonts.net/count/2a41fa");
+@import url("//hello.myfonts.net/count/2b984f");
 /*!==========================================================================
  * Main Style Sheet (Sassy)
  * Open Season Web-App 2014
@@ -11,7 +11,7 @@
  */
 /**
  * @license
- * MyFonts Webfont Build ID 2769402, 2014-03-14T06:15:07-0400
+ * MyFonts Webfont Build ID 2857039, 2014-08-04T06:25:08-0400
  * 
  * The fonts listed in this notice are subject to the End User License
  * Agreement(s) entered into by the website owner. All other parties are 
@@ -26,47 +26,101 @@
  * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/bold/
  * 
  * Webfont: Brandon Grotesque Black by HVD Fonts
- * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/black/ 
+ * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/black/
  * 
- * License: http://www.myfonts.com/viewlicense?type=web&buildid=2769402
+ * 
+ * License: http://www.myfonts.com/viewlicense?type=web&buildid=2857039
  * Licensed pageviews: 10,000
  * Webfonts copyright: Copyright (c) 2009 by Hannes von Doehren. All rights reserved.
  * 
  * © 2014 MyFonts Inc
 */
+/* @import must be at top of file, otherwise CSS will not work */
 @font-face {
   font-family: 'BrandonGrotesque-Regular';
-  src: url("fonts/2A41FA_0_0.eot");
-  src: url("fonts/2A41FA_0_0.eot?#iefix") format("embedded-opentype"), url("fonts/2A41FA_0_0.woff") format("woff"), url("fonts/2A41FA_0_0.ttf") format("truetype"); }
+  src: url("webfonts/2B984F_0_0.eot");
+  src: url("webfonts/2B984F_0_0.eot?#iefix") format("embedded-opentype"), url("webfonts/2B984F_0_0.woff") format("woff"), url("webfonts/2B984F_0_0.ttf") format("truetype"), url("webfonts/2B984F_0_0.svg#wf") format("svg"); }
 
 @font-face {
   font-family: 'BrandonGrotesque-Bold';
-  src: url("fonts/2A41FA_1_0.eot");
-  src: url("fonts/2A41FA_1_0.eot?#iefix") format("embedded-opentype"), url("fonts/2A41FA_1_0.woff") format("woff"), url("fonts/2A41FA_1_0.ttf") format("truetype"); }
+  src: url("webfonts/2B984F_1_0.eot");
+  src: url("webfonts/2B984F_1_0.eot?#iefix") format("embedded-opentype"), url("webfonts/2B984F_1_0.woff") format("woff"), url("webfonts/2B984F_1_0.ttf") format("truetype"), url("webfonts/2B984F_1_0.svg#wf") format("svg"); }
 
 @font-face {
   font-family: 'BrandonGrotesque-Black';
-  src: url("fonts/2A41FA_2_0.eot");
-  src: url("fonts/2A41FA_2_0.eot?#iefix") format("embedded-opentype"), url("fonts/2A41FA_2_0.woff") format("woff"), url("fonts/2A41FA_2_0.ttf") format("truetype"); }
+  src: url("webfonts/2B984F_2_0.eot");
+  src: url("webfonts/2B984F_2_0.eot?#iefix") format("embedded-opentype"), url("webfonts/2B984F_2_0.woff") format("woff"), url("webfonts/2B984F_2_0.ttf") format("truetype"), url("webfonts/2B984F_2_0.svg#wf") format("svg"); }
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(405deg); } }
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(405deg); } }
+
+@-o-keyframes spin {
+  100% {
+    -o-transform: rotate(405deg); } }
+
+@keyframes spin {
+  100% {
+    transform: rotate(405deg); } }
+
+@-webkit-keyframes spin-reverse {
+  100% {
+    -webkit-transform: rotate(-405deg); } }
+
+@-moz-keyframes spin-reverse {
+  100% {
+    -moz-transform: rotate(-405deg); } }
+
+@-o-keyframes spin-reverse {
+  100% {
+    -o-transform: rotate(-405deg); } }
+
+@keyframes spin-reverse {
+  100% {
+    transform: rotate(-405deg); } }
 
 * {
   margin: 0;
   padding: 0;
-  font-family: 'BrandonGrotesque-Regular', Helvetica, Arial, sans-serif;
+  font-family: "BrandonGrotesque-Regular", Helvetica, Arial, sans-serif;
   line-height: 1.4; }
 
+strong {
+  font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
+  font-weight: normal; }
+
+p, ul {
+  margin-bottom: 10px; }
+
+ul {
+  padding-left: 18px;
+  list-style: square; }
+
 button {
+  position: relative;
   width: 40px;
   height: 40px;
   margin: 0 10px;
+  border: 0;
+  outline: 1px solid transparent;
+  background-color: gray;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
-  border: 1px solid gray;
-  background-color: transparent; }
-  button span {
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out; }
+  button.active {
+    -webkit-animation: spin 5s linear infinite;
+    -moz-animation: spin 5s linear infinite;
+    animation: spin 5s linear infinite; }
+  button:before {
     display: inline-block;
     -webkit-transform: rotate(-45deg);
     -moz-transform: rotate(-45deg);
@@ -74,18 +128,48 @@ button {
     -o-transform: rotate(-45deg);
     transform: rotate(-45deg); }
   button.record {
-    border-color: red;
-        /*
-span {
-            text-indent: -999em;
-            background: red;
-            border-radius: 20px;
-            width: 12px;
-            height: 12px;
-        }
-*/ }
+    background: #efb5d5; }
+    button.record:before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 12px;
+      height: 12px;
+      margin-left: -6px;
+      margin-top: -6px;
+      background: white;
+      border-radius: 12px;
+      content: ' ';
+      -webkit-transition: border-radius 0.3s linear;
+      -moz-transition: border-radius 0.3s linear;
+      transition: border-radius 0.3s linear; }
+    button.record.active {
+      background: #e68bbd; }
+      button.record.active.active:before {
+        border-radius: 0;
+        -webkit-animation: spin-reverse 5s linear infinite;
+        -moz-animation: spin-reverse 5s linear infinite;
+        animation: spin-reverse 5s linear infinite; }
   button.play {
-    border-color: green; }
+    background-color: #54b290; }
+    button.play:before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -3px;
+      margin-top: -9px;
+      content: '\25b6';
+      color: white;
+      font-size: 13px; }
+  button.menu:before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -6px;
+    margin-top: -16px;
+    content: '\2261';
+    color: white;
+    font-size: 24px; }
 
 #app-bar {
   position: absolute;
@@ -97,41 +181,66 @@ span {
   box-sizing: border-box;
   display: table;
   width: 100%;
-  padding: 10px 5px;
-  background: #bbb; }
+  padding: 5px 5px 4px 5px;
+  background: #aed5b7; }
   #app-bar [class^="bar-"] {
     display: table-cell;
     vertical-align: middle; }
   #app-bar .bar-center {
-    font-family: 'BrandonGrotesque-Bold';
-    font-size: .8em;
+    padding-top: 2px;
+    font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
+    font-size: .9em;
     letter-spacing: 0.05em;
+    color: white;
     text-align: center;
     text-transform: uppercase; }
-    #app-bar .bar-center span {
-      color: gray; }
   #app-bar input {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     width: 100%;
+    padding: 0;
     border: 0;
     background: transparent;
     box-shadow: none;
+    color: #222222;
+    font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
     font-size: inherit;
+    line-height: 1;
     text-align: center;
     text-transform: uppercase; }
 
 .scroll-panel {
   position: absolute;
-  top: 75px;
+  top: 73px;
   left: 0;
   right: 0;
   bottom: 0;
   overflow-y: scroll;
-  padding: 15px 5px; }
+  padding: 0; }
+
+#shown {
+  padding: 15px 10px;
+  text-align: center; }
 
 .tracklist {
+  padding: 0;
   list-style: none; }
   .tracklist li {
-    margin-bottom: 25px; }
+    height: 57px;
+    margin: 8px 8px 8px 5px; }
+  .tracklist .track-buttons {
+    float: left;
+    margin-top: 9px; }
+  .tracklist .track-info {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding-top: 13px;
+    padding-left: 135px;
+    font-size: 1.3em; }
+  .tracklist .track-bar {
+    height: 3px;
+    background: #ddd; }

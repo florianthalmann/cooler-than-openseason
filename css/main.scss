@@ -10,7 +10,7 @@
 
 /**
  * @license
- * MyFonts Webfont Build ID 2769402, 2014-03-14T06:15:07-0400
+ * MyFonts Webfont Build ID 2857039, 2014-08-04T06:25:08-0400
  * 
  * The fonts listed in this notice are subject to the End User License
  * Agreement(s) entered into by the website owner. All other parties are 
@@ -25,75 +25,162 @@
  * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/bold/
  * 
  * Webfont: Brandon Grotesque Black by HVD Fonts
- * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/black/ 
+ * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/black/
  * 
- * License: http://www.myfonts.com/viewlicense?type=web&buildid=2769402
+ * 
+ * License: http://www.myfonts.com/viewlicense?type=web&buildid=2857039
  * Licensed pageviews: 10,000
  * Webfonts copyright: Copyright (c) 2009 by Hannes von Doehren. All rights reserved.
  * 
  * © 2014 MyFonts Inc
 */
-@import url("//hello.myfonts.net/count/2a41fa");
-
-@font-face {font-family: 'BrandonGrotesque-Regular';src: url('fonts/2A41FA_0_0.eot');src: url('fonts/2A41FA_0_0.eot?#iefix') format('embedded-opentype'),url('fonts/2A41FA_0_0.woff') format('woff'),url('fonts/2A41FA_0_0.ttf') format('truetype');}
-@font-face {font-family: 'BrandonGrotesque-Bold';src: url('fonts/2A41FA_1_0.eot');src: url('fonts/2A41FA_1_0.eot?#iefix') format('embedded-opentype'),url('fonts/2A41FA_1_0.woff') format('woff'),url('fonts/2A41FA_1_0.ttf') format('truetype');}
-@font-face {font-family: 'BrandonGrotesque-Black';src: url('fonts/2A41FA_2_0.eot');src: url('fonts/2A41FA_2_0.eot?#iefix') format('embedded-opentype'),url('fonts/2A41FA_2_0.woff') format('woff'),url('fonts/2A41FA_2_0.ttf') format('truetype');}
 
 
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/2b984f");
+
+@font-face {font-family: 'BrandonGrotesque-Regular';src: url('webfonts/2B984F_0_0.eot');src: url('webfonts/2B984F_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2B984F_0_0.woff') format('woff'),url('webfonts/2B984F_0_0.ttf') format('truetype'),url('webfonts/2B984F_0_0.svg#wf') format('svg');}
+@font-face {font-family: 'BrandonGrotesque-Bold';src: url('webfonts/2B984F_1_0.eot');src: url('webfonts/2B984F_1_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2B984F_1_0.woff') format('woff'),url('webfonts/2B984F_1_0.ttf') format('truetype'),url('webfonts/2B984F_1_0.svg#wf') format('svg');}
+@font-face {font-family: 'BrandonGrotesque-Black';src: url('webfonts/2B984F_2_0.eot');src: url('webfonts/2B984F_2_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2B984F_2_0.woff') format('woff'),url('webfonts/2B984F_2_0.ttf') format('truetype'),url('webfonts/2B984F_2_0.svg#wf') format('svg');}
+
+
+// Cross browser mixins
 @import "bourbon";
 
-
+// Sass Variables
 $color-text-default:        #222;
 $color-text-dim:            gray;
 
-$color-bar:                 #bbb;
+$color-bar:                 #aed5b7;
 $color-button-default:      gray;
-$color-button-record:       red;
-$color-button-play:         green;
+$color-button-record:       #efb5d5;
+$color-button-play:         #54b290;
+
+$font-stack:                Helvetica, Arial, sans-serif;
+$font-stack-regular:        'BrandonGrotesque-Regular', $font-stack;
+$font-stack-bold:           'BrandonGrotesque-Bold', $font-stack;
+$font-stack-black:          'BrandonGrotesque-Black', $font-stack;
+
+// Animation keyframes
+@include keyframes(spin) {
+     100% { @include transform(rotate(405deg)); }
+}
+@include keyframes(spin-reverse) {
+     100% { @include transform(rotate(-405deg)); }
+}
+
 
 // Hard reset
 * {
     margin: 0;
     padding: 0;
     
-    font-family: 'BrandonGrotesque-Regular', Helvetica, Arial, sans-serif;
+    font-family: $font-stack-regular;
     line-height: 1.4;
 }
 
-button {
+strong {
+    font-family: $font-stack-bold;
+    font-weight: normal;
+}
 
+p, ul {
+    margin-bottom: 10px;
+}
+
+ul {
+    padding-left: 18px;
+    list-style: square;
+}
+
+// Square Buttons
+// class .active for spinning effect
+button {
+    position: relative;
     width: 40px;
     height: 40px;
-    
     margin: 0 10px;
+    
+    border: 0;
+    outline: 1px solid transparent;
+    background-color: $color-button-default;
+    
     @include transform(rotate(45deg));
     
-    border: 1px solid $color-button-default;
-    background-color: transparent;
+    // Direction of transition?
+    @include transition(all .3s ease-out);
     
-    span {
+    &.active {
+        @include animation(spin 5s linear infinite);
+    }
+    
+    &:before {
         display: inline-block;
         @include transform(rotate(-45deg));
     }
     
     &.record {
-        border-color: $color-button-record;
+        background: $color-button-record;
         
-        /*
-span {
-            text-indent: -999em;
-            background: red;
-            border-radius: 20px;
+        &:before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
             width: 12px;
             height: 12px;
+            margin-left: -6px;
+            margin-top: -6px;
+
+            background: white;
+            border-radius: 12px;
+            content: ' ';
+            
+            @include transition(border-radius .3s linear);
         }
-*/
+        
+        &.active {
+            background: darken($color-button-record, 10%);
+            
+            &.active:before {
+                border-radius: 0;
+                @include animation(spin-reverse 5s linear infinite);
+            }
+        }   
     }
     
     &.play {
-        border-color: $color-button-play;
-    }   
+        background-color: $color-button-play;
+        
+        &:before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -3px;
+            margin-top: -9px;
+            
+            content: '\25b6';
+            color: white;
+            font-size: 13px;
+        }
+    }
+    
+    &.menu {
+        
+        &:before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -6px;
+            margin-top: -16px;
+            
+            content: '\2261';
+            color: white;
+            font-size: 24px;
+        }
+    }
+    
 }
+
 
 #app-bar {
     position: absolute;
@@ -104,9 +191,9 @@ span {
     @include box-sizing(border-box);
     display: table;
     width: 100%;
-    padding: 10px 5px;
+    padding: 5px 5px 4px 5px;
     
-    background: #bbb;
+    background: $color-bar;
     
     [class^="bar-"] {
         display: table-cell;
@@ -114,50 +201,83 @@ span {
     }
     
     .bar-center {
-        font-family: 'BrandonGrotesque-Bold';
-        font-size: .8em;
+        padding-top: 2px;
+        
+        font-family: $font-stack-bold;
+        font-size: .9em;
         letter-spacing: 0.05em;
+        
+        color: white;
         
         text-align: center;
         text-transform: uppercase;
-        
-        span {
-            color: $color-text-dim;
-        }
     }
     
     input {
         @include box-sizing(border-box);
         width: 100%;
+        padding: 0;
+        
         border: 0;
         background: transparent;
         box-shadow: none;
+        color: $color-text-default;
         
+        font-family: $font-stack-bold;
         font-size: inherit;
+        line-height: 1;
         text-align: center;
         text-transform: uppercase;
     }
     
 }
 
+
+
+
 .scroll-panel {
     position: absolute;
-    top: 75px;
+    top: 73px;
     left: 0;
     right: 0;
     bottom: 0;
     overflow-y: scroll;
     
-    padding: 15px 5px;
+    padding: 0;
+}
+
+#shown {
+    padding: 15px 10px;
+    text-align: center;
 }
 
 
 .tracklist {
-
+    padding: 0;
     list-style: none;
     
     li {
-        margin-bottom: 25px
+        height: 57px;
+        margin: 8px 8px 8px 5px;
+    }
+    
+    .track-buttons {
+        float: left;
+        margin-top: 9px;
+    }
+    
+    .track-info {
+        @include box-sizing(border-box);
+        
+        display: block;
+        width: 100%;
+        padding-top: 13px;
+        padding-left: 135px;
+        font-size: 1.3em;
+    }
+    .track-bar {
+        height: 3px;
+        background: #ddd;
     }
     
 }

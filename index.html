@@ -23,7 +23,7 @@
     <body>
         <div id="app-bar">
             <div class="bar-left">
-                <button type="button" id="song" class="play"><span>Play Song</span></button>
+                <button type="button" id="song" class="play"></button>
             </div>
             
             <div class="bar-center">
@@ -33,37 +33,61 @@
                     </div>
             
             <div class="bar-right">
-                <button type="button" class="share"><span>Menu</span></button>
+                <button type="button" class="menu"></button>
             </div>
         </div>
         
         
-        <div id="shown">
-            Awaiting permission...
-        </div>
-        <div id="hidden" class="scroll-panel" style="display:none">
+        <div class="scroll-panel">
+            <div id="shown">
+                <p><strong>Awaiting permission...</strong></p>
+                <p>If nothing happens, your browser doesn't support sharing the microphone.</p>
+                <p>Capable browsers:</p>
+                <ul>
+                    <li>Chrome 21+</li>
+                    <li>Opera 18+</li>
+                    <li>Firefox 17+</li>
+                </ul>
+            </div>
             
-            <ul class="tracklist">
-                <li>
-                    <button type="button" id="record0" class="record"><span>Rec</span></button>
-                    <button type="button" id="play0" class="play"><span>Play</span></button>
-                    Bass drum
-                </li>
+            <div id="hidden" style="display:none">
                 
-                <li>
-                    <button type="button" id="record1" class="record"><span>Rec</span></button>
-                    <button type="button" id="play1" class="play"><span>Play</span></button>
-                    Snare
-                </li>
-                <li>
-                    <button id="record2" class="record" type="button"><span>Rec</span></button>
-                    <button type="button" id="play2" class="play"><span>Play</span></button>
-                    Hihat
-                </li>
-            </ul>
-            
+                <ul class="tracklist">
+                    <li>
+                        <div class="track-buttons">
+                            <button type="button" id="record0" class="record"></button>
+                            <button type="button" id="play0" class="play"></button>
+                        </div>
+                        <div class="track-info">
+                            Bass drum
+                            <div class="track-bar">&nbsp;</div>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <div class="track-buttons">
+                            <button type="button" id="record1" class="record"></button>
+                            <button type="button" id="play1" class="play"></button>
+                        </div>
+                        <div class="track-info">
+                            Snare
+                            <div class="track-bar">&nbsp;</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="track-buttons">
+                            <button type="button" id="record2" class="record"></button>
+                            <button type="button" id="play2" class="play"></button>
+                        </div>
+                        <div class="track-info">
+                            Hihat
+                            <div class="track-bar">&nbsp;</div>
+                        </div>
+                    </li>
+                </ul>
+                
+            </div>
         </div>
-        
         
         <!-- + insert ga code and domain -->
         <script>

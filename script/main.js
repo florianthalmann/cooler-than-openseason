@@ -76,9 +76,13 @@ $(function () {
       if (recording === false) {
         startRecorder(recorder);
         recording = true;
+        
+        $(this).addClass('active');
       } else {
         stopRecorder(recorder, buttonIndex);
         recording = false;
+        
+        $(this).removeClass('active');
       }
 
     });

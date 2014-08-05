@@ -1,9 +1,9 @@
 $(function () {
   
-  var audioContext, tuna;
+  var audioContext, tuna, midiFile;
   var sounds = [ ];
   var channels = [ ];
-  var tempo = 70;
+  var tempo = 98;
 
   function startRecorder(recorder) {
     recorder.clear();
@@ -19,13 +19,14 @@ $(function () {
     });
   }
   
-  function playSoundAt(time, soundIndex) {
-  	 var source = audioContext.createBufferSource();
-  	 source.buffer = sounds[soundIndex];
-  	 if (!channels[soundIndex]) {
-  	 	initChannel(soundIndex);
-  	 }
-  	 source.connect(channels[soundIndex].input);
+  function playSoundAt(time, soundIndex, volume) {
+    var source = audioContext.createBufferSource();
+    source.buffer = sounds[soundIndex];
+    if (!channels[soundIndex]) {
+      initChannel(soundIndex);
+    }
+    source.connect(channels[soundIndex].input);
+    channels[soundIndex].output.gain.value = volume;
     source.start(time);
   }
   
@@ -35,21 +36,20 @@ $(function () {
   }
   
   function playSong() {
-  	 var tempoFactor = (60/tempo);
-  	 for (var bar = 0; bar < 2; bar++) {
-  	 	var offset = bar*2*tempoFactor+audioContext.currentTime;
-      //bassdrum every half note
-      for (var bassdrum = 0; bassdrum < 2; bassdrum+=1) {
-      	  playSoundAt(bassdrum*tempoFactor+offset, 0);
-      	}
-      	//snare every dotted quarter note
-      	for (var snare = 0.75; snare < 2; snare+=0.75) {
-      	  playSoundAt(snare*tempoFactor+offset, 1);
-      	}
-      	//hihat every eighth note
-      for (var hihat = 0; hihat < 2; hihat+=0.25) {
-      	  playSoundAt(hihat*tempoFactor+offset, 2);
-      	}
+    var tickLength = 60/tempo/midiFile.header.ticksPerBeat;
+    for (var i = 0; i < midiFile.tracks.length; i++) {
+      var currentEventTime = 0;
+      for (var j = 0; j < midiFile.tracks[i].length; j++) {
+        var currentEvent = midiFile.tracks[i][j];
+        currentEventTime += currentEvent.deltaTime * tickLength;
+        if (currentEvent.subtype == "noteOn") {
+          var time = audioContext.currentTime + currentEventTime;
+          //drum machine standard: first at 36.
+          var soundIndex = currentEvent.noteNumber - 36;
+          var volume = currentEvent.velocity / 127;
+          playSoundAt(time, soundIndex, volume);
+        }
+      }
     }
   }
   
@@ -68,6 +68,10 @@ $(function () {
       workerPath: "script/lib/recorderjs/recorderWorker.js"
     });
     var recording = false;
+    
+    loadFileRemote('script/midi/drums.mid', function(data) {
+      midiFile = MidiFile(data);
+    });
 
     $('[id^="record"]').click(function (e) {
       e.preventDefault();
@@ -76,9 +80,13 @@ $(function () {
       if (recording === false) {
         startRecorder(recorder);
         recording = true;
+        
+        $(this).addClass('active');
       } else {
         stopRecorder(recorder, buttonIndex);
         recording = false;
+        
+        $(this).removeClass('active');
       }
 
     });
@@ -86,7 +94,7 @@ $(function () {
     $('[id^="play"]').click(function (e) {
       e.preventDefault();
       var buttonIndex = $(e.target).attr('id').slice(-1);
-      playSoundAt(0, buttonIndex);
+      playSoundAt(0, buttonIndex, 1);
     })
     
     $("button#song").click(function (e) {
@@ -103,7 +111,7 @@ $(function () {
   
   function ChannelBus() {
     this.input = audioContext.createGain();
-    var output = audioContext.createGain();
+    this.output = audioContext.createGain();
   
     var delay = new tuna.Delay();
     var convolver = new tuna.Convolver();
@@ -114,15 +122,57 @@ $(function () {
     //this.input.connect(output);
     compressor.connect(delay.input);
     delay.connect(convolver.input);
-    convolver.connect(output);
+    convolver.connect(this.output);
   
     delay.delayTime = 300;
     delay.feedback = .2;
     convolver.wetLevel = .2;
   
     this.connect = function(target){
-      output.connect(target);
+      this.output.connect(target);
     };
   }
+  
+  function loadFileRemote(path, callback) {
+    var fetch = new XMLHttpRequest();
+    fetch.open('GET', path);
+    fetch.overrideMimeType("text/plain; charset=x-user-defined");
+    fetch.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        /* munge response into a binary string */
+        var t = this.responseText || "" ;
+        var ff = [];
+        var mx = t.length;
+        var scc= String.fromCharCode;
+        for (var z = 0; z < mx; z++) {
+          ff[z] = scc(t.charCodeAt(z) & 255);
+        }
+        callback(ff.join(""));
+      }
+    }
+    fetch.send();
+  }
+  
+  
+  // Toggle name and e-mail inputs
+  $('#title').click( function() {
+      
+    $('.wrapper').scroll();
+    $('.wrapper').animate({ scrollTop: 62 }, 300);
+      
+  });
+
+  
+  $('#name-input button').click( function() {
+  
+    var pname = $('#input-producer-name').val();
+    if( pname.length == 0 ) pname = '(Tap to enter name)';
+
+    $('#producer-name').html( pname );
+    
+    $('.wrapper').scroll();
+    $('.wrapper').animate({ scrollTop: 0 }, 300);
+      
+  });
   
 })

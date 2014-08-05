@@ -70,6 +70,7 @@ $(function () {
     var recording = false;
     
     loadFileRemote('script/midi/drums.mid', function(data) {
+      console.log('HEY');
       midiFile = MidiFile(data);
     });
 

@@ -10,7 +10,7 @@
 
 /**
  * @license
- * MyFonts Webfont Build ID 2769402, 2014-03-14T06:15:07-0400
+ * MyFonts Webfont Build ID 2857039, 2014-08-04T06:25:08-0400
  * 
  * The fonts listed in this notice are subject to the End User License
  * Agreement(s) entered into by the website owner. All other parties are 
@@ -25,139 +25,319 @@
  * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/bold/
  * 
  * Webfont: Brandon Grotesque Black by HVD Fonts
- * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/black/ 
+ * URL: http://www.myfonts.com/fonts/hvdfonts/brandon-grotesque/black/
  * 
- * License: http://www.myfonts.com/viewlicense?type=web&buildid=2769402
+ * 
+ * License: http://www.myfonts.com/viewlicense?type=web&buildid=2857039
  * Licensed pageviews: 10,000
  * Webfonts copyright: Copyright (c) 2009 by Hannes von Doehren. All rights reserved.
  * 
  * © 2014 MyFonts Inc
 */
-@import url("//hello.myfonts.net/count/2a41fa");
-
-@font-face {font-family: 'BrandonGrotesque-Regular';src: url('fonts/2A41FA_0_0.eot');src: url('fonts/2A41FA_0_0.eot?#iefix') format('embedded-opentype'),url('fonts/2A41FA_0_0.woff') format('woff'),url('fonts/2A41FA_0_0.ttf') format('truetype');}
-@font-face {font-family: 'BrandonGrotesque-Bold';src: url('fonts/2A41FA_1_0.eot');src: url('fonts/2A41FA_1_0.eot?#iefix') format('embedded-opentype'),url('fonts/2A41FA_1_0.woff') format('woff'),url('fonts/2A41FA_1_0.ttf') format('truetype');}
-@font-face {font-family: 'BrandonGrotesque-Black';src: url('fonts/2A41FA_2_0.eot');src: url('fonts/2A41FA_2_0.eot?#iefix') format('embedded-opentype'),url('fonts/2A41FA_2_0.woff') format('woff'),url('fonts/2A41FA_2_0.ttf') format('truetype');}
 
 
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/2b984f");
+
+@font-face {font-family: 'BrandonGrotesque-Regular';src: url('webfonts/2B984F_0_0.eot');src: url('webfonts/2B984F_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2B984F_0_0.woff') format('woff'),url('webfonts/2B984F_0_0.ttf') format('truetype'),url('webfonts/2B984F_0_0.svg#wf') format('svg');}
+@font-face {font-family: 'BrandonGrotesque-Bold';src: url('webfonts/2B984F_1_0.eot');src: url('webfonts/2B984F_1_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2B984F_1_0.woff') format('woff'),url('webfonts/2B984F_1_0.ttf') format('truetype'),url('webfonts/2B984F_1_0.svg#wf') format('svg');}
+@font-face {font-family: 'BrandonGrotesque-Black';src: url('webfonts/2B984F_2_0.eot');src: url('webfonts/2B984F_2_0.eot?#iefix') format('embedded-opentype'),url('webfonts/2B984F_2_0.woff') format('woff'),url('webfonts/2B984F_2_0.ttf') format('truetype'),url('webfonts/2B984F_2_0.svg#wf') format('svg');}
+
+
+// Cross browser mixins
 @import "bourbon";
 
-
+// Sass Variables
 $color-text-default:        #222;
 $color-text-dim:            gray;
 
-$color-bar:                 #bbb;
-$color-button-default:      gray;
-$color-button-record:       red;
-$color-button-play:         green;
+$color-bar:                 #aed5b7;
+$color-button-default:      #fcf9ab;
+$color-button-record:       #efb5d5;
+$color-button-play:         #54b290;
+
+$font-stack:                Helvetica, Arial, sans-serif;
+$font-stack-regular:        'BrandonGrotesque-Regular', $font-stack;
+$font-stack-bold:           'BrandonGrotesque-Bold', $font-stack;
+$font-stack-black:          'BrandonGrotesque-Black', $font-stack;
+
+// Animation keyframes
+@include keyframes(spin) {
+     100% { @include transform(rotate(405deg)); }
+}
+@include keyframes(spin-reverse) {
+     100% { @include transform(rotate(-405deg)); }
+}
+
 
 // Hard reset
 * {
     margin: 0;
     padding: 0;
-    
-    font-family: 'BrandonGrotesque-Regular', Helvetica, Arial, sans-serif;
+}
+
+// Common elements
+body {
+    font-family: $font-stack-regular;
     line-height: 1.4;
 }
 
-button {
+strong {
+    font-family: $font-stack-bold;
+    font-weight: normal;
+}
 
+p,
+ul {
+    margin-bottom: 10px;
+}
+
+ul {
+    padding-left: 18px;
+    list-style: none;
+}
+
+button {
+    @include box-sizing(border-box);
+    border: 0;
+    cursor: pointer;
+}
+
+input {
+    @include box-sizing(border-box);
+}
+
+
+// Square Buttons
+// class .active for spinning effect
+.sqbutton {
+    position: relative;
     width: 40px;
     height: 40px;
-    
     margin: 0 10px;
+
+    outline: 1px solid transparent;
+    background-color: $color-button-default;
+    
     @include transform(rotate(45deg));
     
-    border: 1px solid $color-button-default;
-    background-color: transparent;
+    // Direction of transition?
+    @include transition(all .3s ease-out);
     
-    span {
+    &.active {
+        @include animation(spin 5s linear infinite);
+    }
+    
+    &:before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        
         display: inline-block;
         @include transform(rotate(-45deg));
+        
     }
     
     &.record {
-        border-color: $color-button-record;
+        background: $color-button-record;
         
-        /*
-span {
-            text-indent: -999em;
-            background: red;
-            border-radius: 20px;
+        &:before {
             width: 12px;
             height: 12px;
+            margin-left: -6px;
+            margin-top: -6px;
+
+            background: white;
+            border-radius: 12px;
+            content: ' ';
+            
+            @include transition(border-radius .3s linear);
         }
-*/
+        
+        &.active {
+            background: darken($color-button-record, 10%);
+            
+            &.active:before {
+                border-radius: 0;
+                @include animation(spin-reverse 5s linear infinite);
+            }
+        }   
     }
     
     &.play {
-        border-color: $color-button-play;
-    }   
+        background-color: $color-button-play;
+        
+        &:before {
+            margin-left: -3px;
+            margin-top: -9px;
+            
+            content: '\25b6';
+            color: white;
+            font-size: 13px;
+        }
+    }
+    
+    &.menu {
+        background-color: $color-button-default;
+        
+        &:before {
+            margin-left: -7px;
+            margin-top: -16px;
+            
+            content: '\2261';
+            color: $color-text-default;
+            font-size: 24px;
+        }
+    }
+    
 }
 
+// App title bar
 #app-bar {
+    @include box-sizing(border-box);
+    
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
+    height: 71px;
     
-    @include box-sizing(border-box);
     display: table;
     width: 100%;
-    padding: 10px 5px;
+    padding: 5px 5px 4px 5px;
     
-    background: #bbb;
+    background: $color-bar;
     
     [class^="bar-"] {
         display: table-cell;
         vertical-align: middle;
     }
     
-    .bar-center {
-        font-family: 'BrandonGrotesque-Bold';
-        font-size: .8em;
+    .bar-center {        
+        font-size: .9em;
         letter-spacing: 0.05em;
+        
+        color: white;
         
         text-align: center;
         text-transform: uppercase;
         
-        span {
-            color: $color-text-dim;
+    
+        // Wrapper element for scrolling between title and name-input
+        .wrapper {
+            height: 60px;   
+            max-height: 60px;
+            max-width: 340px;
+            margin: 0 auto;
+            overflow-y: hidden;
+        }
+        
+        // Display name in title section
+        #producer-name {
+            color: $color-text-default;
+            font-family: $font-stack-bold;
+        }
+        
+        // Input panel div
+        #name-input {
+            padding-top: 1px;
+        }
+        
+        input {
+            margin: 2px 0 3px;
+            padding: 0 5px;
+            height: 25px;
+            line-height: 25px;
+            
+            border: 0;
+            outline: 0;
+            background: white;
+            box-shadow: none;
+            color: $color-text-default;
+            
+            font-family: $font-stack-bold;
+            font-size: inherit;
+            text-transform: uppercase;
+        }
+        
+        input[type="text"] {
+            width: 90%;
+        }
+        input[type="email"] {
+            width: 74%;
+        }
+        
+        button {
+            width: 14%;
+            height: 25px;
+            line-height: 25px;
+            
+            margin-left: 2%;
+            
+            // Hack?
+            position: relative;
+            top: -1px;
+
+            background: $color-button-default;
+            color: $color-text-default;
+            
+            font-family: $font-stack-bold;
         }
     }
     
-    input {
-        @include box-sizing(border-box);
-        width: 100%;
-        border: 0;
-        background: transparent;
-        box-shadow: none;
-        
-        font-size: inherit;
-        text-align: center;
-        text-transform: uppercase;
+    .bar-right {
+        text-align: right;
     }
     
 }
 
+
+
+// Panel contained scrolling
+// Check with iOS7 Safari for fullscreen problems!
 .scroll-panel {
     position: absolute;
-    top: 75px;
+    top: 71px;
     left: 0;
     right: 0;
     bottom: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
     
-    padding: 15px 5px;
+    padding: 0;
 }
 
+// Fallback content when there is no microphone access
+#shown {
+    padding: 15px 10px;
+    text-align: center;
+}
 
+// Tracklist/tracks with controls and status
 .tracklist {
-
-    list-style: none;
+    padding: 0;
     
     li {
-        margin-bottom: 25px
+        height: 57px;
+        margin: 8px 8px 8px 5px;
+    }
+    
+    .track-buttons {
+        float: left;
+        margin-top: 9px;
+    }
+    
+    .track-info {
+        @include box-sizing(border-box);
+        
+        display: block;
+        width: 100%;
+        padding-top: 13px;
+        padding-left: 135px;
+        font-size: 1.3em;
+    }
+    .track-bar {
+        height: 3px;
+        background: #ddd;
     }
     
 }

@@ -153,7 +153,6 @@ $(function () {
     fetch.send();
   }
   
-  
   // Toggle name and e-mail inputs
   $('#title').click( function() {
       

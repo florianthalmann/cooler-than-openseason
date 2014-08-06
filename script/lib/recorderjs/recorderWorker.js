@@ -30,7 +30,7 @@ function init(config){
 }
 
 function record(inputBuffer){
-  console.log(inputBuffer);
+  //console.log(inputBuffer);
   var monoChannel = inputBuffer[0];
   var gatedBuffer = [ ];
   for (var i = 0; i < monoChannel.length; i++) {

@@ -1,6 +1,8 @@
 $(function () {
   
-  var audioContext, tuna, midiFile;
+  var audioContext,
+      tuna,
+      midiFile;
   var sounds = [ ];
   var channels = [ ];
   var tempo = 98;
@@ -64,13 +66,9 @@ $(function () {
     tuna = new Tuna(audioContext);
     window.mediaStreamSource = audioContext.createMediaStreamSource(stream);
 
-    var recorder = new Recorder(window.mediaStreamSource, {
-      workerPath: "script/lib/recorderjs/recorderWorker.js"
-    });
-    var recording = false;
+    var recorder;
     
     loadFileRemote('script/midi/drums.mid', function(data) {
-      console.log('HEY');
       midiFile = MidiFile(data);
     });
 
@@ -78,14 +76,17 @@ $(function () {
       e.preventDefault();
       var buttonIndex = $(e.target).attr('id').slice(-1);
       
-      if (recording === false) {
+      if (!recorder) {
+        recorder = new Recorder(window.mediaStreamSource, {
+          workerPath: "script/lib/recorderjs/recorderWorker.js"
+        });
         startRecorder(recorder);
-        recording = true;
         
         $(this).addClass('active');
       } else {
         stopRecorder(recorder, buttonIndex);
-        recording = false;
+        recorder.disconnect();
+        recorder = null;
         
         $(this).removeClass('active');
       }

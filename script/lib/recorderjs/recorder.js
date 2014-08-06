@@ -24,7 +24,7 @@
       worker.postMessage({
         command: 'record',
         buffer: [
-          e.inputBuffer.getChannelData(0),
+          e.inputBuffer.getChannelData(0)
           //e.inputBuffer.getChannelData(1)
         ]
       });
@@ -68,6 +68,11 @@
     worker.onmessage = function(e){
       var blob = e.data;
       currCallback(blob);
+    }
+ 
+    this.disconnect = function() {
+      source.disconnect(this.node);
+      this.node.disconnect(this.context.destination);
     }
 
     source.connect(this.node);

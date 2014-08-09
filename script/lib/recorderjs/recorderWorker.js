@@ -92,7 +92,6 @@ function mergeAndFadeBuffers(recBuffers, recLength){
     var index = result.length-1-i;
     result[index] *= i/FADE_LENGTH;
   }
-  console.log(result.length + " " + recLength);
   return result;
 }
 

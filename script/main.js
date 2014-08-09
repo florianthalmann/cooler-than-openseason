@@ -2,7 +2,8 @@ $(function () {
   
   var audioContext,
       tuna,
-      midiFile;
+      drumsMidiFile,
+      pitchedMidiFile;
   var sounds = [ ];
   var channels = [ ];
   var tempo = 98;
@@ -21,7 +22,10 @@ $(function () {
     });
   }
   
-  function playSoundAt(time, soundIndex, volume) {
+  function playSoundAt(time, soundIndex, volume, pitch) {
+    if (!pitch) {
+      pitch = 60;
+    }
     var source = audioContext.createBufferSource();
     source.buffer = sounds[soundIndex];
     if (!channels[soundIndex]) {
@@ -29,6 +33,10 @@ $(function () {
     }
     source.connect(channels[soundIndex].input);
     channels[soundIndex].output.gain.value = volume;
+    //playBack normally at 60, and pitchShifted otherwise
+    var pitchRatio = Math.pow(Math.pow(2, 1/12),(pitch-60));
+    source.playbackRate.value = pitchRatio;
+    //source.playbackRate.value = 2.0;
     source.start(time);
   }
   
@@ -38,11 +46,16 @@ $(function () {
   }
   
   function playSong() {
-    var tickLength = 60/tempo/midiFile.header.ticksPerBeat;
-    for (var i = 0; i < midiFile.tracks.length; i++) {
+    playDrums();
+    playPitchedFiles();
+  }
+  
+  function playDrums() {
+    var tickLength = 60/tempo/drumsMidiFile.header.ticksPerBeat;
+    for (var i = 0; i < drumsMidiFile.tracks.length; i++) {
       var currentEventTime = 0;
-      for (var j = 0; j < midiFile.tracks[i].length; j++) {
-        var currentEvent = midiFile.tracks[i][j];
+      for (var j = 0; j < drumsMidiFile.tracks[i].length; j++) {
+        var currentEvent = drumsMidiFile.tracks[i][j];
         currentEventTime += currentEvent.deltaTime * tickLength;
         if (currentEvent.subtype == "noteOn") {
           var time = audioContext.currentTime + currentEventTime;
@@ -50,6 +63,23 @@ $(function () {
           var soundIndex = currentEvent.noteNumber - 36;
           var volume = currentEvent.velocity / 127;
           playSoundAt(time, soundIndex, volume);
+        }
+      }
+    }
+  }
+  
+  function playPitchedFiles() {
+    var tickLength = 60/tempo/pitchedMidiFile.header.ticksPerBeat;
+    for (var i = 0; i < pitchedMidiFile.tracks.length; i++) {
+      var currentEventTime = 0;
+      for (var j = 0; j < pitchedMidiFile.tracks[i].length; j++) {
+        var currentEvent = pitchedMidiFile.tracks[i][j];
+        currentEventTime += currentEvent.deltaTime * tickLength;
+        if (currentEvent.subtype == "noteOn") {
+          var time = audioContext.currentTime + currentEventTime;
+          var pitch = currentEvent.noteNumber;
+          var volume = currentEvent.velocity / 127;
+          playSoundAt(time, 3, volume, pitch);
         }
       }
     }
@@ -69,7 +99,11 @@ $(function () {
     var recorder;
     
     loadFileRemote('script/midi/drums.mid', function(data) {
-      midiFile = MidiFile(data);
+      drumsMidiFile = MidiFile(data);
+    });
+    
+    loadFileRemote('script/midi/pitched.mid', function(data) {
+      pitchedMidiFile = MidiFile(data);
     });
 
     $('[id^="record"]').click(function (e) {

@@ -1,8 +1,10 @@
+var THRESHOLD = .25,
+  FADE_LENGTH = 5000;
+
 var recLength = 0,
   recBuffersL = [],
   recBuffersR = [],
   sampleRate,
-  THRESHOLD = .25,
   lastAboveThreshold;
 
 this.onmessage = function(e){
@@ -43,13 +45,19 @@ function record(inputBuffer){
       //STOP RECORDING!!!!
     }
   }
+  //fade in in beginning of recording to avoid clipping
+  if (recLength < FADE_LENGTH) {
+    for (var i = recLength; i < Math.min(gatedBuffer.length, FADE_LENGTH); i++) {
+      gatedBuffer[i] *= i/FADE_LENGTH;
+    }
+  }
   recBuffersL.push(gatedBuffer);
   //recBuffersR.push(inputBuffer[1]);
   recLength += gatedBuffer.length;
 }
 
 function exportWAV(type){
-  var bufferL = mergeBuffers(recBuffersL, recLength);
+  var bufferL = mergeAndFadeBuffers(recBuffersL, recLength);
   //var bufferR = mergeBuffers(recBuffersR, recLength);
   //var interleaved = interleave(bufferL, bufferR);
   //var dataview = encodeWAV(interleaved);
@@ -61,8 +69,8 @@ function exportWAV(type){
 
 function getBuffer() {
   var buffers = [];
-  buffers.push( mergeBuffers(recBuffersL, recLength) );
-  buffers.push( mergeBuffers(recBuffersR, recLength) );
+  buffers.push( mergeAndFadeBuffers(recBuffersL, recLength) );
+  buffers.push( mergeAndFadeBuffers(recBuffersR, recLength) );
   this.postMessage(buffers);
 }
 
@@ -72,13 +80,19 @@ function clear(){
   recBuffersR = [];
 }
 
-function mergeBuffers(recBuffers, recLength){
+function mergeAndFadeBuffers(recBuffers, recLength){
   var result = new Float32Array(recLength);
   var offset = 0;
   for (var i = 0; i < recBuffers.length; i++){
     result.set(recBuffers[i], offset);
     offset += recBuffers[i].length;
   }
+  //fade out at end of buffer to avoid clipping
+  for (var i = 0; i < Math.min(result.length, FADE_LENGTH); i++) {
+    var index = result.length-1-i;
+    result[index] *= i/FADE_LENGTH;
+  }
+  console.log(result.length + " " + recLength);
   return result;
 }
 

@@ -100,6 +100,7 @@ ul {
 button {
     @include box-sizing(border-box);
     border: 0;
+    outline: 0;
     cursor: pointer;
 }
 
@@ -154,6 +155,10 @@ input {
             @include transition(border-radius .3s linear);
         }
         
+        &:active {
+            background: darken($color-button-record, 15%);
+        }
+        
         &.active {
             background: darken($color-button-record, 10%);
             
@@ -168,12 +173,20 @@ input {
         background-color: $color-button-play;
         
         &:before {
+            width: 0;
+            height: 0;
             margin-left: -3px;
-            margin-top: -9px;
+            margin-top: -8px;
             
-            content: '\25b6';
-            color: white;
-            font-size: 13px;
+            border-style: solid;
+            border-width: 6px 0 6px 10px;
+            border-color: transparent transparent transparent white;
+
+            content: ' ';
+        }
+        
+        &:active {
+            background: darken($color-button-play, 15%);
         }
     }
     
@@ -187,6 +200,10 @@ input {
             content: '\2261';
             color: $color-text-default;
             font-size: 24px;
+        }
+        
+        &:active {
+            background: darken($color-button-default, 15%);
         }
     }
     

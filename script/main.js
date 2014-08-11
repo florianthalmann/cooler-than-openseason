@@ -1,12 +1,16 @@
 $(function () {
   
+  var LOOK_AHEAD = 25.0, //how frequently to call scheduling function (milliseconds)
+      SCHEDULE_AHEAD_TIME = 0.1; //how far ahead to schedule audio (seconds)
   var audioContext,
-      tuna,
-      drumsMidiFile,
-      pitchedMidiFile;
+      tuna;
+  var midiFiles = [ ];
   var sounds = [ ];
   var channels = [ ];
   var tempo = 98;
+  var playingSong = false,
+      timerID = 0,
+      startingTime;
 
   function startRecorder(recorder) {
     recorder.clear();
@@ -36,7 +40,6 @@ $(function () {
     //playBack normally at 60, and pitchShifted otherwise
     var pitchRatio = Math.pow(Math.pow(2, 1/12),(pitch-60));
     source.playbackRate.value = pitchRatio;
-    //source.playbackRate.value = 2.0;
     source.start(time);
   }
   
@@ -45,44 +48,26 @@ $(function () {
     channels[soundIndex].connect(audioContext.destination);
   }
   
-  function playSong() {
-    playDrums();
-    playPitchedFiles();
-  }
-  
-  function playDrums() {
-    var tickLength = 60/tempo/drumsMidiFile.header.ticksPerBeat;
-    for (var i = 0; i < drumsMidiFile.tracks.length; i++) {
-      var currentEventTime = 0;
-      for (var j = 0; j < drumsMidiFile.tracks[i].length; j++) {
-        var currentEvent = drumsMidiFile.tracks[i][j];
-        currentEventTime += currentEvent.deltaTime * tickLength;
-        if (currentEvent.subtype == "noteOn") {
-          var time = audioContext.currentTime + currentEventTime;
-          //drum machine standard: first at 36.
-          var soundIndex = currentEvent.noteNumber - 36;
-          var volume = currentEvent.velocity / 127;
-          playSoundAt(time, soundIndex, volume);
+  function togglePlaySong() {
+    playingSong = !playingSong;
+    if (playingSong) { // start playing
+        startingTime = audioContext.currentTime;
+        scheduleMidiEvents(); // kick off scheduling
+    } else {
+        window.clearTimeout(timerID);
+        for (var i = 0; i < midiFiles.length; i++) {
+          midiFiles[i].reset();
         }
-      }
     }
   }
   
-  function playPitchedFiles() {
-    var tickLength = 60/tempo/pitchedMidiFile.header.ticksPerBeat;
-    for (var i = 0; i < pitchedMidiFile.tracks.length; i++) {
-      var currentEventTime = 0;
-      for (var j = 0; j < pitchedMidiFile.tracks[i].length; j++) {
-        var currentEvent = pitchedMidiFile.tracks[i][j];
-        currentEventTime += currentEvent.deltaTime * tickLength;
-        if (currentEvent.subtype == "noteOn") {
-          var time = audioContext.currentTime + currentEventTime;
-          var pitch = currentEvent.noteNumber;
-          var volume = currentEvent.velocity / 127;
-          playSoundAt(time, 3, volume, pitch);
-        }
-      }
+  function scheduleMidiEvents() {
+    // while there are notes that will need to play before the next interval, 
+    // schedule them and advance the pointer.
+    for (var i = 0; i < midiFiles.length; i++) {
+      midiFiles[i].playEventsBefore(audioContext.currentTime + SCHEDULE_AHEAD_TIME);
     }
+    timerID = window.setTimeout(scheduleMidiEvents, LOOK_AHEAD);
   }
   
   navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
@@ -99,11 +84,11 @@ $(function () {
     var recorder;
     
     loadFileRemote('script/midi/drums.mid', function(data) {
-      drumsMidiFile = MidiFile(data);
+      midiFiles.push(new PlayedMidiFile(MidiFile(data), true));
     });
     
     loadFileRemote('script/midi/pitched.mid', function(data) {
-      pitchedMidiFile = MidiFile(data);
+      midiFiles.push(new PlayedMidiFile(MidiFile(data), false));
     });
 
     $('[id^="record"]').click(function (e) {
@@ -116,13 +101,17 @@ $(function () {
         });
         startRecorder(recorder);
         
+        // start button animation
         $(this).addClass('active');
+        
       } else {
         stopRecorder(recorder, buttonIndex);
         recorder.disconnect();
         recorder = null;
         
+        // stop button animation
         $(this).removeClass('active');
+        
       }
 
     });
@@ -135,7 +124,12 @@ $(function () {
     
     $("button#song").click(function (e) {
       e.preventDefault();
-      playSong();
+      togglePlaySong();
+      if (playingSong) {
+        $(this).addClass('active');
+      } else {
+        $(this).removeClass('active');
+      }
     })
 
   }, 
@@ -144,6 +138,93 @@ $(function () {
     $("body").text("Error: you need to allow this sample to use the microphone.")
   });
   
+  // UI
+
+  // Show name and e-mail input
+  $('#title').click( function() {
+
+    $('.wrapper').scroll();
+    $('.wrapper').animate({ scrollTop: 62 }, 300);
+
+  });
+
+  // Update Name and toggle back to title
+  $('#name-input button').click( function() {
+
+    var pname = $('#input-producer-name').val();
+    if( pname.length == 0 ) pname = '(Tap to enter name)';
+
+    $('#producer-name').html( pname );
+
+    $('.wrapper').scroll();
+    $('.wrapper').animate({ scrollTop: 0 }, 300);
+
+  });
+  
+  
+  //additional methods and inner objects
+  
+  function loadFileRemote(path, callback) {
+    var fetch = new XMLHttpRequest();
+    fetch.open('GET', path);
+    fetch.overrideMimeType("text/plain; charset=x-user-defined");
+    fetch.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        /* munge response into a binary string */
+        var t = this.responseText || "" ;
+        var ff = [];
+        var mx = t.length;
+        var scc= String.fromCharCode;
+        for (var z = 0; z < mx; z++) {
+          ff[z] = scc(t.charCodeAt(z) & 255);
+        }
+        callback(ff.join(""));
+      }
+    }
+    fetch.send();
+  }
+  
+  function PlayedMidiFile(midiFile, isDrums) {
+    this.playEventsBefore = function(time) {
+      var tickLength = 60/tempo/midiFile.header.ticksPerBeat;
+      for (var i = 0; i < midiFile.tracks.length; i++) {
+        while (this.currentTrackPositions[i] < midiFile.tracks[i].length) {
+          var currentEvent = midiFile.tracks[i][this.currentTrackPositions[i]];
+          var currentEventMidiTime = this.currentTrackEventTimes[i] + (currentEvent.deltaTime * tickLength);
+          var currentEventAudioClockTime = startingTime + currentEventMidiTime;
+          if (currentEventAudioClockTime <= time) {
+            if (currentEvent.subtype == "noteOn") {
+              var volume = currentEvent.velocity / 127;
+              if (isDrums) {
+                //drum machine standard: first bassdrum at 36.
+                var soundIndex = currentEvent.noteNumber - 36;
+                playSoundAt(currentEventAudioClockTime, soundIndex, volume);
+              } else {
+                //play pitched sound
+                var pitch = currentEvent.noteNumber;
+                playSoundAt(currentEventAudioClockTime, 3, volume, pitch);
+              }
+            }
+            this.currentTrackPositions[i]++;
+            this.currentTrackEventTimes[i] = currentEventMidiTime;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+  
+    this.reset = function() {
+      this.currentTrackPositions = [ ];
+      this.currentTrackEventTimes = [ ];
+      for (var i = 0; i < midiFile.tracks.length; i++) {
+        this.currentTrackPositions.push(0);
+        this.currentTrackEventTimes.push(0);
+      }
+    }
+  
+    this.reset();
+  }
   
   function ChannelBus() {
     this.input = audioContext.createGain();
@@ -168,46 +249,5 @@ $(function () {
       this.output.connect(target);
     };
   }
-  
-  function loadFileRemote(path, callback) {
-    var fetch = new XMLHttpRequest();
-    fetch.open('GET', path);
-    fetch.overrideMimeType("text/plain; charset=x-user-defined");
-    fetch.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        /* munge response into a binary string */
-        var t = this.responseText || "" ;
-        var ff = [];
-        var mx = t.length;
-        var scc= String.fromCharCode;
-        for (var z = 0; z < mx; z++) {
-          ff[z] = scc(t.charCodeAt(z) & 255);
-        }
-        callback(ff.join(""));
-      }
-    }
-    fetch.send();
-  }
-  
-  // Toggle name and e-mail inputs
-  $('#title').click( function() {
-      
-    $('.wrapper').scroll();
-    $('.wrapper').animate({ scrollTop: 62 }, 300);
-      
-  });
-
-  
-  $('#name-input button').click( function() {
-  
-    var pname = $('#input-producer-name').val();
-    if( pname.length == 0 ) pname = '(Tap to enter name)';
-
-    $('#producer-name').html( pname );
-    
-    $('.wrapper').scroll();
-    $('.wrapper').animate({ scrollTop: 0 }, 300);
-      
-  });
   
 })

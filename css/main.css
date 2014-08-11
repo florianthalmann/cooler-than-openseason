@@ -108,6 +108,7 @@ button {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   border: 0;
+  outline: 0;
   cursor: pointer; }
 
 input {
@@ -157,6 +158,8 @@ input {
       -webkit-transition: border-radius 0.3s linear;
       -moz-transition: border-radius 0.3s linear;
       transition: border-radius 0.3s linear; }
+    .sqbutton.record:active {
+      background: #e176b1; }
     .sqbutton.record.active {
       background: #e68bbd; }
       .sqbutton.record.active.active:before {
@@ -167,11 +170,16 @@ input {
   .sqbutton.play {
     background-color: #54b290; }
     .sqbutton.play:before {
+      width: 0;
+      height: 0;
       margin-left: -3px;
-      margin-top: -9px;
-      content: '\25b6';
-      color: white;
-      font-size: 13px; }
+      margin-top: -8px;
+      border-style: solid;
+      border-width: 6px 0 6px 10px;
+      border-color: transparent transparent transparent white;
+      content: ' '; }
+    .sqbutton.play:active {
+      background: #3a8066; }
   .sqbutton.menu {
     background-color: #fcf9ab; }
     .sqbutton.menu:before {
@@ -180,6 +188,8 @@ input {
       content: '\2261';
       color: #222222;
       font-size: 24px; }
+    .sqbutton.menu:active {
+      background: #f9f461; }
 
 #app-bar {
   -webkit-box-sizing: border-box;

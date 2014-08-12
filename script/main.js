@@ -4,10 +4,10 @@ $(function () {
       SCHEDULE_AHEAD_TIME = 0.1; //how far ahead to schedule audio (seconds)
   var audioContext,
       tuna;
-  var midiFiles = [ ];
-  var sounds = [ ];
-  var channels = [ ];
-  var tempo = 98;
+  var midiFiles = [ ],
+      sounds = [ ],
+      channels = [ ];
+  var tempo = 125;
   var playingSong = false,
       timerID = 0,
       startingTime;
@@ -24,6 +24,7 @@ $(function () {
       newBuffer.getChannelData(0).set(buffers[0]);
       sounds[soundIndex] = newBuffer;
     });
+    //save to soundIndex.wav!!
   }
   
   function playSoundAt(time, soundIndex, volume, pitch) {
@@ -83,13 +84,9 @@ $(function () {
 
     var recorder;
     
-    loadFileRemote('script/midi/drums.mid', function(data) {
-      midiFiles.push(new PlayedMidiFile(MidiFile(data), true));
-    });
+    loadMidiFiles();
+    loadSoundFiles();
     
-    loadFileRemote('script/midi/pitched.mid', function(data) {
-      midiFiles.push(new PlayedMidiFile(MidiFile(data), false));
-    });
 
     $('[id^="record"]').click(function (e) {
       e.preventDefault();
@@ -164,11 +161,29 @@ $(function () {
   
   //additional methods and inner objects
   
-  function loadFileRemote(path, callback) {
-    var fetch = new XMLHttpRequest();
-    fetch.open('GET', path);
-    fetch.overrideMimeType("text/plain; charset=x-user-defined");
-    fetch.onreadystatechange = function() {
+  function loadMidiFiles() {
+    loadMidiFile('script/midi/wedancedrums.mid', function(data) {
+      midiFiles.push(new PlayedMidiFile(MidiFile(data), true, 0));
+    });
+    
+    loadMidiFile('script/midi/wedancetom.mid', function(data) {
+      midiFiles.push(new PlayedMidiFile(MidiFile(data), false, 3));
+    });
+    
+    loadMidiFile('script/midi/wedancevoc.mid', function(data) {
+      midiFiles.push(new PlayedMidiFile(MidiFile(data), false, 4));
+    });
+  }
+  
+  function loadSoundFiles() {
+    loadSoundFile('script/wav/wedancevoc.wav', 4);
+  }
+  
+  function loadMidiFile(url, callback) {
+    var request = new XMLHttpRequest();
+    request.open('GET', url);
+    request.overrideMimeType("text/plain; charset=x-user-defined");
+    request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         /* munge response into a binary string */
         var t = this.responseText || "" ;
@@ -181,10 +196,24 @@ $(function () {
         callback(ff.join(""));
       }
     }
-    fetch.send();
+    request.send();
   }
   
-  function PlayedMidiFile(midiFile, isDrums) {
+  function loadSoundFile(url, soundIndex) {
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+
+    // Decode asynchronously
+    request.onload = function() {
+      audioContext.decodeAudioData(request.response, function(buffer) {
+        sounds[soundIndex] = buffer;
+      });
+    }
+    request.send();
+  }
+  
+  function PlayedMidiFile(midiFile, isMultitrack, firstIndex) {
     this.playEventsBefore = function(time) {
       var tickLength = 60/tempo/midiFile.header.ticksPerBeat;
       for (var i = 0; i < midiFile.tracks.length; i++) {
@@ -195,14 +224,14 @@ $(function () {
           if (currentEventAudioClockTime <= time) {
             if (currentEvent.subtype == "noteOn") {
               var volume = currentEvent.velocity / 127;
-              if (isDrums) {
+              if (isMultitrack) {
                 //drum machine standard: first bassdrum at 36.
-                var soundIndex = currentEvent.noteNumber - 36;
+                var soundIndex = firstIndex + currentEvent.noteNumber - 36;
                 playSoundAt(currentEventAudioClockTime, soundIndex, volume);
               } else {
                 //play pitched sound
                 var pitch = currentEvent.noteNumber;
-                playSoundAt(currentEventAudioClockTime, 3, volume, pitch);
+                playSoundAt(currentEventAudioClockTime, firstIndex, volume, pitch);
               }
             }
             this.currentTrackPositions[i]++;

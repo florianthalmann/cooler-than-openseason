@@ -32,20 +32,22 @@ $(function () {
     if (!pitch) {
       pitch = 60;
     }
-    var source = audioContext.createBufferSource();
-    source.buffer = sounds[soundIndex];
-    if (!channels[soundIndex]) {
-      initChannel(soundIndex);
-    }
-    source.connect(channels[soundIndex].input);
-    channels[soundIndex].output.gain.value = volume;
-    //playBack normally at 60, and pitchShifted otherwise
-    var pitchRatio = Math.pow(Math.pow(2, 1/12),(pitch-60));
-    source.playbackRate.value = pitchRatio;
-    source.start(time);
-    //so that voc track is stoppable
-    if (soundIndex == 4) {
-      longSoundSources.push(source);
+    if (sounds[soundIndex]) {
+      var source = audioContext.createBufferSource();
+      source.buffer = sounds[soundIndex];
+      if (!channels[soundIndex]) {
+        initChannel(soundIndex);
+      }
+      source.connect(channels[soundIndex].input);
+      channels[soundIndex].output.gain.value = volume;
+      //playBack normally at 60, and pitchShifted otherwise
+      var pitchRatio = Math.pow(Math.pow(2, 1/12),(pitch-60));
+      source.playbackRate.value = pitchRatio;
+      source.start(time);
+      //so that voc track is stoppable
+      if (soundIndex == 4) {
+        longSoundSources.push(source);
+      }
     }
   }
   

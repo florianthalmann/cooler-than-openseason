@@ -10,7 +10,8 @@ $(function () {
   var tempo = 125;
   var playingSong = false,
       timerID = 0,
-      startingTime;
+      startingTime,
+      longSoundSources = [ ];
 
   function startRecorder(recorder) {
     recorder.clear();
@@ -42,6 +43,10 @@ $(function () {
     var pitchRatio = Math.pow(Math.pow(2, 1/12),(pitch-60));
     source.playbackRate.value = pitchRatio;
     source.start(time);
+    //so that voc track is stoppable
+    if (soundIndex == 4) {
+      longSoundSources.push(source);
+    }
   }
   
   function initChannel(soundIndex) {
@@ -59,6 +64,10 @@ $(function () {
         for (var i = 0; i < midiFiles.length; i++) {
           midiFiles[i].reset();
         }
+        for (var i = 0; i < longSoundSources.length; i++) {
+          longSoundSources[i].stop();
+        }
+        longSoundSources = [ ];
     }
   }
   

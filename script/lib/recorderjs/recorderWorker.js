@@ -1,4 +1,4 @@
-var THRESHOLD = .25,
+var THRESHOLD = .1,
   FADE_LENGTH = 5000;
 
 var recLength = 0,
@@ -87,12 +87,28 @@ function mergeAndFadeBuffers(recBuffers, recLength){
     result.set(recBuffers[i], offset);
     offset += recBuffers[i].length;
   }
-  //fade out at end of buffer to avoid clipping
-  for (var i = 0; i < Math.min(result.length, FADE_LENGTH); i++) {
-    var index = result.length-1-i;
-    result[index] *= i/FADE_LENGTH;
-  }
+  fadeOut(result);
+  normalize(result);
   return result;
+}
+
+function fadeOut(buffer) {
+  //fade out at end of buffer to avoid clipping
+  for (var i = 0; i < Math.min(buffer.length, FADE_LENGTH); i++) {
+    var index = buffer.length-1-i;
+    buffer[index] *= i/FADE_LENGTH;
+  }
+}
+
+function normalize(buffer) {
+  var maxAmplitude = 0;
+  for (var i = 0; i < buffer.length; i++) {
+    maxAmplitude = Math.max(maxAmplitude, buffer[i]);
+  }
+  var scaleFactor = 1/maxAmplitude;
+  for (var i = 0; i < buffer.length; i++) {
+    buffer[i] *= scaleFactor;
+  }
 }
 
 function interleave(inputL, inputR){

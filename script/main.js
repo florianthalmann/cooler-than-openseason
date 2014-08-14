@@ -271,19 +271,26 @@ $(function () {
     this.output = audioContext.createGain();
   
     var delay = new tuna.Delay();
-    var convolver = new tuna.Convolver();
-    var compressor = new tuna.Compressor();
+    //var convolver = new tuna.Convolver();
+    //var compressor = new tuna.Compressor();
+    var compressor = audioContext.createDynamicsCompressor();
   
     //equalizer -> delay -> convolver
-    this.input.connect(compressor.input);
-    //this.input.connect(output);
+    this.input.connect(compressor);
+    //this.input.connect(this.output);
     compressor.connect(delay.input);
-    delay.connect(convolver.input);
-    convolver.connect(this.output);
+    delay.connect(this.output);
+    //convolver.connect(this.output);
   
     delay.delayTime = 300;
     delay.feedback = .2;
-    convolver.wetLevel = .2;
+    console.log(compressor);
+    compressor.threshold = -100;
+    compressor.ratio = 20;
+  
+    //compressor.makeupGain = 90;
+    //compressor.automakeup = false;
+    //convolver.wetLevel = .2;
   
     this.connect = function(target){
       this.output.connect(target);

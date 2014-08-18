@@ -1,17 +1,15 @@
 <?php
 
-if ($_FILES["file"]["size"] == 0) {
-  echo "Error: " . $_FILES["file"]["error"] . "<br>";
-} else {
-  echo "Upload: " . $_FILES["file"]["name"] . "<br>";
-  echo "Type: " . $_FILES["file"]["type"] . "<br>";
-  echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
-  echo "Stored in: " . $_FILES["file"]["tmp_name"];
-  if (file_exists("upload/" . $_FILES["file"]["name"])) {
-    echo $_FILES["file"]["name"] . " already exists. ";
-  } else {
-    move_uploaded_file($_FILES["file"]["tmp_name"],
-    "upload/" . $_FILES["file"]["name"]);
-    echo "Stored in: " . "upload/" . $_FILES["file"]["name"];
-  }
+//echo($_FILES['data']);
+
+if(!empty($_POST['fname'])){
+  $data = file_get_contents($_FILES['data']['tmp_name']);
+  //$data = serialize($array);
+  $fname = $_POST['fname']; //generates random name
+
+  $file = fopen("userfiles/" .$fname, 'wb+'); //creates new file
+  fwrite($file, $data);
+  fclose($file);
 }
+
+?>

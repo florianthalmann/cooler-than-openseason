@@ -24,24 +24,24 @@ $(function () {
       var newBuffer = audioContext.createBuffer(1, buffers[0].length, 44100);
       newBuffer.getChannelData(0).set(buffers[0]);
       sounds[soundIndex] = newBuffer;
+      //save to soundIndex.wav!!
+      recorder.exportWAV(function(blob) {
+        saveSoundFile(soundIndex, blob);
+        /*var url = URL.createObjectURL(blob);
+        var li = document.createElement('li');
+        var au = document.createElement('audio');
+        var hf = document.createElement('a');
+        
+        au.controls = true;
+        au.src = url;
+        hf.href = url;
+        hf.download = new Date().toISOString() + '.wav';
+        hf.innerHTML = hf.download;
+        li.appendChild(au);
+        li.appendChild(hf);
+        $('#hidden').append(li);*/
+      });
     });
-    //save to soundIndex.wav!!
-    /*recorder.exportWAV(function(blob) {
-      saveSoundFile(soundIndex, blob);
-      /*var url = URL.createObjectURL(blob);
-      var li = document.createElement('li');
-      var au = document.createElement('audio');
-      var hf = document.createElement('a');
-      
-      au.controls = true;
-      au.src = url;
-      hf.href = url;
-      hf.download = new Date().toISOString() + '.wav';
-      hf.innerHTML = hf.download;
-      li.appendChild(au);
-      li.appendChild(hf);
-      $('#hidden').append(li);
-    });*/
   }
   
   function playSoundAt(time, soundIndex, volume, pitch) {
@@ -257,26 +257,40 @@ $(function () {
   
   function saveSoundFile(soundIndex, blob) {
     //var url = 'users/' + $('#producer-name').val() + '/' + soundIndex + '.wav';
-    var url = 'flobd.wav';
-    //console.log(url);
-    //var fd = new FormData();
-    //fd.append('fname', 'test.wav');
-    //fd.append('data', blob);
+    //var url = 'flobd.wav';
+    console.log(blob);
+    var fd = new FormData();
+    fd.append('fname', 'test.wav');
+    fd.append('data', blob);
 
     $.ajax({
       type: 'POST',
       url: 'script/upload.php',
-      data: blob,
+      data: fd,
+      cache: false,
       processData: false,
+      contentType: false,
       success: function(data) {
         console.log(data);
       },
       error: function(xhr, ajaxOptions, thrownError) {
         console.log(thrownError);
-      },
-      dataType: 'string'
+      }
     });
   }
+  
+  function upload(blob) {
+  var xhr=new XMLHttpRequest();
+  xhr.onload=function(e) {
+      if(this.readyState === 4) {
+          console.log("Server returned: ",e.target.responseText);
+      }
+  };
+  var fd=new FormData();
+  fd.append("that_random_filename.wav",blob);
+  xhr.open("POST","<url>",true);
+  xhr.send(fd);
+}
   
   function PlayedMidiFile(midiFile, isMultitrack, firstIndex) {
     this.playEventsBefore = function(time) {

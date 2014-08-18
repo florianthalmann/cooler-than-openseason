@@ -137,7 +137,7 @@ $(function () {
       e.preventDefault();
       var buttonIndex = $(e.target).attr('id').slice(-1);
       playSoundAt(0, buttonIndex, 1);
-    })
+    });
     
     $("button#song").click(function (e) {
       e.preventDefault();
@@ -147,12 +147,12 @@ $(function () {
       } else {
         $(this).removeClass('active');
       }
-    })
+    });
 
-  }, 
+  },
 
   function(error) {
-    $("body").text("Error: you need to allow this sample to use the microphone.")
+    $("body").text("Error: you need to allow this sample to use the microphone.");
   });
   
   // UI
@@ -237,7 +237,7 @@ $(function () {
         }
         callback(ff.join(""));
       }
-    }
+    };
     request.send();
   }
   
@@ -256,16 +256,16 @@ $(function () {
   }
   
   function saveSoundFile(soundIndex, blob) {
-    //var url = 'users/' + $('#producer-name').val() + '/' + soundIndex + '.wav';
-    //var url = 'flobd.wav';
-    console.log(blob);
+    
+    // Filename with producer name, need to add some sort of unique user ID
+    var fname = $('#producer-name').html() + '-' + soundIndex + '.wav';
+
     var fd = new FormData();
-    fd.append('fname', 'test.wav');
-    fd.append('data', blob);
+    fd.append('data', blob, fname);
 
     $.ajax({
       type: 'POST',
-      url: 'script/upload.php',
+      url: 'php/ajax.upload.php',
       data: fd,
       cache: false,
       processData: false,
@@ -320,7 +320,7 @@ $(function () {
           }
         }
       }
-    }
+    };
   
     this.reset = function() {
       this.currentTrackPositions = [ ];
@@ -329,7 +329,7 @@ $(function () {
         this.currentTrackPositions.push(0);
         this.currentTrackEventTimes.push(0);
       }
-    }
+    };
   
     this.reset();
   }
@@ -438,4 +438,4 @@ $(function () {
       }
   });
   
-})
+});

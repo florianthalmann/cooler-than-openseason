@@ -159,6 +159,14 @@ $(function () {
       }
     });
     
+    $('#container').on('click', '.sqbutton.menu', function(e) {
+      e.preventDefault();
+        
+      // Load menu panel
+      $('#container').load('menu.html', function() { /* initMainPanel(stream, data.success); */ });
+        
+    });
+    
     $('#producer-name').html(data);
     
   }

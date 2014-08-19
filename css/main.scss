@@ -48,7 +48,7 @@
 @import "bourbon";
 
 // Sass Variables
-$color-body:                #250211;
+$color-body:                #111;
 $color-text-default:        #eee;
 $color-text-dim:            #aaa;
 
@@ -69,6 +69,7 @@ $font-stack-regular:        'BrandonGrotesque-Regular', $font-stack;
 $font-stack-bold:           'BrandonGrotesque-Bold', $font-stack;
 $font-stack-black:          'BrandonGrotesque-Black', $font-stack;
 
+$version-gradient-base:     #2a2c0c;
 $track-gradient-base:       #510728;
 // $track-gradient:            #6c0934 #7f093e #940d49 #ad1254 #c61b5b #d2156a #d4486f #c54638 #b2274c;
 
@@ -187,6 +188,7 @@ input[type="password"] {
     
     background: #b88627;
     color: white;
+    border-radius: 1px;
     box-shadow: 0 0 0 10px rgba(255,255,255,.1);
     text-align: center;
 }
@@ -202,6 +204,7 @@ input[type="password"] {
     outline: 1px solid transparent;
     border: 1px solid $color-button-default;
     background: transparent;
+    color: $color-button-default-text;
     
     @include transform(rotate(45deg));
     
@@ -371,7 +374,8 @@ form .sqbutton {
 }
 
 // Tracklist/tracks with controls and status
-.tracklist {
+.tracklist,
+.versionlist {
     padding: 0;
     margin: 0;
     
@@ -410,6 +414,15 @@ form .sqbutton {
 @for $i from 1 through 9 {
     .tracklist > li:nth-child(#{$i}) {
         background-color: tint($track-gradient-base, $i * 2.5);
+    }
+}
+// end loop
+
+// Add top ten numbers to navigation links
+// loop
+@for $i from 1 through 9 {
+    .versionlist > li:nth-child(#{$i}) {
+        background-color: tint($version-gradient-base, $i * 2.5);
     }
 }
 // end loop

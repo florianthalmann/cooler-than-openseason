@@ -167,6 +167,14 @@ $(function () {
    * Callback initialising login form
    */
   function initLoginPanel(stream) {
+  
+    // Event Delegation for signup link
+    $('#container').on('click', '#goto-signup', function(e) {
+      e.preventDefault();
+      
+      $('#container').load('signup.html', function() { initSignupPanel(stream); });
+      
+    });
       
     $('#container').on('submit', '#form-login', function (e) {
       e.preventDefault();

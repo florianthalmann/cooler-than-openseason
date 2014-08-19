@@ -85,7 +85,7 @@ class User {
                 // LOGIN
             
                 Session::write('isLogged', true); 
-                Session::write('username', strtolower($username));
+                Session::write('username', $user['username']);
                 
                 // Set random access token
                 Session::write('token', bin2hex(openssl_random_pseudo_bytes(16)));  

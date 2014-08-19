@@ -2,7 +2,6 @@
 
 include_once('ajax-includes.php');
 
-
 if(isset($_GET['checkSession'])) {
     
     /*
@@ -13,6 +12,11 @@ if(isset($_GET['checkSession'])) {
         
         $message['success'] = Session::read('username');
 
+    }
+    else {
+    
+        $message['notice'] = 'Not logged in';
+        
     }
     
 }
@@ -27,8 +31,6 @@ array_filter($_POST, 'trim_value');
 // Filters
 $proName = filter_input(INPUT_POST, 'producerName', FILTER_SANITIZE_STRING);
 $proPass = filter_input(INPUT_POST, 'producerPassword', FILTER_SANITIZE_STRING);
-
-
 
 if(isset($_POST['producerEmail'])) {
 

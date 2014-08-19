@@ -106,7 +106,7 @@ $(function () {
    * Callback when loading Main Panel
    */
   function initMainPanel(stream, data) {
-        
+    
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
     tuna = new Tuna(audioContext);
@@ -130,15 +130,14 @@ $(function () {
         
         // start button animation
         $(this).addClass('active');
-        
-      } else {
+      }
+      else {
         stopRecorder(recorder, buttonIndex);
         recorder.disconnect();
         recorder = null;
         
         // stop button animation
         $(this).removeClass('active');
-        
       }
   
     });
@@ -161,10 +160,8 @@ $(function () {
     
     $('#container').on('click', '.sqbutton.menu', function(e) {
       e.preventDefault();
-        
       // Load menu panel
-      $('#container').load('menu.html', function() { /* initMainPanel(stream, data.success); */ });
-        
+      $('#container').load('menu.html', function() { initMenuPanel(stream, data); });
     });
     
     $('#producer-name').html(data);
@@ -172,16 +169,27 @@ $(function () {
   }
   
   /*
-   * Callback initialising login form
+   * Menu Panel init
+   */
+  function initMenuPanel(stream, data) {
+      
+    // Event Delegation for back link
+    $('#container').on('click', '.sqbutton.back', function(e) {
+      e.preventDefault();
+      $('#container').load('main.html', function() { initMainPanel(stream,data); });
+    });
+      
+  }
+  
+  /*
+   * Login panel init
    */
   function initLoginPanel(stream) {
   
     // Event Delegation for signup link
     $('#container').on('click', '#goto-signup', function(e) {
       e.preventDefault();
-      
       $('#container').load('signup.html', function() { initSignupPanel(stream); });
-      
     });
       
     $('#container').on('submit', '#form-login', function (e) {
@@ -198,15 +206,11 @@ $(function () {
         
         success: function(data) {
           if(data.success) {
-            
             // Load main panel
             $('#container').load('main.html', function() { initMainPanel(stream, data.success); });
-            
           }
           else {
-              
             $('#message').html(data.error).show();
-              
           }
         }
       });
@@ -215,16 +219,14 @@ $(function () {
   }
   
   /*
-   * Callback when signing up new user
+   * Signup panel init
    */
   function initSignupPanel(stream) {
     
     // Event Delegation for login link
     $('#container').on('click', '#goto-login', function(e) {
       e.preventDefault();
-      
       $('#container').load('login.html', function() { initLoginPanel(stream); });
-      
     });
     
     $('#container').on('submit', '#form-signup', function (e) {
@@ -241,15 +243,11 @@ $(function () {
         
         success: function(data) {
           if(data.success) {
-            
             // Load main panel
             $('#container').load('main.html', function() { initMainPanel(stream, data.success); });
-            
           }
           else {
-            
             $('#message').html(data.error).show();
-              
           }
         }
       });
@@ -257,64 +255,24 @@ $(function () {
     });
   }
   
-  /*
-   * Check if a session is already started
-   * If yes, return the username
-   */
-  function sessionRunning() {
-      
-    var sdata = '';
-      
-    $.ajax({
-      type: 'get',
-      url: 'php/ajax.user.php',
-      data: 'checkSession=check',
-      dataType: 'json',
-      async: false,
-
-      success: function(data) {
-        if(data.success) {
-          sdata = data.success;
-        }
-      }
-    });
-    return sdata;
-    
-  }
-
-  // Dismiss message box
-  $('#message').click( function() {
-
-    $(this).fadeOut();
-  
-  });
-  
-  
-  // Load permission message by default
-  $('#container').load('nopermission.html');
-  
   
   navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
   navigator.getUserMedia({"audio": true}, function(stream) {
-
+  
     // If the user is logged in, go straight to main panel
     // otherwise load signup panel
-    var session = sessionRunning();
-
+    var session = app.User.sessionRunning();
+    
     if( session !== '' ) {
       $('#container').load('main.html', function() { initMainPanel(stream, session); });
-      
     }
     else {
-    
         $('#container').load('signup.html', function() { initSignupPanel(stream); });
     }
     
   },
   function(error) {
-  
     $('#container').load('error.html');
-
   });
     
   

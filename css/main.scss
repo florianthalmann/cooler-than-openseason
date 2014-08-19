@@ -132,6 +132,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 100%;
+    max-width: 300px;
     margin: 6px 0;
     padding: 5px;
     
@@ -176,6 +177,19 @@ input[type="password"] {
     }
 }
 
+#message {
+    display: none;
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    right: 25px;
+    padding: 10px;
+    
+    background: #b88627;
+    color: white;
+    box-shadow: 0 0 0 10px rgba(255,255,255,.1);
+    text-align: center;
+}
 
 // Square Buttons
 // class .active for spinning effect
@@ -286,6 +300,10 @@ input[type="password"] {
     
 }
 
+form .sqbutton {
+    margin: 20px 0;    
+}
+
 // App title bar
 #app-bar {
     @include box-sizing(border-box);
@@ -355,6 +373,7 @@ input[type="password"] {
 // Tracklist/tracks with controls and status
 .tracklist {
     padding: 0;
+    margin: 0;
     
     li {
         height: 57px;

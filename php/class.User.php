@@ -59,18 +59,19 @@ class User {
         
     }
     
+     /* -------------------------------
+       Login
+       ------------------------------- */
     public function login($username, $password) {
         
-        /*
-        if( true === Session::read('isLogged') && null !== Session::read('token') ) {
-        
-            return 'alreadyLogged';
+        if(empty($username) || empty($password)) {
+            
+            return 'Wrong username/password!';
             
         }
-        */
         
         $stmtUser = $this->dbh->prepare("SELECT * FROM `users` WHERE `username` = ? OR `email` = ? LIMIT 1");
-        $stmtUser->execute(array($username, $username));
+        $stmtUser->execute(array(strtolower($username), strtolower($username)));
 
         // User exists
         if($user = $stmtUser->fetch()) {
@@ -84,7 +85,7 @@ class User {
                 // LOGIN
             
                 Session::write('isLogged', true); 
-                Session::write('username', $username);
+                Session::write('username', strtolower($username));
                 
                 // Set random access token
                 Session::write('token', bin2hex(openssl_random_pseudo_bytes(16)));  
@@ -95,21 +96,11 @@ class User {
                 return 'success';    
             
             }
-            // Wrong password
-            else {
-                
-                Session::write('isLogged', false);
-                return false;
-                
-            }
             
         }
-        else {
-            
-            Session::write('isLogged', false);
-            return false;
-            
-        }
+
+        Session::write('isLogged', false);
+        return 'Wrong username/password!';
         
     }
     
@@ -140,39 +131,62 @@ class User {
        for new user
        ------------------------------- */
     public function createAccount($username, $email, $password) {
-    
+        
         if($this->usernameExists($username)) {
-            return 'usernameExists';
+            $error[] = 'Username is already taken.';
         }
         if($this->emailExists($email)) {
-            return 'emailExists';
+            $error[] = 'E-Mail is already taken.';
         }
         
-        $this->passwordHash($password);
-            
-        $sql = "
-        INSERT INTO
-            `users`
-            (username, email, passphrase, salt)
-        VALUES
-            (:username, :email, :passHash, :salt)";
+        if(empty($username)) {
+            $error[] = 'Please enter a name.';
+        }
+        if(empty($email)) {
+            $error[] = 'Please enter your e-mail address.';
+        }
+        if(empty($password)) {
+            $error[] = 'Please enter a password.';
+        }
         
-        $stmtUpdate = $this->dbh->prepare($sql);
-            
-        $stmtUpdate->bindValue(':username',   $username, PDO::PARAM_STR);
-        $stmtUpdate->bindValue(':email',      $email, PDO::PARAM_STR);
-        $stmtUpdate->bindValue(':passHash',   $this->passHash, PDO::PARAM_STR);
-        $stmtUpdate->bindValue(':salt',       $this->salt, PDO::PARAM_STR);
+        if(!isset($error)) {
 
-        if( $stmtUpdate->execute() ) {
+            $this->passwordHash($password);
+                
+            $sql = "
+            INSERT INTO
+                `users`
+                (username, email, passphrase, salt)
+            VALUES
+                (:username, :email, :passHash, :salt)";
+            
+            $stmtUpdate = $this->dbh->prepare($sql);
+                
+            $stmtUpdate->bindValue(':username',   strtolower($username), PDO::PARAM_STR);
+            $stmtUpdate->bindValue(':email',      strtolower($email), PDO::PARAM_STR);
+            $stmtUpdate->bindValue(':passHash',   $this->passHash, PDO::PARAM_STR);
+            $stmtUpdate->bindValue(':salt',       $this->salt, PDO::PARAM_STR);
+    
+            if( $stmtUpdate->execute() ) {
+            
+                $this->userId = $this->dbh->lastInsertId();
+                
+                if( $this->login($username, $password) ) {
+    
+                    return 'success';
+                    
+                }
+                else {
+                    
+                    $error[] = 'Error: could not login.';
+                    
+                }
+                
+            }
+            
+        }
         
-            $this->userId = $this->dbh->lastInsertId();
-            
-            if( $this->login($username, $password) ) return 'success';
-            else return 'created but not logged';
-            
-        }  
-        return false;
+        return $error;
         
     }
     
@@ -271,7 +285,7 @@ class User {
         LIMIT 1";
         
         $stmtCheck = $this->dbh->prepare($sql);
-        $stmtCheck->bindValue(':username', $username, PDO::PARAM_STR);
+        $stmtCheck->bindValue(':username', strtolower($username), PDO::PARAM_STR);
         
         $stmtCheck->execute();
         
@@ -296,7 +310,7 @@ class User {
         LIMIT 1";
         
         $stmtCheck = $this->dbh->prepare($sql);
-        $stmtCheck->bindValue(':email', $email, PDO::PARAM_STR);
+        $stmtCheck->bindValue(':email', strtolower($email), PDO::PARAM_STR);
         
         $stmtCheck->execute();
         

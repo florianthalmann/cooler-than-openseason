@@ -128,6 +128,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
   width: 100%;
+  max-width: 300px;
   margin: 6px 0;
   padding: 5px;
   border: 0;
@@ -176,6 +177,18 @@ input[type="password"] {
     padding: 10px 40px;
     vertical-align: middle;
     text-align: center; }
+
+#message {
+  display: none;
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  right: 25px;
+  padding: 10px;
+  background: #b88627;
+  color: white;
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.1);
+  text-align: center; }
 
 .sqbutton {
   position: relative;
@@ -259,6 +272,9 @@ input[type="password"] {
   .sqbutton.menu:active {
     background: rgba(217, 217, 217, 0.75); }
 
+form .sqbutton {
+  margin: 20px 0; }
+
 #app-bar {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -303,7 +319,8 @@ input[type="password"] {
   font-size: 1.1em; }
 
 .tracklist {
-  padding: 0; }
+  padding: 0;
+  margin: 0; }
   .tracklist li {
     height: 57px;
     margin: 0;

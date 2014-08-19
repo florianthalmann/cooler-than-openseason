@@ -45,11 +45,16 @@ if(isset($_POST['producerEmail'])) {
     
     
     $account = new User('', $pdo);
+    $result  = $account->createAccount($proName, $proMail, $proPass);
     
-    if( 'success' == $account->createAccount($proName, $proMail, $proPass) ) {
+    if( $result === 'success' ) {
     
         $message['success'] = Session::read('username');
         
+    }
+    else {
+        
+        $message['error'] = $result;
     }
 
 }
@@ -60,10 +65,16 @@ elseif(isset($_POST['producerName'])) {
      */
     
     $account = new User($proName, $pdo);
+    $result  = $account->login($proName, $proPass);
     
-    if( 'success' ==  $account->login($proName, $proPass) ) {
+    if( $result === 'success' ) {
     
         $message['success'] = Session::read('username');
+        
+    }
+    else {
+        
+        $message['error'] = $result;
         
     }
     

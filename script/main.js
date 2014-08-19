@@ -187,6 +187,11 @@ $(function () {
             $('#container').load('main.html', function() { initMainPanel(stream, data.success); });
             
           }
+          else {
+              
+            $('#message').html(data.error).show();
+              
+          }
         }
       });
       
@@ -225,6 +230,11 @@ $(function () {
             $('#container').load('main.html', function() { initMainPanel(stream, data.success); });
             
           }
+          else {
+            
+            $('#message').html(data.error).show();
+              
+          }
         }
       });
       
@@ -255,6 +265,13 @@ $(function () {
     return sdata;
     
   }
+
+  // Dismiss message box
+  $('#message').click( function() {
+
+    $(this).fadeOut();
+  
+  });
   
   
   // Load permission message by default

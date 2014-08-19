@@ -93,6 +93,7 @@ $(function () {
     timerID = window.setTimeout(scheduleMidiEvents, LOOK_AHEAD);
   }
   
+
   
   /**
    * Callback functions for panel initialisation
@@ -104,7 +105,7 @@ $(function () {
   /*
    * Callback when loading Main Panel
    */
-  function initMainPanel(stream) {
+  function initMainPanel(stream, data) {
         
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
@@ -157,6 +158,9 @@ $(function () {
         $(this).removeClass('active');
       }
     });
+    
+    $('#producer-name').html(data);
+    
   }
   
   /*
@@ -177,19 +181,16 @@ $(function () {
         data: fd,
         
         success: function(data) {
-          console.log(data);
-          if(data == 'success') {
+          if(data.success) {
             
             // Load main panel
-            $('#container').load('main.html', function() { initMainPanel(stream); });
+            $('#container').load('main.html', function() { initMainPanel(stream, data.success); });
             
           }
         }
-        
       });
       
-    });  
-      
+    });
   }
   
   /*
@@ -218,21 +219,42 @@ $(function () {
         data: fd,
         
         success: function(data) {
-          console.log(data);
-          if(data == 'success') {
+          if(data.success) {
             
             // Load main panel
-            $('#container').load('main.html', function() { initMainPanel(stream); });
+            $('#container').load('main.html', function() { initMainPanel(stream, data.success); });
             
           }
         }
-        
       });
       
     });
-      
   }
   
+  /*
+   * Check if a session is already started
+   * If yes, return the username
+   */
+  function sessionRunning() {
+      
+    var sdata = '';
+      
+    $.ajax({
+      type: 'get',
+      url: 'php/ajax.user.php',
+      data: 'checkSession=check',
+      dataType: 'json',
+      async: false,
+
+      success: function(data) {
+        if(data.success) {
+          sdata = data.success;
+        }
+      }
+    });
+    return sdata;
+    
+  }
   
   
   // Load permission message by default
@@ -242,12 +264,18 @@ $(function () {
   navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
   navigator.getUserMedia({"audio": true}, function(stream) {
 
-    // + Check if there's a running session
-    // => Load main panel
-    // $('#container').load('main.html', function() { initMainPanel(stream); });
+    // If the user is logged in, go straight to main panel
+    // otherwise load signup panel
+    var session = sessionRunning();
+
+    if( session !== '' ) {
+      $('#container').load('main.html', function() { initMainPanel(stream, session); });
+      
+    }
+    else {
     
-    // else show signup panel
-    $('#container').load('signup.html', function() { initSignupPanel(stream); });
+        $('#container').load('signup.html', function() { initSignupPanel(stream); });
+    }
     
   },
   function(error) {

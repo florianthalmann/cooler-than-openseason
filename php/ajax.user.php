@@ -3,6 +3,21 @@
 include_once('ajax-includes.php');
 
 
+if(isset($_GET['checkSession'])) {
+    
+    /*
+     * Check if user is logged in
+     */    
+    
+    if ( true === Session::read('isLogged') ) {
+        
+        $message['success'] = Session::read('username');
+
+    }
+    
+}
+
+
 // Remove whitespace and related characters from the beginning and end of the string
 function trim_value(&$value) {
     $value = trim($value);
@@ -31,20 +46,29 @@ if(isset($_POST['producerEmail'])) {
     
     $account = new User('', $pdo);
     
-    $result = $account->createAccount($proName, $proMail, $proPass);
+    if( 'success' == $account->createAccount($proName, $proMail, $proPass) ) {
     
-    echo $result;
+        $message['success'] = Session::read('username');
+        
+    }
 
 }
-else {
+elseif(isset($_POST['producerName'])) {
     
     /*
      * Attempt login
      */
     
     $account = new User($proName, $pdo);
-    $result = $account->login($proName, $proPass);
     
-    echo $result;
-     
+    if( 'success' ==  $account->login($proName, $proPass) ) {
+    
+        $message['success'] = Session::read('username');
+        
+    }
+    
 }
+
+// Return user info as JSON
+header('Content-Type: application/json');
+echo json_encode($message);

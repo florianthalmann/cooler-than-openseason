@@ -137,22 +137,15 @@ input[type="password"] {
   box-shadow: none;
   font-family: inherit;
   font-size: 1.2em; }
-  input[type="text"]::-webkit-input-placeholder,
-  input[type="email"]::-webkit-input-placeholder,
-  input[type="password"]::-webkit-input-placeholder {
-    color: #aaaaaa; }
-  input[type="text"]:-moz-placeholder,
-  input[type="email"]:-moz-placeholder,
-  input[type="password"]:-moz-placeholder {
-    color: #aaaaaa; }
-  input[type="text"]::-moz-placeholder,
-  input[type="email"]::-moz-placeholder,
-  input[type="password"]::-moz-placeholder {
-    color: #aaaaaa; }
-  input[type="text"]:-ms-input-placeholder,
-  input[type="email"]:-ms-input-placeholder,
-  input[type="password"]:-ms-input-placeholder {
-    color: #aaaaaa; }
+
+::-moz-placeholder {
+  color: #555; }
+
+::-webkit-input-placeholder {
+  color: #aaa; }
+
+:-ms-input-placeholder {
+  color: #aaa; }
 
 #container {
   position: absolute;
@@ -212,7 +205,8 @@ input[type="password"] {
     -webkit-animation: spin 5s linear infinite;
     -moz-animation: spin 5s linear infinite;
     animation: spin 5s linear infinite; }
-  .sqbutton:before {
+  .sqbutton:before,
+  .sqbutton span {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -273,6 +267,14 @@ input[type="password"] {
     font-size: 36px; }
   .sqbutton.menu:active {
     background: rgba(217, 217, 217, 0.75); }
+  .sqbutton.back span {
+    margin-left: -10px;
+    margin-top: -15px;
+    font-size: 2em; }
+  .sqbutton.new span {
+    margin-left: -10px;
+    margin-top: -15px;
+    font-size: 2em; }
 
 form .sqbutton {
   margin: 20px 0; }

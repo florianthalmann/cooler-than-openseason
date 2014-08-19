@@ -12,6 +12,7 @@ $(function () {
       timerID = 0,
       startingTime,
       longSoundSources = [ ];
+      
 
   function startRecorder(recorder) {
     recorder.clear();
@@ -92,12 +93,19 @@ $(function () {
     timerID = window.setTimeout(scheduleMidiEvents, LOOK_AHEAD);
   }
   
-  navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-  navigator.getUserMedia({"audio": true}, function(stream) {
-
-    $("#shown").toggle();
-    $("#hidden").toggle();
-
+  
+  /**
+   * Callback functions for panel initialisation
+   * Always pass stream from getUserMedia!
+   * 
+   * ?? Event delegation for #id might break if init is called more than once
+   */
+   
+  /*
+   * Callback when loading Main Panel
+   */
+  function initMainPanel(stream) {
+        
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioContext();
     tuna = new Tuna(audioContext);
@@ -107,8 +115,9 @@ $(function () {
     
     initTracksAndChannels();
     
-
-    $('[id^="record"]').click(function (e) {
+    // Delegated event handlers
+    // to cater for dynamically added elements
+    $('#container').on('click', '[id^="record"]', function (e) {
       e.preventDefault();
       var buttonIndex = $(e.target).attr('id').slice(-1);
       
@@ -130,16 +139,16 @@ $(function () {
         $(this).removeClass('active');
         
       }
-
+  
     });
-
-    $('[id^="play"]').click(function (e) {
+  
+    $('#container').on('click', '[id^="play"]', function (e) {
       e.preventDefault();
       var buttonIndex = $(e.target).attr('id').slice(-1);
       playSoundAt(0, buttonIndex, 1);
     });
     
-    $("button#song").click(function (e) {
+    $('#container').on('click', 'button#song', function (e) {
       e.preventDefault();
       togglePlaySong();
       if (playingSong) {
@@ -148,36 +157,105 @@ $(function () {
         $(this).removeClass('active');
       }
     });
+  }
+  
+  /*
+   * Callback initialising login form
+   */
+  function initLoginPanel(stream) {
+      
+    $('#container').on('submit', '#form-login', function (e) {
+      e.preventDefault();
+      
+      var fd = new FormData( $('#form-login')[0] );
+      
+      $.ajax({
+        type: 'POST',
+        url: 'php/ajax.user.php',
+        processData: false,
+        contentType: false,
+        data: fd,
+        
+        success: function(data) {
+          console.log(data);
+          if(data == 'success') {
+            
+            // Load main panel
+            $('#container').load('main.html', function() { initMainPanel(stream); });
+            
+          }
+        }
+        
+      });
+      
+    });  
+      
+  }
+  
+  /*
+   * Callback when signing up new user
+   */
+  function initSignupPanel(stream) {
+    
+    // Event Delegation for login link
+    $('#container').on('click', '#goto-login', function(e) {
+      e.preventDefault();
+      
+      $('#container').load('login.html', function() { initLoginPanel(stream); });
+      
+    });
+    
+    $('#container').on('submit', '#form-signup', function (e) {
+      e.preventDefault();
+      
+      var fd = new FormData( $('#form-signup')[0] );
+      
+      $.ajax({
+        type: 'POST',
+        url: 'php/ajax.user.php',
+        processData: false,
+        contentType: false,
+        data: fd,
+        
+        success: function(data) {
+          console.log(data);
+          if(data == 'success') {
+            
+            // Load main panel
+            $('#container').load('main.html', function() { initMainPanel(stream); });
+            
+          }
+        }
+        
+      });
+      
+    });
+      
+  }
+  
+  
+  
+  // Load permission message by default
+  $('#container').load('nopermission.html');
+  
+  
+  navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+  navigator.getUserMedia({"audio": true}, function(stream) {
 
+    // + Check if there's a running session
+    // => Load main panel
+    // $('#container').load('main.html', function() { initMainPanel(stream); });
+    
+    // else show signup panel
+    $('#container').load('signup.html', function() { initSignupPanel(stream); });
+    
   },
-
   function(error) {
-    $("body").text("Error: you need to allow this sample to use the microphone.");
-  });
   
-  // UI
-
-  // Show name and e-mail input
-  $('#title').click( function() {
-
-    $('.wrapper').scroll();
-    $('.wrapper').animate({ scrollTop: 62 }, 300);
+    $('#container').load('error.html');
 
   });
-
-  // Update Name and toggle back to title
-  $('#name-input button').click( function() {
-
-    var pname = $('#input-producer-name').val();
-    if( pname.length == 0 ) pname = '(Tap to enter name)';
-
-    $('#producer-name').html( pname );
-
-    $('.wrapper').scroll();
-    $('.wrapper').animate({ scrollTop: 0 }, 300);
-
-  });
-  
+    
   
   //additional methods and inner objects
   
@@ -257,8 +335,8 @@ $(function () {
   
   function saveSoundFile(soundIndex, blob) {
     
-    // Filename with producer name, need to add some sort of unique user ID
-    var fname = $('#producer-name').html() + '-' + soundIndex + '.wav';
+    // Only submit soundIndex as filename, and add (unique) username serverside from Session
+    var fname = soundIndex + '.wav';
 
     var fd = new FormData();
     fd.append('data', blob, fname);
@@ -280,17 +358,17 @@ $(function () {
   }
   
   function upload(blob) {
-  var xhr=new XMLHttpRequest();
-  xhr.onload=function(e) {
-      if(this.readyState === 4) {
-          console.log("Server returned: ",e.target.responseText);
-      }
-  };
-  var fd=new FormData();
-  fd.append("that_random_filename.wav",blob);
-  xhr.open("POST","<url>",true);
-  xhr.send(fd);
-}
+    var xhr=new XMLHttpRequest();
+    xhr.onload=function(e) {
+        if(this.readyState === 4) {
+            console.log("Server returned: ",e.target.responseText);
+        }
+    };
+    var fd=new FormData();
+    fd.append("that_random_filename.wav",blob);
+    xhr.open("POST","<url>",true);
+    xhr.send(fd);
+  }
   
   function PlayedMidiFile(midiFile, isMultitrack, firstIndex) {
     this.playEventsBefore = function(time) {

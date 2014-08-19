@@ -1,13 +1,13 @@
 <?php
 
-// Load Upload class
-include_once('class.upload.php');
+include_once('ajax-includes.php');
+
 
 // Config
-$uploadPath = '../userfiles/';
+$uploadPath = '../userfiles/' . Session::read('username') . '/';
 $message    = array();
 
-if(isset($_FILES['data'])) {
+if(isset($_FILES['data']) && true === Session::read('isLogged') && null !== Session::read('token')) {
 
     // XMLHttpRequest handler
     $handle = new upload($_FILES['data']);
@@ -22,6 +22,7 @@ if(isset($_FILES['data'])) {
     if($handle->uploaded) {
         
         $handle->file_overwrite = true;
+        // $handle->file_name_body_pre =  . '-';
         
         $handle->process($uploadPath);
         

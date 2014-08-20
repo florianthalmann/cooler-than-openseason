@@ -105,7 +105,7 @@ function normalize(buffer) {
     maxAmplitude = Math.max(maxAmplitude, buffer[i]);
   }
   var scaleFactor = 1/maxAmplitude;
-  console.log(scaleFactor);
+  //console.log(scaleFactor);
   for (var i = 0; i < buffer.length; i++) {
     buffer[i] *= scaleFactor;
   }

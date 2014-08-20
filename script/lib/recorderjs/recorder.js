@@ -59,7 +59,7 @@
       currCallback = cb || config.callback;
       type = type || config.type || 'audio/wav';
       if (!currCallback) throw new Error('Callback not set');
-      console.log("export!");
+      //console.log("export!");
       worker.postMessage({
         command: 'exportWAV',
         type: type

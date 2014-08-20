@@ -28,25 +28,11 @@ $(function () {
       //save to soundIndex.wav!!
       recorder.exportWAV(function(blob) {
         saveSoundFile(soundIndex, blob);
-        /*var url = URL.createObjectURL(blob);
-        var li = document.createElement('li');
-        var au = document.createElement('audio');
-        var hf = document.createElement('a');
-        
-        au.controls = true;
-        au.src = url;
-        hf.href = url;
-        hf.download = new Date().toISOString() + '.wav';
-        hf.innerHTML = hf.download;
-        li.appendChild(au);
-        li.appendChild(hf);
-        $('#hidden').append(li);*/
       });
     });
   }
   
   function playSoundAt(time, soundIndex, volume, pitch) {
-    console.log(soundIndex + " " + volume);
     if (!pitch) {
       pitch = 60;
     }
@@ -54,8 +40,8 @@ $(function () {
       var source = audioContext.createBufferSource();
       source.buffer = sounds[soundIndex];
       source.connect(channels[soundIndex].input);
-      channels[soundIndex].output.gain.value = volume;
-      //playBack normally at 60, and pitchShifted otherwise
+      channels[soundIndex].adjustVolume(volume);
+      //play back normally at 60, and pitchShifted otherwise
       var pitchRatio = Math.pow(Math.pow(2, 1/12),(pitch-60));
       source.playbackRate.value = pitchRatio;
       source.start(time);
@@ -68,7 +54,6 @@ $(function () {
   
   function togglePlaySong() {
     playingSong = !playingSong;
-    console.log(longSoundSources);
     if (playingSong) { // start playing
         startingTime = audioContext.currentTime;
         scheduleMidiEvents(); // kick off scheduling
@@ -115,6 +100,7 @@ $(function () {
     var recorder;
     
     initTracksAndChannels();
+    loadUserSoundFiles();
     
     // Delegated event handlers
     // to cater for dynamically added elements
@@ -338,17 +324,29 @@ $(function () {
     request.send();
   }
   
+  function loadUserSoundFiles() {
+    for (var i = 0; i < 9; i++) {
+      loadUserSoundFile(i);
+    }
+  }
+  
+  function loadUserSoundFile(soundIndex) {
+    var username = app.User.sessionRunning();
+    var url = 'userfiles/' + username + '/' + soundIndex + '.wav';
+    loadSoundFile(url, soundIndex);
+  }
+  
   function loadSoundFile(url, soundIndex) {
     $.ajax({
       type: 'GET',
       url: url,
       processData: false,
+      dataType: "arraybuffer",
       success: function(data) {
         audioContext.decodeAudioData(data, function(buffer) {
           sounds[soundIndex] = buffer;
         });
-      },
-      dataType: "arraybuffer"
+      }
     });
   }
   
@@ -368,25 +366,12 @@ $(function () {
       processData: false,
       contentType: false,
       success: function(data) {
-        console.log(data);
+        //console.log(data);
       },
       error: function(xhr, ajaxOptions, thrownError) {
         console.log(thrownError);
       }
     });
-  }
-  
-  function upload(blob) {
-    var xhr=new XMLHttpRequest();
-    xhr.onload=function(e) {
-        if(this.readyState === 4) {
-            console.log("Server returned: ",e.target.responseText);
-        }
-    };
-    var fd=new FormData();
-    fd.append("that_random_filename.wav",blob);
-    xhr.open("POST","<url>",true);
-    xhr.send(fd);
   }
   
   function PlayedMidiFile(midiFile, isMultitrack, firstIndex) {
@@ -431,7 +416,7 @@ $(function () {
     this.reset();
   }
   
-  function ChannelBus(gain) {
+  function ChannelBus(gainFactor) {
     this.input = audioContext.createGain();
     this.output = audioContext.createGain();
   
@@ -447,7 +432,8 @@ $(function () {
     //delay.connect(this.output);
     //convolver.connect(this.output);
   
-    this.output.gain.value = gain;
+    //initially volume is assumed to be 1
+    this.output.gain.value = gainFactor;
     /*delay.delayTime = 300;
     delay.feedback = .2;
     console.log(compressor);
@@ -460,6 +446,11 @@ $(function () {
   
     this.connect = function(target){
       this.output.connect(target);
+    };
+  
+    //gainFactor determines general gain level. volume can be changed within range of gainFactor
+    this.adjustVolume = function(volume) {
+      this.output.gain.value = gainFactor*volume;
     };
   }
   

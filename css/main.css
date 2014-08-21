@@ -190,9 +190,9 @@ input[type="password"] {
   height: 40px;
   margin: 0 10px;
   outline: 1px solid transparent;
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  border: 1px solid #b52944;
   background: transparent;
-  color: rgba(255, 255, 255, 0.75);
+  color: white;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -223,7 +223,7 @@ input[type="password"] {
       height: 12px;
       margin-left: -6px;
       margin-top: -6px;
-      background: rgba(255, 255, 255, 0.65);
+      background: #c54121;
       border-radius: 12px;
       content: ' ';
       -webkit-transition: border-radius 0.3s linear;
@@ -263,10 +263,10 @@ input[type="password"] {
     margin-left: -12px;
     margin-top: -25px;
     content: '\2261';
-    color: rgba(255, 255, 255, 0.75);
+    color: white;
     font-size: 36px; }
   .sqbutton.menu:active {
-    background: rgba(217, 217, 217, 0.75); }
+    background: #771b2d; }
   .sqbutton.back span {
     margin-left: -10px;
     margin-top: -15px;
@@ -277,6 +277,28 @@ input[type="password"] {
     font-size: 2em; }
 
 form .sqbutton {
+  margin: 20px 0; }
+
+.rdbutton {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  line-height: 52px;
+  outline: 1px solid transparent;
+  border: 0;
+  border-radius: 50%;
+  background: #b52944;
+  color: white; }
+  .rdbutton span {
+    display: inline-block;
+    margin-right: -3px;
+    font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
+    font-size: 1.7em;
+    letter-spacing: 3px;
+    text-transform: uppercase; }
+
+form .rdbutton {
   margin: 20px 0; }
 
 #app-bar {
@@ -331,13 +353,9 @@ form .sqbutton {
     height: 57px;
     margin: 0;
     padding: 7px 5px 8px; }
-  .tracklist .track-button-left,
-  .versionlist .track-button-left {
+  .tracklist .track-buttons,
+  .versionlist .track-buttons {
     float: left;
-    margin-top: 9px; }
-  .tracklist .track-button-right,
-  .versionlist .track-button-right {
-    float: right;
     margin-top: 9px; }
   .tracklist .track-info,
   .versionlist .track-info {
@@ -345,11 +363,10 @@ form .sqbutton {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     display: block;
-    padding: 17px 70px 0;
+    padding: 17px 5px 0 140px;
     font-size: 1.1em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    text-align: center; }
+    letter-spacing: 0.05em; }
 
 .tracklist > li:nth-child(1) {
   background-color: #550d2d; }

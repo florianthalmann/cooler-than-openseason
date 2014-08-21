@@ -55,11 +55,11 @@ $color-text-dim:            #aaa;
 $color-bar:                 #36021a;
 $color-bar-text:            #c54121;
 
-$color-button-default:      rgba(255,255,255,.75);
-$color-button-default-text: $color-button-default;
+$color-button-default:      #b52944;
+$color-button-default-text: white;
 
 $color-button-record:       rgba(255,255,255,.65); // #efb5d5;
-$color-button-record-text:  $color-button-record;
+$color-button-record-text:  #c54121;
 
 $color-button-play:         rgba(255,255,255,.75); // #54b290;
 $color-button-play-text:    $color-button-play;
@@ -334,6 +334,35 @@ form .sqbutton {
     margin: 20px 0;    
 }
 
+// Round buttons
+.rdbutton {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+    line-height: 52px;
+
+    outline: 1px solid transparent;
+    border: 0;
+    border-radius: 50%;
+    background: $color-button-default;
+    color: $color-button-default-text;
+    
+    span {
+        display: inline-block;
+        margin-right: -3px;
+        
+        font-family: $font-stack-bold;
+        font-size: 1.7em;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+}
+
+form .rdbutton {
+    margin: 20px 0;
+}
+
 // App title bar
 #app-bar {
     @include box-sizing(border-box);
@@ -412,12 +441,8 @@ form .sqbutton {
         padding: 7px 5px 8px;
     }
     
-    .track-button-left {
+    .track-buttons {
         float: left;
-        margin-top: 9px;
-    }
-    .track-button-right {
-        float: right;
         margin-top: 9px;
     }
     
@@ -425,12 +450,11 @@ form .sqbutton {
         @include box-sizing(border-box);
         
         display: block;
-        padding: 17px 70px 0;
+        padding: 17px 5px 0 140px;
         
         font-size: 1.1em;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        text-align: center;
         
     }
     

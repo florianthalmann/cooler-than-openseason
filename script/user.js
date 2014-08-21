@@ -1,4 +1,9 @@
-app.User = {
+/*!
+ * user.js 
+ * User session functions
+ */
+
+var User = {
         
     /*
      * Check for already running session

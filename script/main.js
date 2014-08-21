@@ -1,170 +1,50 @@
-$(function () {
-  
-  var LOOK_AHEAD = 25.0, //how frequently to call scheduling function (milliseconds)
-      SCHEDULE_AHEAD_TIME = 0.1; //how far ahead to schedule audio (seconds)
-  var audioContext,
-      tuna;
-  var midiFiles = [ ],
-      sounds = [ ],
-      channels = [ ];
-  var tempo = 125;
-  var playingSong = false,
-      timerID = 0,
-      startingTime,
-      longSoundSources = [ ];
+/* global User */
+/* global Sound */
+/* global Midi */
+/* //global UI */
+
+/*!
+ * main.js 
+ * Brings it all together
+ */
+
+$(function() {
+
+  navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+  navigator.getUserMedia({ 'audio': true }, function(stream) {
+
+    // If the user is logged in, go straight to main panel
+    // otherwise load signup panel
+    var session = User.sessionRunning();
+    
+    if( session !== '' ) {
+      $('#container').load('main.html', function() { initMainPanel(stream, session); });
+    }
+    else {
+      $('#container').load('signup.html', function() { initSignupPanel(stream); });
+    }
+  },
+  function() {
+    $('#container').load('error.html');
+  });
       
-
-  function startRecorder(recorder) {
-    recorder.clear();
-    recorder.record();
-  }
-
-  function stopRecorder(recorder, soundIndex) {
-    recorder.stop();
-    recorder.getBuffer(function (buffers) {
-      var newBuffer = audioContext.createBuffer(1, buffers[0].length, 44100);
-      newBuffer.getChannelData(0).set(buffers[0]);
-      sounds[soundIndex] = newBuffer;
-      //save to soundIndex.wav!!
-      recorder.exportWAV(function(blob) {
-        saveSoundFile(soundIndex, blob);
-      });
-    });
-  }
-  
-  function playSoundAt(time, soundIndex, volume, pitch) {
-    if (!pitch) {
-      pitch = 60;
-    }
-    if (sounds[soundIndex]) {
-      var source = audioContext.createBufferSource();
-      source.buffer = sounds[soundIndex];
-      source.connect(channels[soundIndex].input);
-      channels[soundIndex].adjustVolume(volume);
-      //play back normally at 60, and pitchShifted otherwise
-      var pitchRatio = Math.pow(Math.pow(2, 1/12),(pitch-60));
-      source.playbackRate.value = pitchRatio;
-      source.start(time);
-      //so that voc track is stoppable
-      if (soundIndex == 9) {
-        longSoundSources.push(source);
-      }
-    }
-  }
-  
-  function togglePlaySong() {
-    playingSong = !playingSong;
-    if (playingSong) { // start playing
-        startingTime = audioContext.currentTime;
-        scheduleMidiEvents(); // kick off scheduling
-    } else {
-        window.clearTimeout(timerID);
-        for (var i = 0; i < midiFiles.length; i++) {
-          midiFiles[i].reset();
-        }
-        for (var i = 0; i < longSoundSources.length; i++) {
-          longSoundSources[i].stop();
-        }
-        longSoundSources = [ ];
-    }
-  }
-  
-  function scheduleMidiEvents() {
-    // while there are notes that will need to play before the next interval, 
-    // schedule them and advance the pointer.
-    for (var i = 0; i < midiFiles.length; i++) {
-      midiFiles[i].playEventsBefore(audioContext.currentTime + SCHEDULE_AHEAD_TIME);
-    }
-    timerID = window.setTimeout(scheduleMidiEvents, LOOK_AHEAD);
-  }
-  
-
   
   /**
-   * Callback functions for panel initialisation
-   * Always pass stream from getUserMedia!
-   * 
-   * ?? Event delegation for #id might break if init is called more than once
-   */
-   
-  /*
    * Callback when loading Main Panel
+   * ++ also menu panel!
    */
   function initMainPanel(stream, data) {
     
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    audioContext = new AudioContext();
-    tuna = new Tuna(audioContext);
-    window.mediaStreamSource = audioContext.createMediaStreamSource(stream);
-
-    var recorder;
+    Sound.audioContext = new AudioContext();
+    // Sound.tuna = new tuna(Sound.audioContext);
+    window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(stream);
     
     initTracksAndChannels();
-    loadUserSoundFiles();
-    
-    // Delegated event handlers
-    // to cater for dynamically added elements
-    $('#container').on('click', '[id^="record"]', function (e) {
-      e.preventDefault();
-      var buttonIndex = $(e.target).attr('id').slice(-1);
-      
-      if (!recorder) {
-        recorder = new Recorder(window.mediaStreamSource, {
-          workerPath: "script/lib/recorderjs/recorderWorker2.js"
-        });
-        startRecorder(recorder);
-        
-        // start button animation
-        $(this).addClass('active');
-      }
-      else {
-        stopRecorder(recorder, buttonIndex);
-        recorder.disconnect();
-        recorder = null;
-        
-        // stop button animation
-        $(this).removeClass('active');
-      }
-  
-    });
-  
-    $('#container').on('click', '[id^="play"]', function (e) {
-      e.preventDefault();
-      var buttonIndex = $(e.target).attr('id').slice(-1);
-      playSoundAt(0, buttonIndex, 1);
-    });
-    
-    $('#container').on('click', 'button#song', function (e) {
-      e.preventDefault();
-      togglePlaySong();
-      if (playingSong) {
-        $(this).addClass('active');
-      } else {
-        $(this).removeClass('active');
-      }
-    });
-    
-    $('#container').on('click', '.sqbutton.menu', function(e) {
-      e.preventDefault();
-      // Load menu panel
-      $('#container').load('menu.html', function() { initMenuPanel(stream, data); });
-    });
+    Sound.loadUserSoundFiles();
     
     $('#producer-name').html(data);
     
-  }
-  
-  /*
-   * Menu Panel init
-   */
-  function initMenuPanel(stream, data) {
-      
-    // Event Delegation for back link
-    $('#container').on('click', '.sqbutton.back', function(e) {
-      e.preventDefault();
-      $('#container').load('main.html', function() { initMainPanel(stream,data); });
-    });
-      
   }
   
   /*
@@ -241,29 +121,9 @@ $(function () {
     });
   }
   
-  
-  navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-  navigator.getUserMedia({"audio": true}, function(stream) {
-  
-    // If the user is logged in, go straight to main panel
-    // otherwise load signup panel
-    var session = app.User.sessionRunning();
-    
-    if( session !== '' ) {
-      $('#container').load('main.html', function() { initMainPanel(stream, session); });
-    }
-    else {
-        $('#container').load('signup.html', function() { initSignupPanel(stream); });
-    }
-    
-  },
-  function(error) {
-    $('#container').load('error.html');
-  });
-    
-  
-  //additional methods and inner objects
-  
+  /*
+   * Tracklist init
+   */
   function initTracksAndChannels() {
     initTracks('script/midi/wedancedrums.mid', 0, ['Bassdrum', 'Snare', 'Hihat'], 1);
     initTracks('script/midi/wedancetom.mid', 3, ['Tom'], 1);
@@ -273,15 +133,19 @@ $(function () {
     initTracks('script/midi/wedanceyeah.mid', 7, ['Yeah'], 1);
     initTracks('script/midi/wedanceyo.mid', 8, ['Yo'], 1);
     initTracks('script/midi/wedancevoc.mid', 9, null, 1, 'script/wav/wedancevoc.wav');
+    
+    // Remove html template
     $('.tracklist li').first().remove();
   }
   
   function initTracks(midiUrl, firstIndex, trackNames, gain, soundUrl) {
     var trackCount = trackNames ? trackNames.length : 1;
-    //init html tack
+    var i;
+    
+    // init html track
     if (trackNames) {
       //adapt trackist items
-      for (var i = 0; i < trackNames.length; i++) {
+      for (i = 0; i < trackNames.length; i++) {
         var currentTrack = $('.tracklist li').first().clone();
         currentTrack.find('#record').attr('id', 'record'+(firstIndex+i));
         currentTrack.find('#play').attr('id', 'play'+(firstIndex+i));
@@ -289,241 +153,22 @@ $(function () {
         $('.tracklist').append(currentTrack);
       }
     }
-    //init midifile
-    loadMidiFile(midiUrl, function(data) {
-      midiFiles.push(new PlayedMidiFile(MidiFile(data), trackCount>1, firstIndex));
+
+    // init midifile
+    Midi.loadMidiFile(midiUrl, function(data) {
+      Midi.midiFiles.push(new PlayedMidiFile(MidiFile(data), trackCount > 1, firstIndex));
     });
-    //init soundfile
+   
+    // init soundfile
     if (soundUrl) {
-      loadSoundFile(soundUrl, firstIndex);
+      Sound.loadSoundFile(soundUrl, firstIndex);
     }
-    //init channels
-    for (var i = firstIndex; i < firstIndex+trackCount; i++) {
-      channels[i] = new ChannelBus(gain);
-      channels[i].connect(audioContext.destination);
-    }
-  }
-  
-  function loadMidiFile(url, callback) {
-    var request = new XMLHttpRequest();
-    request.open('GET', url);
-    request.overrideMimeType("text/plain; charset=x-user-defined");
-    request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        /* munge response into a binary string */
-        var t = this.responseText || "" ;
-        var ff = [];
-        var mx = t.length;
-        var scc= String.fromCharCode;
-        for (var z = 0; z < mx; z++) {
-          ff[z] = scc(t.charCodeAt(z) & 255);
-        }
-        callback(ff.join(""));
-      }
-    };
-    request.send();
-  }
-  
-  function loadUserSoundFiles() {
-    for (var i = 0; i < 9; i++) {
-      loadUserSoundFile(i);
-    }
-  }
-  
-  function loadUserSoundFile(soundIndex) {
-    var username = app.User.sessionRunning();
-    var url = 'userfiles/' + username + '/' + soundIndex + '.wav';
-    loadSoundFile(url, soundIndex);
-  }
-  
-  function loadSoundFile(url, soundIndex) {
-    $.ajax({
-      type: 'GET',
-      url: url,
-      processData: false,
-      dataType: "arraybuffer",
-      success: function(data) {
-        audioContext.decodeAudioData(data, function(buffer) {
-          sounds[soundIndex] = buffer;
-        });
-      }
-    });
-  }
-  
-  function saveSoundFile(soundIndex, blob) {
     
-    // Only submit soundIndex as filename, and add (unique) username serverside from Session
-    var fname = soundIndex + '.wav';
-
-    var fd = new FormData();
-    fd.append('data', blob, fname);
-
-    $.ajax({
-      type: 'POST',
-      url: 'php/ajax.upload.php',
-      data: fd,
-      cache: false,
-      processData: false,
-      contentType: false,
-      success: function(data) {
-        //console.log(data);
-      },
-      error: function(xhr, ajaxOptions, thrownError) {
-        console.log(thrownError);
-      }
-    });
+    // init channels
+    for (i = firstIndex; i < firstIndex+trackCount; i++) {
+      Sound.channels[i] = new ChannelBus(gain);
+      Sound.channels[i].connect(Sound.audioContext.destination);
+    }
   }
-  
-  function PlayedMidiFile(midiFile, isMultitrack, firstIndex) {
-    this.playEventsBefore = function(time) {
-      var tickLength = 60/tempo/midiFile.header.ticksPerBeat;
-      for (var i = 0; i < midiFile.tracks.length; i++) {
-        while (this.currentTrackPositions[i] < midiFile.tracks[i].length) {
-          var currentEvent = midiFile.tracks[i][this.currentTrackPositions[i]];
-          var currentEventMidiTime = this.currentTrackEventTimes[i] + (currentEvent.deltaTime * tickLength);
-          var currentEventAudioClockTime = startingTime + currentEventMidiTime;
-          if (currentEventAudioClockTime <= time) {
-            if (currentEvent.subtype == "noteOn") {
-              var volume = currentEvent.velocity / 127;
-              if (isMultitrack) {
-                //drum machine standard: first bassdrum at 36.
-                var soundIndex = firstIndex + currentEvent.noteNumber - 36;
-                playSoundAt(currentEventAudioClockTime, soundIndex, volume);
-              } else {
-                //play pitched sound
-                var pitch = currentEvent.noteNumber;
-                playSoundAt(currentEventAudioClockTime, firstIndex, volume, pitch);
-              }
-            }
-            this.currentTrackPositions[i]++;
-            this.currentTrackEventTimes[i] = currentEventMidiTime;
-          } else {
-            break;
-          }
-        }
-      }
-    };
-  
-    this.reset = function() {
-      this.currentTrackPositions = [ ];
-      this.currentTrackEventTimes = [ ];
-      for (var i = 0; i < midiFile.tracks.length; i++) {
-        this.currentTrackPositions.push(0);
-        this.currentTrackEventTimes.push(0);
-      }
-    };
-  
-    this.reset();
-  }
-  
-  function ChannelBus(gainFactor) {
-    this.input = audioContext.createGain();
-    this.output = audioContext.createGain();
-  
-    //var delay = new tuna.Delay();
-    //var convolver = new tuna.Convolver();
-    //var compressor = new tuna.Compressor();
-    //var compressor = audioContext.createDynamicsCompressor();
-  
-    //equalizer -> delay -> convolver
-    //this.input.connect(compressor);
-    this.input.connect(this.output);
-    //compressor.connect(delay.input);
-    //delay.connect(this.output);
-    //convolver.connect(this.output);
-  
-    //initially volume is assumed to be 1
-    this.output.gain.value = gainFactor;
-    /*delay.delayTime = 300;
-    delay.feedback = .2;
-    console.log(compressor);
-    compressor.threshold = -100;
-    compressor.ratio = 20;
-  
-    //compressor.makeupGain = 90;
-    //compressor.automakeup = false;
-    //convolver.wetLevel = .2;*/
-  
-    this.connect = function(target){
-      this.output.connect(target);
-    };
-  
-    //gainFactor determines general gain level. volume can be changed within range of gainFactor
-    this.adjustVolume = function(volume) {
-      this.output.gain.value = gainFactor*volume;
-    };
-  }
-  
-  
-  /**
-   * Register ajax transports for blob send/recieve and array buffer send/receive via XMLHttpRequest Level 2
-   * within the comfortable framework of the jquery ajax request, with full support for promises.
-   *
-   * Notice the +* in the dataType string? The + indicates we want this transport to be prepended to the list
-   * of potential transports (so it gets first dibs if the request passes the conditions within to provide the
-   * ajax transport, preventing the standard transport from hogging the request), and the * indicates that
-   * potentially any request with any dataType might want to use the transports provided herein.
-   *
-   * Remember to specify 'processData:false' in the ajax options when attempting to send a blob or arraybuffer -
-   * otherwise jquery will try (and fail) to convert the blob or buffer into a query string.
-   */
-  $.ajaxTransport("+*", function(options, originalOptions, jqXHR){
-      // Test for the conditions that mean we can/want to send/receive blobs or arraybuffers - we need XMLHttpRequest
-      // level 2 (so feature-detect against window.FormData), feature detect against window.Blob or window.ArrayBuffer,
-      // and then check to see if the dataType is blob/arraybuffer or the data itself is a Blob/ArrayBuffer
-      if (window.FormData && ((options.dataType && (options.dataType === 'blob' || options.dataType === 'arraybuffer')) ||
-          (options.data && ((window.Blob && options.data instanceof Blob) ||
-              (window.ArrayBuffer && options.data instanceof ArrayBuffer)))
-          ))
-      {
-          return {
-              /**
-               * Return a transport capable of sending and/or receiving blobs - in this case, we instantiate
-               * a new XMLHttpRequest and use it to actually perform the request, and funnel the result back
-               * into the jquery complete callback (such as the success function, done blocks, etc.)
-               *
-               * @param headers
-               * @param completeCallback
-               */
-              send: function(headers, completeCallback){
-                  var xhr = new XMLHttpRequest(),
-                      url = options.url || window.location.href,
-                      type = options.type || 'GET',
-                      dataType = options.dataType || 'text',
-                      data = options.data || null,
-                      async = options.async || true,
-                      key;
-   
-                  xhr.addEventListener('load', function(){
-                      var response = {}, status, isSuccess;
-   
-                      isSuccess = xhr.status >= 200 && xhr.status < 300 || xhr.status === 304;
-   
-                      if (isSuccess) {
-                          response[dataType] = xhr.response;
-                      } else {
-                          // In case an error occured we assume that the response body contains
-                          // text data - so let's convert the binary data to a string which we can
-                          // pass to the complete callback.
-                          response.text = String.fromCharCode.apply(null, new Uint8Array(xhr.response));
-                      }
-   
-                      completeCallback(xhr.status, xhr.statusText, response, xhr.getAllResponseHeaders());
-                  });
-   
-                  xhr.open(type, url, async);
-                  xhr.responseType = dataType;
-   
-                  for (key in headers) {
-                      if (headers.hasOwnProperty(key)) xhr.setRequestHeader(key, headers[key]);
-                  }
-                  xhr.send(data);
-              },
-              abort: function(){
-                  jqXHR.abort();
-              }
-          };
-      }
-  });
   
 });

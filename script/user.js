@@ -4,6 +4,8 @@
  */
 
 var User = {
+
+    username: '',
         
     /*
      * Check for already running session
@@ -25,6 +27,8 @@ var User = {
                 }
             }
         });
+        
+        this.username = username;
         return username;
     },
     

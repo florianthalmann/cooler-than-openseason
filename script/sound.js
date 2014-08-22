@@ -105,8 +105,11 @@ var Sound = {
      * Load all stored files from server
      */
     loadUserSoundFiles: function() {
-      for (var i = 0; i < 9; i++) {
-        this.loadUserSoundFile(i);
+      // Check/Cache username if user just logged in/signed up
+      if(User.sessionRunning()) {
+        for (var i = 0; i < 9; i++) {
+          this.loadUserSoundFile(i);
+        }
       }
     },
     
@@ -115,8 +118,7 @@ var Sound = {
      * via this.loadSoundFile()
      */
     loadUserSoundFile: function(soundIndex) {
-      var username = User.sessionRunning();
-      var url = 'userfiles/' + username + '/' + soundIndex + '.wav';
+      var url = 'userfiles/' + User.username + '/' + soundIndex + '.wav';
       this.loadSoundFile(url, soundIndex);
     },
     

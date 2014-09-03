@@ -7,21 +7,12 @@
 
 var Sound = {
     
-    // How frequently to call scheduling function (milliseconds)
-    LOOK_AHEAD: 25.0,
-    
-    // How far ahead to schedule audio (seconds)
-    SCHEDULE_AHEAD_TIME: 0.1,
-    
-    recorder:  null,
+    recorder: null,
     audioContext: {},
     tuna:      {},
     sounds:    [],
     channels:  [],
-    
-    playingSong: false,
-    timerID: 0,
-    startingTime: 0,
+  
     longSoundSources: [],
     
     
@@ -29,8 +20,8 @@ var Sound = {
      * Start Recording
      */
     startRecorder: function() {
-      this.recorder.clear();
-      this.recorder.record();
+      Sound.recorder.clear();
+      Sound.recorder.record();
     },
   
     /*
@@ -38,7 +29,7 @@ var Sound = {
      * Upload file to server
      */
     stopRecorder: function(soundIndex) {
-      var recorder = this.recorder;
+      var recorder = Sound.recorder;
       
       recorder.stop();
       recorder.getBuffer(function (buffers) {
@@ -53,7 +44,7 @@ var Sound = {
       });
       
       recorder.disconnect();
-      recorder = null;
+      Sound.recorder = null;
     },
     
     /*
@@ -141,8 +132,8 @@ var Sound = {
         source.playbackRate.value = pitchRatio;
         source.start(time);
         
-        // So that voc track is stoppable
-        if (soundIndex === 9) {
+        // So that mix track is stoppable
+        if (soundIndex === 11) {
           this.longSoundSources.push(source);
         }
       }
@@ -157,7 +148,7 @@ function ChannelBus(gainFactor) {
     this.input = Sound.audioContext.createGain();
     this.output = Sound.audioContext.createGain();
     
-    //var delay = new Sound.tuna.Delay();
+    var delay = new Sound.tuna.Delay();
     //var convolver = new Sound.tuna.Convolver();
     //var compressor = new Sound.tuna.Compressor();
     //var compressor = audioContext.createDynamicsCompressor();
@@ -165,15 +156,16 @@ function ChannelBus(gainFactor) {
     //equalizer -> delay -> convolver
     //this.input.connect(compressor);
     this.input.connect(this.output);
+    //delay.connect(this.output);
     //compressor.connect(delay.input);
     //delay.connect(this.output);
     //convolver.connect(this.output);
     
     //initially volume is assumed to be 1
     this.output.gain.value = gainFactor;
-    /*delay.delayTime = 300;
-    delay.feedback = .2;
-    console.log(compressor);
+    //delay.delayTime = 200;
+    //delay.feedback = .2;
+    /*console.log(compressor);
     compressor.threshold = -100;
     compressor.ratio = 20;
     

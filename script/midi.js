@@ -9,20 +9,27 @@ var Midi = {
 
     tempo: 125,    
     midiFiles: [],
-
+    // How frequently to call scheduling function (milliseconds)
+    LOOK_AHEAD: 25.0,
+    // How far ahead to schedule midi (seconds)
+    SCHEDULE_AHEAD_TIME: 0.1,
+    // Offset that allows for more precise scheduling (makes late calls of playSoundAt(...) impossible)
+    SCHEDULING_OFFSET: 0.1,
+    timerID: 0,
+    startingTime: 0,
+    isPlaying: false,
     
     /*
      * While there are notes that will need to play before the next interval, 
      * schedule them and advance the pointer.
      */
     scheduleMidiEvents: function() {
-        console.log(this.midiFiles);
-        
-        for (var i = 0; i < this.midiFiles.length; i++) {
-            this.midiFiles[i].playEventsBefore(Sound.audioContext.currentTime + Sound.SCHEDULE_AHEAD_TIME);
+      
+        for (var i = 0; i < Midi.midiFiles.length; i++) {
+            Midi.midiFiles[i].playEventsBefore(Sound.audioContext.currentTime + Midi.SCHEDULE_AHEAD_TIME);
         }
-        
-        Sound.timerID = window.setTimeout(Midi.scheduleMidiEvents, Sound.LOOK_AHEAD);
+      
+        Midi.timerID = window.setTimeout(Midi.scheduleMidiEvents, Midi.LOOK_AHEAD);
     },
     
     /*
@@ -63,8 +70,8 @@ function PlayedMidiFile(midiFile, isMultitrack, firstIndex) {
             while (this.currentTrackPositions[i] < midiFile.tracks[i].length) {
                 var currentEvent               = midiFile.tracks[i][this.currentTrackPositions[i]];
                 var currentEventMidiTime       = this.currentTrackEventTimes[i] + (currentEvent.deltaTime * tickLength);
-                var currentEventAudioClockTime = Sound.startingTime + currentEventMidiTime;
-                
+                var currentEventAudioClockTime = Midi.startingTime + currentEventMidiTime + Midi.SCHEDULING_OFFSET;
+              
                 if (currentEventAudioClockTime <= time) {
                     if (currentEvent.subtype === "noteOn") {
                         var volume = currentEvent.velocity / 127;

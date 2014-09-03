@@ -47,7 +47,7 @@ $(function() {
      */    
     UI.delegate.on('click', '[id^="record"]', function (e) {
       e.preventDefault();
-      var buttonIndex = $(e.target).attr('id').slice(-1);
+      var buttonIndex = parseInt($(e.target).attr('id').slice(-2));
       
       if (!Sound.recorder) {
         Sound.recorder = new Recorder(window.mediaStreamSource, {
@@ -73,7 +73,7 @@ $(function() {
      */      
     UI.delegate.on('click', '[id^="play"]', function (e) {
       e.preventDefault();
-      var buttonIndex = $(e.target).attr('id').slice(-1);
+      var buttonIndex = parseInt($(e.target).attr('id').slice(-2));
       Sound.playSoundAt(0, buttonIndex, 1);
     });
 
@@ -83,7 +83,7 @@ $(function() {
     UI.delegate.on('click', 'button#song', function (e) {
       e.preventDefault();
       togglePlaySong();
-      if (Sound.playingSong) {
+      if (Midi.isPlaying) {
         $(this).addClass('active');
       } else {
         $(this).removeClass('active');
@@ -102,13 +102,13 @@ $(function() {
     
     function togglePlaySong() {
         
-      Sound.playingSong = !Sound.playingSong;
-      if (Sound.playingSong) { // start playing
-          Sound.startingTime = Sound.audioContext.currentTime;
+      Midi.isPlaying = !Midi.isPlaying;
+      if (Midi.isPlaying) { // start playing
+          Midi.startingTime = Sound.audioContext.currentTime;
           Midi.scheduleMidiEvents(); // kick off scheduling
       }
       else {
-          window.clearTimeout(Sound.timerID);
+          window.clearTimeout(Midi.timerID);
           var i;
           
           for (i = 0; i < Midi.midiFiles.length; i++) {

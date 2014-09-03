@@ -37,7 +37,7 @@ $(function() {
     
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     Sound.audioContext = new AudioContext();
-    // Sound.tuna = new tuna(Sound.audioContext);
+    Sound.tuna = new Tuna(Sound.audioContext);
     window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(stream);
     
     initTracksAndChannels();
@@ -125,14 +125,16 @@ $(function() {
    * Tracklist init
    */
   function initTracksAndChannels() {
-    initTracks('script/midi/wedancedrums.mid', 0, ['Bassdrum', 'Snare', 'Hihat'], 1);
-    initTracks('script/midi/wedancetom.mid', 3, ['Tom'], 1);
-    initTracks('script/midi/wedancebass.mid', 4, ['Bass'], 1);
-    initTracks('script/midi/wedanceshaker.mid', 5, ['Shaker'], .5);
-    initTracks('script/midi/wedancehey.mid', 6, ['Hey'], 1);
-    initTracks('script/midi/wedanceyeah.mid', 7, ['Yeah'], 1);
-    initTracks('script/midi/wedanceyo.mid', 8, ['Yo'], 1);
-    initTracks('script/midi/wedancevoc.mid', 9, null, 1, 'script/wav/wedancevoc.wav');
+    initTracks('script/midi/wedancedrums.mid', 0, ['Bassdrum', 'Snare', 'Hihat'], .6);
+    initTracks('script/midi/wedancetom.mid', 3, ['Tom'], .5);
+    initTracks('script/midi/wedanceshaker.mid', 4, ['Shaker'], .4);
+    initTracks('script/midi/wedancehey.mid', 5, ['Hey'], .7);
+    initTracks('script/midi/wedanceyeah.mid', 6, ['Yeah'], .7);
+    initTracks('script/midi/wedanceyo.mid', 7, ['Yo'], .7);
+    initTracks('script/midi/wedancename.mid', 8, ['Producer name'], .8);
+    initTracks('script/midi/wedancedrink.mid', 9, ['Favorite drink'], .8);
+    initTracks('script/midi/wedancemusic.mid', 10, ['Favorite music'], .8);
+    initTracks('script/midi/wedancemix.mid', 11, null, 1, 'script/wav/wedancemix.wav');
     
     // Remove html template
     $('.tracklist li').first().remove();
@@ -146,9 +148,10 @@ $(function() {
     if (trackNames) {
       //adapt trackist items
       for (i = 0; i < trackNames.length; i++) {
+        var indexString = pad(firstIndex+i, 2);
         var currentTrack = $('.tracklist li').first().clone();
-        currentTrack.find('#record').attr('id', 'record'+(firstIndex+i));
-        currentTrack.find('#play').attr('id', 'play'+(firstIndex+i));
+        currentTrack.find('#record').attr('id', 'record'+indexString);
+        currentTrack.find('#play').attr('id', 'play'+indexString);
         currentTrack.find('.track-name').html(trackNames[i]);
         $('.tracklist').append(currentTrack);
       }
@@ -169,6 +172,12 @@ $(function() {
       Sound.channels[i] = new ChannelBus(gain);
       Sound.channels[i].connect(Sound.audioContext.destination);
     }
+  }
+  
+  function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
   }
   
 });

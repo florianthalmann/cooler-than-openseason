@@ -460,16 +460,16 @@ form .rdbutton {
     
 }
 
-// Add top ten numbers to navigation links
+
 // loop
-@for $i from 1 through 9 {
+@for $i from 1 through 15 {
     .tracklist > li:nth-child(#{$i}) {
         background-color: tint($track-gradient-base, $i * 2.5);
     }
 }
 // end loop
 
-// Add top ten numbers to navigation links
+
 // loop
 @for $i from 1 through 9 {
     .versionlist > li:nth-child(#{$i}) {

@@ -1,5 +1,4 @@
 @charset "UTF-8";
-@import url("//hello.myfonts.net/count/2b984f");
 /*!==========================================================================
  * Main Style Sheet (Sassy)
  * Open Season Web-App 2014
@@ -36,53 +35,45 @@
  * © 2014 MyFonts Inc
 */
 /* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/2b984f");
 @font-face {
   font-family: 'BrandonGrotesque-Regular';
   src: url("webfonts/2B984F_0_0.eot");
   src: url("webfonts/2B984F_0_0.eot?#iefix") format("embedded-opentype"), url("webfonts/2B984F_0_0.woff") format("woff"), url("webfonts/2B984F_0_0.ttf") format("truetype"), url("webfonts/2B984F_0_0.svg#wf") format("svg"); }
-
 @font-face {
   font-family: 'BrandonGrotesque-Bold';
   src: url("webfonts/2B984F_1_0.eot");
   src: url("webfonts/2B984F_1_0.eot?#iefix") format("embedded-opentype"), url("webfonts/2B984F_1_0.woff") format("woff"), url("webfonts/2B984F_1_0.ttf") format("truetype"), url("webfonts/2B984F_1_0.svg#wf") format("svg"); }
-
 @font-face {
   font-family: 'BrandonGrotesque-Black';
   src: url("webfonts/2B984F_2_0.eot");
   src: url("webfonts/2B984F_2_0.eot?#iefix") format("embedded-opentype"), url("webfonts/2B984F_2_0.woff") format("woff"), url("webfonts/2B984F_2_0.ttf") format("truetype"), url("webfonts/2B984F_2_0.svg#wf") format("svg"); }
-
 @-webkit-keyframes spin {
   100% {
     -webkit-transform: rotate(405deg); } }
-
 @-moz-keyframes spin {
   100% {
     -moz-transform: rotate(405deg); } }
-
-@-o-keyframes spin {
-  100% {
-    -o-transform: rotate(405deg); } }
-
 @keyframes spin {
   100% {
+    -webkit-transform: rotate(405deg);
+    -moz-transform: rotate(405deg);
+    -ms-transform: rotate(405deg);
+    -o-transform: rotate(405deg);
     transform: rotate(405deg); } }
-
 @-webkit-keyframes spin-reverse {
   100% {
     -webkit-transform: rotate(-405deg); } }
-
 @-moz-keyframes spin-reverse {
   100% {
     -moz-transform: rotate(-405deg); } }
-
-@-o-keyframes spin-reverse {
-  100% {
-    -o-transform: rotate(-405deg); } }
-
 @keyframes spin-reverse {
   100% {
+    -webkit-transform: rotate(-405deg);
+    -moz-transform: rotate(-405deg);
+    -ms-transform: rotate(-405deg);
+    -o-transform: rotate(-405deg);
     transform: rotate(-405deg); } }
-
 * {
   margin: 0;
   padding: 0; }
@@ -162,7 +153,6 @@ input[type="password"] {
   width: 100%;
   height: 100%;
   background-color: #5b1133;
-  background-image: -webkit-gradient(radial, center center, 0, center center, 460, color-stop(0%, #5b1133), color-stop(100%, #111111));
   background-image: -webkit-radial-gradient(#5b1133, #111111);
   background-image: radial-gradient(  #5b1133, #111111); }
   .center-screen .center-content {
@@ -394,6 +384,24 @@ form .rdbutton {
 
 .tracklist > li:nth-child(9) {
   background-color: #783e58; }
+
+.tracklist > li:nth-child(10) {
+  background-color: #7c455d; }
+
+.tracklist > li:nth-child(11) {
+  background-color: #804b63; }
+
+.tracklist > li:nth-child(12) {
+  background-color: #855168; }
+
+.tracklist > li:nth-child(13) {
+  background-color: #89576d; }
+
+.tracklist > li:nth-child(14) {
+  background-color: #8d5d73; }
+
+.tracklist > li:nth-child(15) {
+  background-color: #926478; }
 
 .versionlist > li:nth-child(1) {
   background-color: #2f3112; }

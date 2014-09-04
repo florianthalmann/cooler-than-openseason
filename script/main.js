@@ -86,7 +86,7 @@ $(function() {
         success: function(data) {
           if(data.success) {
             // Load main panel
-            $('#container').load('7main.html', function() { initMainPanel(stream, data.success); });
+            $('#container').load('/main.html', function() { initMainPanel(stream, data.success); });
           }
           else {
             $('#message').html(data.error).show();
@@ -105,7 +105,7 @@ $(function() {
     // Event Delegation for login link
     $('#container').on('click', '#goto-login', function(e) {
       e.preventDefault();
-      $('#container').load('7login.html', function() { initLoginPanel(stream); });
+      $('#container').load('/login.html', function() { initLoginPanel(stream); });
     });
     
     $('#container').on('submit', '#form-signup', function (e) {
@@ -147,7 +147,7 @@ $(function() {
     initTracks('/script/midi/wedancename.mid', 8, ['Producer name'], .8);
     initTracks('/script/midi/wedancedrink.mid', 9, ['Favorite drink'], .8);
     initTracks('/script/midi/wedancemusic.mid', 10, ['Favorite music'], .8);
-    initTracks('/script/midi/wedancemix.mid', 11, null, 1, 'script/wav/wedancemix.wav');
+    initTracks('/script/midi/wedancemix.mid', 11, null, 1, '/script/wav/wedancemix.wav');
     
     // Remove html template
     $('.tracklist li').first().remove();

@@ -24,12 +24,20 @@ var Midi = {
      * schedule them and advance the pointer.
      */
     scheduleMidiEvents: function() {
-      
         for (var i = 0; i < Midi.midiFiles.length; i++) {
             Midi.midiFiles[i].playEventsBefore(Sound.audioContext.currentTime + Midi.SCHEDULE_AHEAD_TIME);
         }
-      
         Midi.timerID = window.setTimeout(Midi.scheduleMidiEvents, Midi.LOOK_AHEAD);
+    },
+  
+    /*
+     * Stops midi scheduling and resets the midi files to be played from the beginning.
+     */
+    stopMidiScheduling: function() {
+        window.clearTimeout(Midi.timerID);
+        for (var i = 0; i < Midi.midiFiles.length; i++) {
+            Midi.midiFiles[i].reset();
+        }
     },
     
     /*

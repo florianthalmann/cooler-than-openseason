@@ -49,18 +49,18 @@ $(function() {
       e.preventDefault();
       var buttonIndex = parseInt($(e.target).attr('id').slice(-2));
       
-      if (!Sound.recorder) {
+      if (!$(this).hasClass('active') && !Sound.recorder) {
         Sound.recorder = new Recorder(window.mediaStreamSource, {
           workerPath: "script/lib/recorderjs/recorderWorker2.js"
         });
         
-        Sound.startRecorder();
+        Sound.startRecorder(buttonIndex);
         
         // Start button animation
         $(this).addClass('active');
       }
       else {
-        Sound.stopRecorder(buttonIndex);
+        Sound.stopRecorder();
         
         // Stop button animation
         $(this).removeClass('active');
@@ -108,16 +108,8 @@ $(function() {
           Midi.scheduleMidiEvents(); // kick off scheduling
       }
       else {
-          window.clearTimeout(Midi.timerID);
-          var i;
-          
-          for (i = 0; i < Midi.midiFiles.length; i++) {
-            Midi.midiFiles[i].reset();
-          }
-          for (i = 0; i < Sound.longSoundSources.length; i++) {
-            Sound.longSoundSources[i].stop();
-          }
-          Sound.longSoundSources = [ ];
+          Midi.stopMidiScheduling();
+          Sound.stopAllSounds();
       }
     }
     

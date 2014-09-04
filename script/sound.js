@@ -8,43 +8,54 @@
 var Sound = {
     
     recorder: null,
+    recordingSoundIndex: 0,
     audioContext: {},
     tuna:      {},
     sounds:    [],
     channels:  [],
+    sources: [],
   
-    longSoundSources: [],
+    MAX_RECORDING_TIME: 3000, //in milliseconds
     
     
     /*
      * Start Recording
      */
-    startRecorder: function() {
+    startRecorder: function(soundIndex) {
+      Sound.recordingSoundIndex = soundIndex;
       Sound.recorder.clear();
-      Sound.recorder.record();
+      Sound.recorder.record(Sound.MAX_RECORDING_TIME, Sound.stoppedRecording);
     },
   
     /*
      * Stop Recording
      * Upload file to server
      */
-    stopRecorder: function(soundIndex) {
+    stopRecorder: function() {
+      if (Sound.recorder) {
+        Sound.recorder.stop();
+        Sound.stoppedRecording();
+      }
+    },
+  
+    stoppedRecording: function() {
       var recorder = Sound.recorder;
       
-      recorder.stop();
-      recorder.getBuffer(function (buffers) {
-        var newBuffer = Sound.audioContext.createBuffer(1, buffers[0].length, 44100);
-        newBuffer.getChannelData(0).set(buffers[0]);
-        Sound.sounds[soundIndex] = newBuffer;
-        
-        // Save to soundIndex.wav!!
-        recorder.exportWAV(function(blob) {
-          Sound.saveSoundFile(soundIndex, blob);
+      if (recorder) {
+        Sound.recorder.getBuffer(function (buffers) {
+          var newBuffer = Sound.audioContext.createBuffer(1, buffers[0].length, 44100);
+          newBuffer.getChannelData(0).set(buffers[0]);
+          Sound.sounds[Sound.recordingSoundIndex] = newBuffer;
+          
+          // Save to soundIndex.wav!!
+          recorder.exportWAV(function(blob) {
+            Sound.saveSoundFile(Sound.recordingSoundIndex, blob);
+          });
         });
-      });
-      
-      recorder.disconnect();
-      Sound.recorder = null;
+        
+        recorder.disconnect();
+        Sound.recorder = null;
+      }
     },
     
     /*
@@ -95,10 +106,10 @@ var Sound = {
     /*
      * Load all stored files from server
      */
-    loadUserSoundFiles: function() {
+    loadUserSoundFiles: function(numberOfFiles) {
       // Check/Cache username if user just logged in/signed up
       if(User.sessionRunning()) {
-        for (var i = 0; i < 9; i++) {
+        for (var i = 0; i < numberOfFiles; i++) {
           this.loadUserSoundFile(i);
         }
       }
@@ -122,21 +133,33 @@ var Sound = {
         pitch = 60;
       }
       if (this.sounds[soundIndex]) {
+        //if a source is already playing this sound, stop it.
+        if (this.sources[soundIndex]) {
+          this.sources[soundIndex].stop();
+        }
+        
+        //create the new source and start the sound at the given volume and pitch
         var source = this.audioContext.createBufferSource();
         source.buffer = this.sounds[soundIndex];
         source.connect(this.channels[soundIndex].input);
         this.channels[soundIndex].adjustVolume(volume);
-        
-        // Play back normally at 60, and pitchShifted otherwise
+        //play back normally at 60, and pitchShifted otherwise
         var pitchRatio = Math.pow(Math.pow(2, 1 / 12),(pitch - 60));
         source.playbackRate.value = pitchRatio;
         source.start(time);
         
-        // So that mix track is stoppable
-        if (soundIndex === 11) {
-          this.longSoundSources.push(source);
+        //save source so that it can be stopped later
+        this.sources[soundIndex] = source;
+      }
+    },
+  
+    stopAllSounds: function() {
+      for (i = 0; i < this.sources.length; i++) {
+        if (this.sources[i]) {
+          this.sources[i].stop();
         }
       }
+      this.sources = [ ];
     }
 };
 

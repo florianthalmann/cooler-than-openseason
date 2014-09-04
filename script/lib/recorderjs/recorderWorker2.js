@@ -31,7 +31,7 @@ function init(config){
   sampleRate = config.sampleRate;
 }
 
-function record(inputBuffer){
+function record(inputBuffer, callback){
   //console.log(inputBuffer);
   var monoChannel = inputBuffer[0];
   var gatedBuffer = [ ];

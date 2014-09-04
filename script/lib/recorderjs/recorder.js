@@ -16,11 +16,20 @@
         sampleRate: this.context.sampleRate
       }
     });
-    var recording = false,
-      currCallback;
+    var currCallback;
+ 
+    var duration = 2000,
+      recordingCallback,
+      startingTime;
 
     this.node.onaudioprocess = function(e){
-      if (!recording) return;
+      if (!startingTime) return;
+      //stop recording if over duration limit
+      if (recordingCallback && new Date().getTime() > startingTime + duration) {
+        recordingCallback();
+        recordingCallback = null;
+      }
+      //record if necessary
       worker.postMessage({
         command: 'record',
         buffer: [
@@ -38,12 +47,14 @@
       }
     }
 
-    this.record = function(){
-      recording = true;
+    this.record = function(duration, callback){
+      duration = duration;
+      recordingCallback = callback;
+      startingTime = new Date().getTime();
     }
 
     this.stop = function(){
-      recording = false;
+      startingTime = null;
     }
 
     this.clear = function(){

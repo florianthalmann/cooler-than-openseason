@@ -41,7 +41,6 @@ $(function() {
     window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(stream);
     
     initTracksAndChannels();
-    Sound.loadUserSoundFiles();
     
     $('#producer-name').html(data);
     
@@ -138,6 +137,9 @@ $(function() {
     
     // Remove html template
     $('.tracklist li').first().remove();
+  
+    //load sound files potentially existing from previous sessions
+    Sound.loadUserSoundFiles(11);
   }
   
   function initTracks(midiUrl, firstIndex, trackNames, gain, soundUrl) {

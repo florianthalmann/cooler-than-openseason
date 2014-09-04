@@ -6,6 +6,8 @@
 var User = {
 
     username: '',
+    openUsername: '',
+    openVersion: 1,
         
     /*
      * Check for already running session
@@ -16,7 +18,7 @@ var User = {
         
         $.ajax({
             type: 'get',
-            url: 'php/ajax.user.php',
+            url: '/php/ajax.user.php',
             data: 'checkSession=true',
             dataType: 'json',
             async: false,
@@ -36,7 +38,7 @@ var User = {
         
         $.ajax({
             type: 'get',
-            url: 'php/ajax.user.php',
+            url: '/php/ajax.user.php',
             data: 'logout=true',
             dataType: 'json',
             async: false,

@@ -70,7 +70,7 @@ var Sound = {
   
       $.ajax({
         type: 'POST',
-        url: 'php/ajax.upload.php',
+        url: '/php/ajax.upload.php',
         data: fd,
         cache: false,
         processData: false,
@@ -120,7 +120,7 @@ var Sound = {
      * via this.loadSoundFile()
      */
     loadUserSoundFile: function(soundIndex) {
-      var url = 'userfiles/' + User.username + '/' + soundIndex + '.wav';
+      var url = '/userfiles/' + User.username + '/' + soundIndex + '.wav';
       this.loadSoundFile(url, soundIndex);
     },
     

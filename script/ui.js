@@ -29,7 +29,7 @@ $(function() {
     
 
     // Load permission message by default
-    UI.container.load('nopermission.html');
+    UI.container.load('/nopermission.html');
 
     
     // Dismiss message box
@@ -51,7 +51,7 @@ $(function() {
       
       if (!$(this).hasClass('active') && !Sound.recorder) {
         Sound.recorder = new Recorder(window.mediaStreamSource, {
-          workerPath: "script/lib/recorderjs/recorderWorker2.js"
+          workerPath: "/script/lib/recorderjs/recorderWorker2.js"
         });
         
         Sound.startRecorder(buttonIndex);

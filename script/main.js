@@ -10,6 +10,20 @@
 
 $(function() {
 
+  // Check if another producer should be loaded
+  if( $('body').data('open-username') ) {
+  
+    // ++ Do the do...
+    User.openUsername = $('body').data('open-username');
+    User.openVersion  = $('body').data('open-version');
+    
+    console.log( 'View user: ' + User.openUsername );
+    console.log( 'View version: ' + User.openVersion );
+      
+  }
+  //
+
+
   navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
   navigator.getUserMedia({ 'audio': true }, function(stream) {
 
@@ -18,14 +32,14 @@ $(function() {
     var session = User.sessionRunning();
     
     if( session !== '' ) {
-      $('#container').load('main.html', function() { initMainPanel(stream, session); });
+      $('#container').load('/main.html', function() { initMainPanel(stream, session); });
     }
     else {
-      $('#container').load('signup.html', function() { initSignupPanel(stream); });
+      $('#container').load('/signup.html', function() { initSignupPanel(stream); });
     }
   },
   function() {
-    $('#container').load('error.html');
+    $('#container').load('/error.html');
   });
       
   
@@ -64,7 +78,7 @@ $(function() {
       
       $.ajax({
         type: 'POST',
-        url: 'php/ajax.user.php',
+        url: '/php/ajax.user.php',
         processData: false,
         contentType: false,
         data: fd,
@@ -72,7 +86,7 @@ $(function() {
         success: function(data) {
           if(data.success) {
             // Load main panel
-            $('#container').load('main.html', function() { initMainPanel(stream, data.success); });
+            $('#container').load('7main.html', function() { initMainPanel(stream, data.success); });
           }
           else {
             $('#message').html(data.error).show();
@@ -91,7 +105,7 @@ $(function() {
     // Event Delegation for login link
     $('#container').on('click', '#goto-login', function(e) {
       e.preventDefault();
-      $('#container').load('login.html', function() { initLoginPanel(stream); });
+      $('#container').load('7login.html', function() { initLoginPanel(stream); });
     });
     
     $('#container').on('submit', '#form-signup', function (e) {
@@ -101,7 +115,7 @@ $(function() {
       
       $.ajax({
         type: 'POST',
-        url: 'php/ajax.user.php',
+        url: '/php/ajax.user.php',
         processData: false,
         contentType: false,
         data: fd,
@@ -109,7 +123,7 @@ $(function() {
         success: function(data) {
           if(data.success) {
             // Load main panel
-            $('#container').load('main.html', function() { initMainPanel(stream, data.success); });
+            $('#container').load('/main.html', function() { initMainPanel(stream, data.success); });
           }
           else {
             $('#message').html(data.error).show();
@@ -124,16 +138,16 @@ $(function() {
    * Tracklist init
    */
   function initTracksAndChannels() {
-    initTracks('script/midi/wedancedrums.mid', 0, ['Bassdrum', 'Snare', 'Hihat'], .6);
-    initTracks('script/midi/wedancetom.mid', 3, ['Tom'], .5);
-    initTracks('script/midi/wedanceshaker.mid', 4, ['Shaker'], .4);
-    initTracks('script/midi/wedancehey.mid', 5, ['Hey'], .7);
-    initTracks('script/midi/wedanceyeah.mid', 6, ['Yeah'], .7);
-    initTracks('script/midi/wedanceyo.mid', 7, ['Yo'], .7);
-    initTracks('script/midi/wedancename.mid', 8, ['Producer name'], .8);
-    initTracks('script/midi/wedancedrink.mid', 9, ['Favorite drink'], .8);
-    initTracks('script/midi/wedancemusic.mid', 10, ['Favorite music'], .8);
-    initTracks('script/midi/wedancemix.mid', 11, null, 1, 'script/wav/wedancemix.wav');
+    initTracks('/script/midi/wedancedrums.mid', 0, ['Bassdrum', 'Snare', 'Hihat'], .6);
+    initTracks('/script/midi/wedancetom.mid', 3, ['Tom'], .5);
+    initTracks('/script/midi/wedanceshaker.mid', 4, ['Shaker'], .4);
+    initTracks('/script/midi/wedancehey.mid', 5, ['Hey'], .7);
+    initTracks('/script/midi/wedanceyeah.mid', 6, ['Yeah'], .7);
+    initTracks('/script/midi/wedanceyo.mid', 7, ['Yo'], .7);
+    initTracks('/script/midi/wedancename.mid', 8, ['Producer name'], .8);
+    initTracks('/script/midi/wedancedrink.mid', 9, ['Favorite drink'], .8);
+    initTracks('/script/midi/wedancemusic.mid', 10, ['Favorite music'], .8);
+    initTracks('/script/midi/wedancemix.mid', 11, null, 1, 'script/wav/wedancemix.wav');
     
     // Remove html template
     $('.tracklist li').first().remove();

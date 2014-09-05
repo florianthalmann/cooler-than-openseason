@@ -1,6 +1,6 @@
     <div id="app-bar">
         <div class="bar-left">
-            <button type="button" id="song" class="sqbutton play"></button>
+            <button type="button" id="song" class="play-song"><span>Play<br>Song</span></button>
         </div>
 
         <div class="bar-center">
@@ -10,8 +10,10 @@
         </div>
 
         <div class="bar-right">
-            <button type="button" class="sqbutton menu"></button>
+            <button type="button" class="menu"></button>
         </div>
+        
+        <div class="global-status"></div>
     </div>
 
     <div class="scroll-panel">
@@ -19,12 +21,14 @@
         <ul class="tracklist">
             <li>
                 <div class="track-buttons">
-                    <button type="button" id="record" class="sqbutton record"></button>
-                    <button type="button" id="play" class="sqbutton play"></button>
+                    <button type="button" id="record" class="record"></button>
+                    <button type="button" id="play" class="play"></button>
                 </div>
                 <div class="track-info">
                     <span class="track-name">(loading...)</span>
                 </div>
+                
+                <div class="track-status"></div>
             </li>
         </ul>
 

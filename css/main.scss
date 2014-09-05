@@ -61,8 +61,8 @@ $color-button-default-text: white;
 $color-button-record:       rgba(255,255,255,.65); // #efb5d5;
 $color-button-record-text:  #c54121;
 
-$color-button-play:         rgba(255,255,255,.75); // #54b290;
-$color-button-play-text:    $color-button-play;
+$color-button-play:         #526440; // #54b290;
+$color-button-play-text:    white;
 
 $font-stack:                Helvetica, Arial, sans-serif;
 $font-stack-regular:        'BrandonGrotesque-Regular', $font-stack;
@@ -75,10 +75,19 @@ $track-gradient-base:       #510728;
 
 // Animation keyframes
 @include keyframes(spin) {
-     100% { @include transform(rotate(405deg)); }
+     100% { @include transform(rotate(360deg)); }
 }
 @include keyframes(spin-reverse) {
-     100% { @include transform(rotate(-405deg)); }
+     100% { @include transform(rotate(-360deg)); }
+}
+
+@include keyframes(move) {
+    0% {
+       background-position: 0 0;
+    }
+    100% {
+       background-position: 72px 72px;
+    }
 }
 
 
@@ -119,12 +128,6 @@ a {
     color: $color-text-default;
 }
 
-button {
-    @include box-sizing(border-box);
-    border: 0;
-    outline: 0;
-    cursor: pointer;
-}
 
 input {
     @include box-sizing(border-box);
@@ -199,72 +202,146 @@ input[type="password"] {
     text-align: center;
 }
 
-// Square Buttons
-// class .active for spinning effect
-.sqbutton {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    margin: 0 10px;
 
-    outline: 1px solid transparent;
-    border: 1px solid $color-button-default;
-    background: transparent;
-    color: $color-button-default-text;
-    
-    @include transform(rotate(45deg));
-    
-    // Direction of transition?
+
+/* ==========================================================================
+   Button Cascade
+   ========================================================================== */
+
+// Default round button with text
+button {
+    @include box-sizing(border-box);
     @include transition(all .3s ease-out);
     
-    &.active {
-        @include animation(spin 5s linear infinite);
-    }
+    position: relative;
     
-    &:before,
-    span {
+    width: 54px;
+    height: 54px;
+    
+    cursor: pointer;
+    
+    outline: 1px solid transparent;
+    border-radius: 100%;
+    border: 1px solid rgba(255,255,255,.2);
+    background: $color-button-default;
+    color: $color-button-default-text;
+    
+    &:before {
         position: absolute;
         top: 50%;
         left: 50%;
         
         display: inline-block;
-        @include transform(rotate(-45deg));
-        
+        // @include transform(rotate(-45deg));
     }
     
-    &.record {
-        border-color: $color-button-record;
+    &.active {
+        @include animation(spin 5s linear infinite);
+        border-radius: 0;
         
+        width: 46px;
+        height: 46px;
+        margin: 4px;
+    }
+    
+    span {
+        display: inline-block;
+        margin-right: -2px;
+        
+        font-family: $font-stack-bold;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    
+    &[type="submit"] span {
+        margin-right: -3px;
+        
+        font-size: 1.7em;
+        line-height: 54px;
+        letter-spacing: 3px;
+    }
+    
+    /*
+     * PLAY-SONG BUTTON
+     */
+    &.play-song {
+        background: $color-button-play;
+        
+        &.active:before {
+            width: 14px;
+            height: 14px;
+            margin-left: -7px;
+            margin-top: -7px;
+            
+            border-radius: 0;
+            background: white;
+            @include animation(spin-reverse 5s linear infinite);
+            
+            content: '';
+        }
+        
+        &.active span {
+            display: none;
+        }
+    }
+    
+    /*
+     * MENU BUTTON
+     */
+    &.menu {
         &:before {
-            width: 12px;
-            height: 12px;
-            margin-left: -6px;
-            margin-top: -6px;
+            margin-left: -12px;
+            margin-top: -25px;
+            
+            content: '\2261';
+            color: $color-button-default-text;
+            font-size: 36px;
+        }
+    }
+    
+    /*
+     * TRACK RECORD BUTTON
+     */
+    &.record {
+        &:before {
+            width: 16px;
+            height: 16px;
+            margin-left: -8px;
+            margin-top: -8px;
 
-            background: $color-button-record-text;
-            border-radius: 12px;
-            content: ' ';
+            background: $color-button-default-text;
+            border-radius: 16px;
+            content: '';
             
             @include transition(border-radius .3s linear);
         }
         
-        &:active {
-            background: darken($color-button-record, 15%);
-        }
-        
         &.active {
-            border-color: white;
+            background: lighten($color-button-default, 10%);
             
-            &.active:before {
+            &:before {
+                width: 14px;
+                height: 14px;
+                margin-left: -7px;
+                margin-top: -7px;
+                
                 border-radius: 0;
                 background: white;
                 @include animation(spin-reverse 5s linear infinite);
-            }
-        }   
+            }      
+        }
+
     }
     
+    /*
+     * TRACK PLAY BUTTON
+     */
     &.play {
-        border-color: $color-button-play;
+        height: 48px;
+        width: 48px;
+        margin: 3px 10px;
+        
+        background: $color-button-play;
         
         &:before {
             width: 0;
@@ -273,14 +350,14 @@ input[type="password"] {
             margin-top: -7px;
             
             border-style: solid;
-            border-width: 6px 0 6px 12px;
+            border-width: 7px 0 7px 14px;
             border-color: transparent transparent transparent $color-button-play-text;
 
-            content: ' ';
+            content: '';
         }
         
         &:active {
-            background: darken($color-button-play, 15%);
+            background: lighten($color-button-play, 10%);
         }
         
         &.active:before {
@@ -291,77 +368,9 @@ input[type="password"] {
             @include animation(spin-reverse 5s linear infinite);
         }
     }
-    
-    &.menu {
-        
-        &:before {
-            margin-left: -12px;
-            margin-top: -25px;
-            
-            content: '\2261';
-            color: $color-button-default-text;
-            font-size: 36px;
-        }
-        
-        &:active {
-            background: darken($color-button-default, 15%);
-        }
-    }
-    
-    &.back {
-        
-        span {
-            margin-left: -10px;
-            margin-top: -15px;
-            font-size: 2em;
-        }
-        
-    }
-    
-    &.new {
-        
-        span {
-            margin-left: -10px;
-            margin-top: -15px;
-            font-size: 2em;
-        }
-        
-    }
-    
 }
 
-form .sqbutton {
-    margin: 20px 0;    
-}
 
-// Round buttons
-.rdbutton {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    margin: 10px;
-    line-height: 52px;
-
-    outline: 1px solid transparent;
-    border: 0;
-    border-radius: 50%;
-    background: $color-button-default;
-    color: $color-button-default-text;
-    
-    span {
-        display: inline-block;
-        margin-right: -3px;
-        
-        font-family: $font-stack-bold;
-        font-size: 1.7em;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-    }
-}
-
-form .rdbutton {
-    margin: 20px 0;
-}
 
 // App title bar
 #app-bar {
@@ -375,7 +384,7 @@ form .rdbutton {
     
     display: table;
     width: 100%;
-    padding: 0 5px;
+    padding: 0 10px;
     
     background: $color-bar;
     color: $color-bar-text;
@@ -400,6 +409,29 @@ form .rdbutton {
     
     .bar-right {
         text-align: right;
+    }
+    
+    .global-status {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        
+        background-size: 72px 72px;
+            
+        @include linear-gradient(
+            -45deg,
+            rgba(250, 250, 250, .15) 25%, 
+            transparent 25%, 
+            transparent 50%, 
+            rgba(250, 250, 250, .15) 50%, 
+            rgba(250, 250, 250, .15) 75%, 
+            transparent 75%, 
+            transparent
+        );
+        @include animation(move 1s linear infinite);        
     }
     
 }
@@ -436,21 +468,22 @@ form .rdbutton {
     margin: 0;
     
     li {
-        height: 57px;
+        position: relative;
+        height: 54px;
         margin: 0;
-        padding: 7px 5px 8px;
+        padding: 10px;
     }
     
     .track-buttons {
         float: left;
-        margin-top: 9px;
+        // margin-top: 9px;
     }
     
     .track-info {
         @include box-sizing(border-box);
         
         display: block;
-        padding: 17px 5px 0 140px;
+        padding: 17px 5px 0 130px;
         
         font-size: 1.1em;
         text-transform: uppercase;
@@ -458,7 +491,32 @@ form .rdbutton {
         
     }
     
+    .track-status {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        
+        background-size: 72px 72px;
+            
+        @include linear-gradient(
+            -45deg,
+            rgba(250, 250, 250, .15) 25%, 
+            transparent 25%, 
+            transparent 50%, 
+            rgba(250, 250, 250, .15) 50%, 
+            rgba(250, 250, 250, .15) 75%, 
+            transparent 75%, 
+            transparent
+        );
+        @include animation(move 1s linear infinite);
+    }
+    
 }
+
+
 
 
 // loop

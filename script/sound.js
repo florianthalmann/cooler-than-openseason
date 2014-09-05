@@ -78,6 +78,12 @@ var Sound = {
         success: function(data) {
           // feedback!
         },
+        beforeSend: function() {
+            $('[data-index="' + soundIndex + '"] .track-status').show();
+        },
+        complete: function() {
+            $('[data-index="' + soundIndex + '"] .track-status').fadeOut(200);
+        },
         error: function(xhr, ajaxOptions, thrownError) {
           console.log(thrownError);
         }
@@ -88,17 +94,29 @@ var Sound = {
      * Load sound file from server
      */
     loadSoundFile: function(url, soundIndex) {
+      
+      var cacheMix = false;
+      if(soundIndex == 11) {
+          cacheMix = true;
+      }
+    
       $.ajax({
         type: 'GET',
         url: url,
         processData: false,
         dataType: "arraybuffer",
-        cache: false,
+        cache: cacheMix,
         
         success: function(data) {
           Sound.audioContext.decodeAudioData(data, function(buffer) {
             Sound.sounds[soundIndex] = buffer;
           });
+        },
+        beforeSend: function() {
+            $('[data-index="' + soundIndex + '"] .track-status').show();
+        },
+        complete: function() {
+            $('[data-index="' + soundIndex + '"] .track-status').fadeOut(200);
         }
       });
     },
@@ -154,6 +172,7 @@ var Sound = {
     },
   
     stopAllSounds: function() {
+      var i;
       for (i = 0; i < this.sources.length; i++) {
         if (this.sources[i]) {
           this.sources[i].stop();

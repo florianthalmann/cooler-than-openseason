@@ -71,8 +71,8 @@ $(function() {
     /*
      * Play single button event delegation
      */      
-    UI.delegate.on('click', '[id^="play"]', function (e) {
-      e.preventDefault();
+    UI.delegate.on('mousedown', '[id^="play"]', function (e) {
+      //e.preventDefault();
       var buttonIndex = parseInt($(e.target).attr('id').slice(-2));
       Sound.playSoundAt(0, buttonIndex, 1);
     });

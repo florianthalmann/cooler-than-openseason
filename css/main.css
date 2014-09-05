@@ -50,30 +50,48 @@
   src: url("webfonts/2B984F_2_0.eot?#iefix") format("embedded-opentype"), url("webfonts/2B984F_2_0.woff") format("woff"), url("webfonts/2B984F_2_0.ttf") format("truetype"), url("webfonts/2B984F_2_0.svg#wf") format("svg"); }
 @-webkit-keyframes spin {
   100% {
-    -webkit-transform: rotate(405deg); } }
+    -webkit-transform: rotate(360deg); } }
 @-moz-keyframes spin {
   100% {
-    -moz-transform: rotate(405deg); } }
+    -moz-transform: rotate(360deg); } }
 @keyframes spin {
   100% {
-    -webkit-transform: rotate(405deg);
-    -moz-transform: rotate(405deg);
-    -ms-transform: rotate(405deg);
-    -o-transform: rotate(405deg);
-    transform: rotate(405deg); } }
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg); } }
 @-webkit-keyframes spin-reverse {
   100% {
-    -webkit-transform: rotate(-405deg); } }
+    -webkit-transform: rotate(-360deg); } }
 @-moz-keyframes spin-reverse {
   100% {
-    -moz-transform: rotate(-405deg); } }
+    -moz-transform: rotate(-360deg); } }
 @keyframes spin-reverse {
   100% {
-    -webkit-transform: rotate(-405deg);
-    -moz-transform: rotate(-405deg);
-    -ms-transform: rotate(-405deg);
-    -o-transform: rotate(-405deg);
-    transform: rotate(-405deg); } }
+    -webkit-transform: rotate(-360deg);
+    -moz-transform: rotate(-360deg);
+    -ms-transform: rotate(-360deg);
+    -o-transform: rotate(-360deg);
+    transform: rotate(-360deg); } }
+@-webkit-keyframes move {
+  0% {
+    background-position: 0 0; }
+
+  100% {
+    background-position: 72px 72px; } }
+@-moz-keyframes move {
+  0% {
+    background-position: 0 0; }
+
+  100% {
+    background-position: 72px 72px; } }
+@keyframes move {
+  0% {
+    background-position: 0 0; }
+
+  100% {
+    background-position: 72px 72px; } }
 * {
   margin: 0;
   padding: 0; }
@@ -101,14 +119,6 @@ ul {
 
 a {
   color: #eeeeee; }
-
-button {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  border: 0;
-  outline: 0;
-  cursor: pointer; }
 
 input {
   -webkit-box-sizing: border-box;
@@ -174,122 +184,128 @@ input[type="password"] {
   box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.1);
   text-align: center; }
 
-.sqbutton {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  margin: 0 10px;
-  outline: 1px solid transparent;
-  border: 1px solid #b52944;
-  background: transparent;
-  color: white;
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
+/* ==========================================================================
+   Button Cascade
+   ========================================================================== */
+button {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   -webkit-transition: all 0.3s ease-out;
   -moz-transition: all 0.3s ease-out;
-  transition: all 0.3s ease-out; }
-  .sqbutton.active {
-    -webkit-animation: spin 5s linear infinite;
-    -moz-animation: spin 5s linear infinite;
-    animation: spin 5s linear infinite; }
-  .sqbutton:before,
-  .sqbutton span {
+  transition: all 0.3s ease-out;
+  position: relative;
+  width: 54px;
+  height: 54px;
+  cursor: pointer;
+  outline: 1px solid transparent;
+  border-radius: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #b52944;
+  color: white;
+  /*
+   * PLAY-SONG BUTTON
+   */
+  /*
+   * MENU BUTTON
+   */
+  /*
+   * TRACK RECORD BUTTON
+   */
+  /*
+   * TRACK PLAY BUTTON
+   */ }
+  button:before {
     position: absolute;
     top: 50%;
     left: 50%;
+    display: inline-block; }
+  button.active {
+    -webkit-animation: spin 5s linear infinite;
+    -moz-animation: spin 5s linear infinite;
+    animation: spin 5s linear infinite;
+    border-radius: 0;
+    width: 46px;
+    height: 46px;
+    margin: 4px; }
+  button span {
     display: inline-block;
-    -webkit-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
-    transform: rotate(-45deg); }
-  .sqbutton.record {
-    border-color: rgba(255, 255, 255, 0.65); }
-    .sqbutton.record:before {
-      width: 12px;
-      height: 12px;
-      margin-left: -6px;
-      margin-top: -6px;
-      background: #c54121;
-      border-radius: 12px;
-      content: ' ';
-      -webkit-transition: border-radius 0.3s linear;
-      -moz-transition: border-radius 0.3s linear;
-      transition: border-radius 0.3s linear; }
-    .sqbutton.record:active {
-      background: rgba(217, 217, 217, 0.65); }
-    .sqbutton.record.active {
-      border-color: white; }
-      .sqbutton.record.active.active:before {
-        border-radius: 0;
-        background: white;
-        -webkit-animation: spin-reverse 5s linear infinite;
-        -moz-animation: spin-reverse 5s linear infinite;
-        animation: spin-reverse 5s linear infinite; }
-  .sqbutton.play {
-    border-color: rgba(255, 255, 255, 0.75); }
-    .sqbutton.play:before {
-      width: 0;
-      height: 0;
-      margin-left: -5px;
+    margin-right: -2px;
+    font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase; }
+  button[type="submit"] span {
+    margin-right: -3px;
+    font-size: 1.7em;
+    line-height: 54px;
+    letter-spacing: 3px; }
+  button.play-song {
+    background: #526440; }
+    button.play-song.active:before {
+      width: 14px;
+      height: 14px;
+      margin-left: -7px;
       margin-top: -7px;
-      border-style: solid;
-      border-width: 6px 0 6px 12px;
-      border-color: transparent transparent transparent rgba(255, 255, 255, 0.75);
-      content: ' '; }
-    .sqbutton.play:active {
-      background: rgba(217, 217, 217, 0.75); }
-    .sqbutton.play.active:before {
-      margin-left: -6px;
-      margin-top: -6px;
-      border-color: rgba(255, 255, 255, 0.75);
+      border-radius: 0;
+      background: white;
       -webkit-animation: spin-reverse 5s linear infinite;
       -moz-animation: spin-reverse 5s linear infinite;
-      animation: spin-reverse 5s linear infinite; }
-  .sqbutton.menu:before {
+      animation: spin-reverse 5s linear infinite;
+      content: ''; }
+    button.play-song.active span {
+      display: none; }
+  button.menu:before {
     margin-left: -12px;
     margin-top: -25px;
     content: '\2261';
     color: white;
     font-size: 36px; }
-  .sqbutton.menu:active {
-    background: #771b2d; }
-  .sqbutton.back span {
-    margin-left: -10px;
-    margin-top: -15px;
-    font-size: 2em; }
-  .sqbutton.new span {
-    margin-left: -10px;
-    margin-top: -15px;
-    font-size: 2em; }
-
-form .sqbutton {
-  margin: 20px 0; }
-
-.rdbutton {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  margin: 10px;
-  line-height: 52px;
-  outline: 1px solid transparent;
-  border: 0;
-  border-radius: 50%;
-  background: #b52944;
-  color: white; }
-  .rdbutton span {
-    display: inline-block;
-    margin-right: -3px;
-    font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
-    font-size: 1.7em;
-    letter-spacing: 3px;
-    text-transform: uppercase; }
-
-form .rdbutton {
-  margin: 20px 0; }
+  button.record:before {
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    margin-top: -8px;
+    background: white;
+    border-radius: 16px;
+    content: '';
+    -webkit-transition: border-radius 0.3s linear;
+    -moz-transition: border-radius 0.3s linear;
+    transition: border-radius 0.3s linear; }
+  button.record.active {
+    background: #d33e5b; }
+    button.record.active:before {
+      width: 14px;
+      height: 14px;
+      margin-left: -7px;
+      margin-top: -7px;
+      border-radius: 0;
+      background: white;
+      -webkit-animation: spin-reverse 5s linear infinite;
+      -moz-animation: spin-reverse 5s linear infinite;
+      animation: spin-reverse 5s linear infinite; }
+  button.play {
+    height: 48px;
+    width: 48px;
+    margin: 3px 10px;
+    background: #526440; }
+    button.play:before {
+      width: 0;
+      height: 0;
+      margin-left: -5px;
+      margin-top: -7px;
+      border-style: solid;
+      border-width: 7px 0 7px 14px;
+      border-color: transparent transparent transparent white;
+      content: ''; }
+    button.play:active {
+      background: #6c8354; }
+    button.play.active:before {
+      margin-left: -6px;
+      margin-top: -6px;
+      border-color: white;
+      -webkit-animation: spin-reverse 5s linear infinite;
+      -moz-animation: spin-reverse 5s linear infinite;
+      animation: spin-reverse 5s linear infinite; }
 
 #app-bar {
   -webkit-box-sizing: border-box;
@@ -302,7 +318,7 @@ form .rdbutton {
   height: 72px;
   display: table;
   width: 100%;
-  padding: 0 5px;
+  padding: 0 10px;
   background: #36021a;
   color: #c54121; }
   #app-bar [class^="bar-"] {
@@ -317,6 +333,20 @@ form .rdbutton {
       font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif; }
   #app-bar .bar-right {
     text-align: right; }
+  #app-bar .global-status {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-size: 72px 72px;
+    background-color: rgba(250, 250, 250, 0.15);
+    background-image: -webkit-linear-gradient(-225deg, rgba(250, 250, 250, 0.15) 25%, transparent 25%, transparent 50%, rgba(250, 250, 250, 0.15) 50%, rgba(250, 250, 250, 0.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(-45deg,rgba(250, 250, 250, 0.15) 25%, transparent 25%, transparent 50%, rgba(250, 250, 250, 0.15) 50%, rgba(250, 250, 250, 0.15) 75%, transparent 75%, transparent);
+    -webkit-animation: move 1s linear infinite;
+    -moz-animation: move 1s linear infinite;
+    animation: move 1s linear infinite; }
 
 .scroll-panel {
   position: absolute;
@@ -340,23 +370,38 @@ form .rdbutton {
   margin: 0; }
   .tracklist li,
   .versionlist li {
-    height: 57px;
+    position: relative;
+    height: 54px;
     margin: 0;
-    padding: 7px 5px 8px; }
+    padding: 10px; }
   .tracklist .track-buttons,
   .versionlist .track-buttons {
-    float: left;
-    margin-top: 9px; }
+    float: left; }
   .tracklist .track-info,
   .versionlist .track-info {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     display: block;
-    padding: 17px 5px 0 140px;
+    padding: 17px 5px 0 130px;
     font-size: 1.1em;
     text-transform: uppercase;
     letter-spacing: 0.05em; }
+  .tracklist .track-status,
+  .versionlist .track-status {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-size: 72px 72px;
+    background-color: rgba(250, 250, 250, 0.15);
+    background-image: -webkit-linear-gradient(-225deg, rgba(250, 250, 250, 0.15) 25%, transparent 25%, transparent 50%, rgba(250, 250, 250, 0.15) 50%, rgba(250, 250, 250, 0.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(-45deg,rgba(250, 250, 250, 0.15) 25%, transparent 25%, transparent 50%, rgba(250, 250, 250, 0.15) 50%, rgba(250, 250, 250, 0.15) 75%, transparent 75%, transparent);
+    -webkit-animation: move 1s linear infinite;
+    -moz-animation: move 1s linear infinite;
+    animation: move 1s linear infinite; }
 
 .tracklist > li:nth-child(1) {
   background-color: #550d2d; }

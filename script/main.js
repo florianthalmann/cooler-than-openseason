@@ -138,6 +138,8 @@ $(function() {
    * Tracklist init
    */
   function initTracksAndChannels() {
+    $('.global-status').show();
+    
     initTracks('/script/midi/wedancedrums.mid', 0, ['Bassdrum', 'Snare', 'Hihat'], .6);
     initTracks('/script/midi/wedancetom.mid', 3, ['Tom'], .5);
     initTracks('/script/midi/wedanceshaker.mid', 4, ['Shaker'], .4);
@@ -169,6 +171,7 @@ $(function() {
         currentTrack.find('#record').attr('id', 'record'+indexString);
         currentTrack.find('#play').attr('id', 'play'+indexString);
         currentTrack.find('.track-name').html(trackNames[i]);
+        currentTrack.attr('data-index', firstIndex+i);
         $('.tracklist').append(currentTrack);
       }
     }
@@ -188,6 +191,8 @@ $(function() {
       Sound.channels[i] = new ChannelBus(gain);
       Sound.channels[i].connect(Sound.audioContext.destination);
     }
+    
+    $('.global-status').fadeOut(300);
   }
   
   function pad(num, size) {

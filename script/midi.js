@@ -45,7 +45,7 @@ var Midi = {
      */
     loadMidiFile: function(url, callback) {
         var request = new XMLHttpRequest();
-        request.open('GET', url);
+        request.open('GET', url + "?" + (new Date()).getTime());
         request.overrideMimeType("text/plain; charset=x-user-defined");
         
         request.onreadystatechange = function() {
@@ -69,7 +69,7 @@ var Midi = {
 };
 
 
-function PlayedMidiFile(midiFile, isMultitrack, firstIndex) {
+function PlayedMidiFile(midiFile, soundIndex) {
     
     this.playEventsBefore = function(time) {
         var tickLength = 60 / Midi.tempo / midiFile.header.ticksPerBeat;
@@ -83,16 +83,9 @@ function PlayedMidiFile(midiFile, isMultitrack, firstIndex) {
                 if (currentEventAudioClockTime <= time) {
                     if (currentEvent.subtype === "noteOn") {
                         var volume = currentEvent.velocity / 127;
-                        if (isMultitrack) {
-                            //drum machine standard: first bassdrum at 36.
-                            var soundIndex = firstIndex + currentEvent.noteNumber - 36;
-                            Sound.playSoundAt(currentEventAudioClockTime, soundIndex, volume);
-                        }
-                        else {
-                            //play pitched sound
-                            var pitch = currentEvent.noteNumber;
-                            Sound.playSoundAt(currentEventAudioClockTime, firstIndex, volume, pitch);
-                        }
+                        //play pitched sound
+                        var pitch = currentEvent.noteNumber;
+                        Sound.playSoundAt(currentEventAudioClockTime, soundIndex, volume, pitch);
                     }
                     this.currentTrackPositions[i]++;
                     this.currentTrackEventTimes[i] = currentEventMidiTime;

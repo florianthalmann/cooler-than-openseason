@@ -186,27 +186,39 @@ var Sound = {
 /*
  * Channel Bus Object
  */
-function ChannelBus(gainFactor) {
+function ChannelBus(gainFactor, pan) {
     this.input = Sound.audioContext.createGain();
     this.output = Sound.audioContext.createGain();
     
-    var delay = new Sound.tuna.Delay();
+    //var delay = new Sound.tuna.Delay();
+    var convolver = Sound.audioContext.createConvolver();
+    loadReverbFile(convolver);
+    if (pan != 0) {
+      var panner = Sound.audioContext.createPanner();
+      panner.setPosition(pan,0,-0.5);
+    }
     //var convolver = new Sound.tuna.Convolver();
     //var compressor = new Sound.tuna.Compressor();
     //var compressor = audioContext.createDynamicsCompressor();
     
     //equalizer -> delay -> convolver
     //this.input.connect(compressor);
-    this.input.connect(this.output);
-    //delay.connect(this.output);
+    if (panner) {
+      this.input.connect(panner);
+      panner.connect(this.output);
+      //this.input.connect(delay.input);
+      //delay.connect(this.output);
+    } else {
+      this.input.connect(this.output);
+    }
     //compressor.connect(delay.input);
     //delay.connect(this.output);
     //convolver.connect(this.output);
     
     //initially volume is assumed to be 1
     this.output.gain.value = gainFactor;
-    //delay.delayTime = 200;
-    //delay.feedback = .2;
+    //delay.delayTime = 100;
+    //delay.feedback = .1;
     /*console.log(compressor);
     compressor.threshold = -100;
     compressor.ratio = 20;
@@ -223,4 +235,23 @@ function ChannelBus(gainFactor) {
     this.adjustVolume = function(volume) {
         this.output.gain.value = gainFactor*volume;
     };
+  
+    /*
+     * Load reverb file from server
+     */
+    function loadReverbFile(convolver) {
+      $.ajax({
+        type: 'GET',
+        url: '/script/lib/tuna/impulses/ir_rev_short.wav',
+        processData: false,
+        dataType: "arraybuffer",
+        
+        success: function(data) {
+          Sound.audioContext.decodeAudioData(data, function(buffer) {
+            convolver.buffer = buffer;
+          });
+        }
+      });
+    };
+  
 }

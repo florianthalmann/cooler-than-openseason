@@ -140,16 +140,18 @@ $(function() {
   function initTracksAndChannels() {
     $('.global-status').show();
     
-    initTracks('/script/midi/wedancedrums.mid', 0, ['Bassdrum', 'Snare', 'Hihat'], .6);
-    initTracks('/script/midi/wedancetom.mid', 3, ['Tom'], .5);
-    initTracks('/script/midi/wedanceshaker.mid', 4, ['Shaker'], .4);
-    initTracks('/script/midi/wedancehey.mid', 5, ['Hey'], .7);
-    initTracks('/script/midi/wedanceyeah.mid', 6, ['Yeah'], .7);
-    initTracks('/script/midi/wedanceyo.mid', 7, ['Yo'], .7);
-    initTracks('/script/midi/wedancename.mid', 8, ['Producer name'], .8);
-    initTracks('/script/midi/wedancedrink.mid', 9, ['Favorite drink'], .8);
-    initTracks('/script/midi/wedancemusic.mid', 10, ['Favorite music'], .8);
-    initTracks('/script/midi/wedancemix.mid', 11, null, 1, '/script/wav/wedancemix.wav');
+    initTracks('/script/midi/wedancebassdrum.mid', 0, 'Bassdrum', .6, 0);
+    initTracks('/script/midi/wedancesnare.mid', 1, 'Snare', .5, -.1);
+    initTracks('/script/midi/wedancehihat.mid', 2, 'Hihat', .4, .15);
+    initTracks('/script/midi/wedancetom.mid', 3, 'Tom', .4, -.15);
+    initTracks('/script/midi/wedanceshaker.mid', 4, 'Shaker', .3, -.3);
+    initTracks('/script/midi/wedancehey.mid', 5, 'Hey', .4, .15);
+    initTracks('/script/midi/wedanceyeah.mid', 6, 'Yeah', .3, .3);
+    initTracks('/script/midi/wedanceyo.mid', 7, 'Yo', .3, -.3);
+    initTracks('/script/midi/wedancename.mid', 8, 'Producer name', .4, .1);
+    initTracks('/script/midi/wedancedrink.mid', 9, 'Favorite drink', .4, -.1);
+    initTracks('/script/midi/wedancemusic.mid', 10, 'Favorite music', .4, .1);
+    initTracks('/script/midi/wedancemix.mid', 11, null, 1, 0, '/script/wav/wedancemix.wav');
     
     // Remove html template
     $('.tracklist li').first().remove();
@@ -158,39 +160,33 @@ $(function() {
     Sound.loadUserSoundFiles(11);
   }
   
-  function initTracks(midiUrl, firstIndex, trackNames, gain, soundUrl) {
-    var trackCount = trackNames ? trackNames.length : 1;
-    var i;
-    
-    // init html track
-    if (trackNames) {
-      //adapt trackist items
-      for (i = 0; i < trackNames.length; i++) {
-        var indexString = pad(firstIndex+i, 2);
-        var currentTrack = $('.tracklist li').first().clone();
-        currentTrack.find('#record').attr('id', 'record'+indexString);
-        currentTrack.find('#play').attr('id', 'play'+indexString);
-        currentTrack.find('.track-name').html(trackNames[i]);
-        currentTrack.attr('data-index', firstIndex+i);
-        $('.tracklist').append(currentTrack);
-      }
+  function initTracks(midiUrl, trackIndex, trackName, gain, pan, soundUrl) {
+  
+    // init html track, only there's a name for it
+    if (trackName) {
+      //adapt tracklist item
+      var indexString = pad(trackIndex, 2);
+      var currentTrack = $('.tracklist li').first().clone();
+      currentTrack.find('#record').attr('id', 'record'+indexString);
+      currentTrack.find('#play').attr('id', 'play'+indexString);
+      currentTrack.find('.track-name').html(trackName);
+      currentTrack.attr('data-index', trackIndex);
+      $('.tracklist').append(currentTrack);
     }
 
     // init midifile
     Midi.loadMidiFile(midiUrl, function(data) {
-      Midi.midiFiles.push(new PlayedMidiFile(MidiFile(data), trackCount > 1, firstIndex));
+      Midi.midiFiles.push(new PlayedMidiFile(MidiFile(data), trackIndex));
     });
    
     // init soundfile
     if (soundUrl) {
-      Sound.loadSoundFile(soundUrl, firstIndex);
+      Sound.loadSoundFile(soundUrl, trackIndex);
     }
     
-    // init channels
-    for (i = firstIndex; i < firstIndex+trackCount; i++) {
-      Sound.channels[i] = new ChannelBus(gain);
-      Sound.channels[i].connect(Sound.audioContext.destination);
-    }
+    // init channel
+    Sound.channels[trackIndex] = new ChannelBus(gain, pan);
+    Sound.channels[trackIndex].connect(Sound.audioContext.destination);
     
     $('.global-status').fadeOut(300);
   }

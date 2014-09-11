@@ -24,26 +24,25 @@ $(function() {
   
   }
 
+  // If version is supposed to be listened to go to listening panel
+  if( User.openUsername !== '' ) {
+    $('#container').load('/main.html', function() { initMainPanel(null, User.openUsername, User.openVersion, true ); });
+  }
+  // If no version listening and the user is logged in, go straight to main panel
+  else if( User.sessionRunning() !== '' ) {
 
-  navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-  navigator.getUserMedia({ 'audio': true }, function(stream) {
-
-    // If version is supposed to be listened to go to listening panel
-    if( User.openUsername !== '' ) {
-      $('#container').load('/main.html', function() { initMainPanel(stream, User.openUsername, User.openVersion, true ); });
-    }
-    // If no version listening and the user is logged in, go straight to main panel
-    else if( User.sessionRunning() !== '' ) {
-      $('#container').load('/main.html', function() { initMainPanel(stream, User.username, User.openVersion, false ); });
-    }
-    // otherwise load signup panel
-    else {
-      $('#container').load('/signup.html', function() { initSignupPanel(stream); });
-    }
-  },
-  function() {
-    $('#container').load('/error.html');
-  });
+    navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    navigator.getUserMedia({ 'audio': true }, function(stream) {
+        $('#container').load('/main.html', function() { initMainPanel(stream, User.username, User.openVersion, false ); });
+    },
+    function() {
+      $('#container').load('/error.html');
+    });
+  }
+  // otherwise load signup panel
+  else {
+    $('#container').load('/signup.html', function() { initSignupPanel(stream); });
+  }
       
   
   /**
@@ -55,7 +54,9 @@ $(function() {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     Sound.audioContext = new AudioContext();
     Sound.tuna = new Tuna(Sound.audioContext);
-    window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(stream);
+    if (stream) {
+      window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(stream);
+    }
   
     initTracksAndChannels(username, version, justListening);
     
@@ -162,6 +163,14 @@ $(function() {
   
     //load sound files potentially existing from previous sessions
     Sound.loadUserSoundFiles(11, username, version);
+  
+    if (justListening) {
+      $('#are-you-cooler').html('Are you cooler than ' + username + '?');
+      $('.make-your-own-area').show();
+    } else {
+      $('.make-your-own-area').hide();
+    }
+  
   }
   
   function initTracks(midiUrl, trackIndex, makeHtmlTrack, trackName, gain, pan, soundUrl) {

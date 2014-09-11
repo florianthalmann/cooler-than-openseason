@@ -474,3 +474,10 @@ button {
 
 .versionlist > li:nth-child(9) {
   background-color: #595b42; }
+
+
+.make-your-own-area {
+    font-size: .9em;
+    letter-spacing: 0.05em;
+    text-align: center;
+    text-transform: uppercase; }

@@ -56,6 +56,15 @@ var Sound = {
         recorder.disconnect();
         Sound.recorder = null;
       }
+      
+      // deactivate appropriate UI button
+      $('[id^="record' + pad(Sound.recordingSoundIndex, 2) + '"]').removeClass('active');
+      
+      function pad(num, size) {
+        var s = num+"";
+        while (s.length < size) s = "0" + s;
+        return s;
+      }
     },
     
     /*

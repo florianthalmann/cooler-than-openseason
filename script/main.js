@@ -204,6 +204,10 @@ $(function() {
     $('.global-status').fadeOut(300);
   }
   
+  function deactivateRecordButton(trackIndex) {
+    $('[id^="record' + pad(trackIndex) + '"]').removeClass('active');
+  }
+  
   function pad(num, size) {
     var s = num+"";
     while (s.length < size) s = "0" + s;

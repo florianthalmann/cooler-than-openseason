@@ -71,7 +71,13 @@ $(function() {
       window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(micStream);
     }
   
-    initTracksAndChannels(username, version, justListening);
+    //load large osmix soundfile only once for better performance!
+    var mixIndex = 11;
+    if (!Sound.sounds[mixIndex]) {
+      initTracks('/script/midi/wedancemix.mid', 11, false, null, 1, 0, '/script/wav/wedancemix.wav');
+    }
+  
+    initUserTracksAndChannels(username, version, justListening);
     
     $('#producer-name').html(username);
     
@@ -155,7 +161,7 @@ $(function() {
   /*
    * Tracklist init
    */
-  function initTracksAndChannels(username, version, justListening) {
+  function initUserTracksAndChannels(username, version, justListening) {
     $('.global-status').show();
     
     initTracks('/script/midi/wedancebassdrum.mid', 0, !justListening, 'Bassdrum', .6, 0);
@@ -169,7 +175,6 @@ $(function() {
     initTracks('/script/midi/wedancename.mid', 8, !justListening, 'Producer name', .4, .1);
     initTracks('/script/midi/wedancedrink.mid', 9, !justListening, 'Favorite drink', .4, -.1);
     initTracks('/script/midi/wedancemusic.mid', 10, !justListening, 'Favorite music', .4, .1);
-    initTracks('/script/midi/wedancemix.mid', 11, false, null, 1, 0, '/script/wav/wedancemix.wav');
     
     // Remove html template
     $('.tracklist li').first().remove();

@@ -146,7 +146,7 @@ $(function() {
     $('.global-status').show();
     
     initTracks('/script/midi/wedancebassdrum.mid', 0, !justListening, 'Bassdrum', .6, 0);
-    initTracks('/script/midi/wedancesnare.mid', 1, !justListening, 'Snare', .5, -.1);
+    initTracks('/script/midi/wedancesnare.mid', 1, !justListening, 'Snare', .5, -.05);
     initTracks('/script/midi/wedancehihat.mid', 2, !justListening, 'Hihat', .4, .15);
     initTracks('/script/midi/wedancetom.mid', 3, !justListening, 'Tom', .4, -.15);
     initTracks('/script/midi/wedanceshaker.mid', 4, !justListening, 'Shaker', .3, -.3);
@@ -165,10 +165,13 @@ $(function() {
     Sound.loadUserSoundFiles(11, username, version);
   
     if (justListening) {
+      $('.share').hide();
       $('#are-you-cooler').html('Are you cooler than ' + username + '?');
       $('.make-your-own-area').show();
     } else {
       $('.make-your-own-area').hide();
+      $('#share-link').html('http://www.coolerthanopenseason.ch/' + username + '!');
+      $('.share').show();
     }
   
   }
@@ -202,10 +205,6 @@ $(function() {
     Sound.channels[trackIndex].connect(Sound.audioContext.destination);
     
     $('.global-status').fadeOut(300);
-  }
-  
-  function deactivateRecordButton(trackIndex) {
-    $('[id^="record' + pad(trackIndex) + '"]').removeClass('active');
   }
   
   function pad(num, size) {

@@ -16,24 +16,27 @@ $(function() {
     // ++ Do the do...
     User.openUsername = $('body').data('open-username');
     User.openVersion  = $('body').data('open-version');
-    
-    console.log( 'View user: ' + User.openUsername );
-    console.log( 'View version: ' + User.openVersion );
-      
+  
+  } else {
+    //reset in case own version opened again
+    User.openUsername = '';
+    User.openVersion  = 1;
+  
   }
-  //
 
 
   navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
   navigator.getUserMedia({ 'audio': true }, function(stream) {
 
-    // If the user is logged in, go straight to main panel
-    // otherwise load signup panel
-    var session = User.sessionRunning();
-    
-    if( session !== '' ) {
-      $('#container').load('/main.html', function() { initMainPanel(stream, session); });
+    // If version is supposed to be listened to go to listening panel
+    if( User.openUsername !== '' ) {
+      $('#container').load('/main.html', function() { initMainPanel(stream, User.openUsername, User.openVersion, true ); });
     }
+    // If no version listening and the user is logged in, go straight to main panel
+    else if( User.sessionRunning() !== '' ) {
+      $('#container').load('/main.html', function() { initMainPanel(stream, User.username, User.openVersion, false ); });
+    }
+    // otherwise load signup panel
     else {
       $('#container').load('/signup.html', function() { initSignupPanel(stream); });
     }
@@ -47,18 +50,19 @@ $(function() {
    * Callback when loading Main Panel
    * ++ also menu panel!
    */
-  function initMainPanel(stream, data) {
+  function initMainPanel(stream, username, version, justListening) {
     
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     Sound.audioContext = new AudioContext();
     Sound.tuna = new Tuna(Sound.audioContext);
     window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(stream);
+  
+    initTracksAndChannels(username, version, justListening);
     
-    initTracksAndChannels();
-    
-    $('#producer-name').html(data);
+    $('#producer-name').html(username);
     
   }
+
   
   /*
    * Login panel init
@@ -137,33 +141,33 @@ $(function() {
   /*
    * Tracklist init
    */
-  function initTracksAndChannels() {
+  function initTracksAndChannels(username, version, justListening) {
     $('.global-status').show();
     
-    initTracks('/script/midi/wedancebassdrum.mid', 0, 'Bassdrum', .6, 0);
-    initTracks('/script/midi/wedancesnare.mid', 1, 'Snare', .5, -.1);
-    initTracks('/script/midi/wedancehihat.mid', 2, 'Hihat', .4, .15);
-    initTracks('/script/midi/wedancetom.mid', 3, 'Tom', .4, -.15);
-    initTracks('/script/midi/wedanceshaker.mid', 4, 'Shaker', .3, -.3);
-    initTracks('/script/midi/wedancehey.mid', 5, 'Hey', .4, .15);
-    initTracks('/script/midi/wedanceyeah.mid', 6, 'Yeah', .3, .3);
-    initTracks('/script/midi/wedanceyo.mid', 7, 'Yo', .3, -.3);
-    initTracks('/script/midi/wedancename.mid', 8, 'Producer name', .4, .1);
-    initTracks('/script/midi/wedancedrink.mid', 9, 'Favorite drink', .4, -.1);
-    initTracks('/script/midi/wedancemusic.mid', 10, 'Favorite music', .4, .1);
-    initTracks('/script/midi/wedancemix.mid', 11, null, 1, 0, '/script/wav/wedancemix.wav');
+    initTracks('/script/midi/wedancebassdrum.mid', 0, !justListening, 'Bassdrum', .6, 0);
+    initTracks('/script/midi/wedancesnare.mid', 1, !justListening, 'Snare', .5, -.1);
+    initTracks('/script/midi/wedancehihat.mid', 2, !justListening, 'Hihat', .4, .15);
+    initTracks('/script/midi/wedancetom.mid', 3, !justListening, 'Tom', .4, -.15);
+    initTracks('/script/midi/wedanceshaker.mid', 4, !justListening, 'Shaker', .3, -.3);
+    initTracks('/script/midi/wedancehey.mid', 5, !justListening, 'Hey', .4, .15);
+    initTracks('/script/midi/wedanceyeah.mid', 6, !justListening, 'Yeah', .3, .3);
+    initTracks('/script/midi/wedanceyo.mid', 7, !justListening, 'Yo', .3, -.3);
+    initTracks('/script/midi/wedancename.mid', 8, !justListening, 'Producer name', .4, .1);
+    initTracks('/script/midi/wedancedrink.mid', 9, !justListening, 'Favorite drink', .4, -.1);
+    initTracks('/script/midi/wedancemusic.mid', 10, !justListening, 'Favorite music', .4, .1);
+    initTracks('/script/midi/wedancemix.mid', 11, false, null, 1, 0, '/script/wav/wedancemix.wav');
     
     // Remove html template
     $('.tracklist li').first().remove();
   
     //load sound files potentially existing from previous sessions
-    Sound.loadUserSoundFiles(11);
+    Sound.loadUserSoundFiles(11, username, version);
   }
   
-  function initTracks(midiUrl, trackIndex, trackName, gain, pan, soundUrl) {
+  function initTracks(midiUrl, trackIndex, makeHtmlTrack, trackName, gain, pan, soundUrl) {
   
-    // init html track, only there's a name for it
-    if (trackName) {
+    // init html track only if necessary
+    if (makeHtmlTrack) {
       //adapt tracklist item
       var indexString = pad(trackIndex, 2);
       var currentTrack = $('.tracklist li').first().clone();

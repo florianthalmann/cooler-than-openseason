@@ -124,12 +124,9 @@ var Sound = {
     /*
      * Load all stored files from server
      */
-    loadUserSoundFiles: function(numberOfFiles) {
-      // Check/Cache username if user just logged in/signed up
-      if(User.sessionRunning()) {
-        for (var i = 0; i < numberOfFiles; i++) {
-          this.loadUserSoundFile(i);
-        }
+    loadUserSoundFiles: function(numberOfFiles, username, version) {
+      for (var i = 0; i < numberOfFiles; i++) {
+        this.loadUserSoundFile(i, username, version);
       }
     },
     
@@ -137,8 +134,8 @@ var Sound = {
      * Construct sound file name and load that specific  file
      * via this.loadSoundFile()
      */
-    loadUserSoundFile: function(soundIndex) {
-      var url = '/userfiles/' + User.username + '/' + soundIndex + '.wav';
+    loadUserSoundFile: function(soundIndex, username, version) {
+      var url = '/userfiles/' + username + '/' + soundIndex + '.wav';
       this.loadSoundFile(url, soundIndex);
     },
     

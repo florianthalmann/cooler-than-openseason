@@ -10,6 +10,8 @@
 
 $(function() {
 
+  var micStream = null;
+
   // Check if another producer should be loaded
   if( $('body').data('open-username') ) {
   
@@ -26,22 +28,33 @@ $(function() {
 
   // If version is supposed to be listened to go to listening panel
   if( User.openUsername !== '' ) {
-    $('#container').load('/main.html', function() { initMainPanel(null, User.openUsername, User.openVersion, true ); });
+    $('#container').load('/main.html', function() { initMainPanel(User.openUsername, User.openVersion, true ); });
+  } else {
+    if (!micStream) {
+      navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+      navigator.getUserMedia({ 'audio': true },
+      //success
+      function(stream) {
+        micStream = stream;
+        initMainOrSignup();
+      },
+      //failure
+      function() {
+        $('#container').load('/error.html');
+      });
+    } else {
+      initMainOrSignup();
+    }
   }
-  // If no version listening and the user is logged in, go straight to main panel
-  else if( User.sessionRunning() !== '' ) {
-
-    navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-    navigator.getUserMedia({ 'audio': true }, function(stream) {
-        $('#container').load('/main.html', function() { initMainPanel(stream, User.username, User.openVersion, false ); });
-    },
-    function() {
-      $('#container').load('/error.html');
-    });
-  }
-  // otherwise load signup panel
-  else {
-    $('#container').load('/signup.html', function() { initSignupPanel(stream); });
+  
+  function initMainOrSignup() {
+    // If the user is logged in, go straight to main panel
+    if( User.sessionRunning() !== '' ) {
+      $('#container').load('/main.html', function() { initMainPanel(User.username, User.openVersion, false ); });
+    // otherwise load signup panel
+    } else {
+      $('#container').load('/signup.html', function() { initSignupPanel(); });
+    }
   }
       
   
@@ -49,13 +62,13 @@ $(function() {
    * Callback when loading Main Panel
    * ++ also menu panel!
    */
-  function initMainPanel(stream, username, version, justListening) {
+  function initMainPanel(username, version, justListening) {
     
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     Sound.audioContext = new AudioContext();
     Sound.tuna = new Tuna(Sound.audioContext);
-    if (stream) {
-      window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(stream);
+    if (micStream) {
+      window.mediaStreamSource = Sound.audioContext.createMediaStreamSource(micStream);
     }
   
     initTracksAndChannels(username, version, justListening);
@@ -68,12 +81,12 @@ $(function() {
   /*
    * Login panel init
    */
-  function initLoginPanel(stream) {
+  function initLoginPanel() {
   
     // Event Delegation for signup link
     $('#container').on('click', '#goto-signup', function(e) {
       e.preventDefault();
-      $('#container').load('signup.html', function() { initSignupPanel(stream); });
+      $('#container').load('signup.html', function() { initSignupPanel(); });
     });
       
     $('#container').on('submit', '#form-login', function (e) {
@@ -91,7 +104,7 @@ $(function() {
         success: function(data) {
           if(data.success) {
             // Load main panel
-            $('#container').load('/main.html', function() { initMainPanel(stream, data.success); });
+            $('#container').load('/main.html', function() { initMainPanel(data.success); });
           }
           else {
             $('#message').html(data.error).show();
@@ -105,12 +118,12 @@ $(function() {
   /*
    * Signup panel init
    */
-  function initSignupPanel(stream) {
+  function initSignupPanel() {
     
     // Event Delegation for login link
     $('#container').on('click', '#goto-login', function(e) {
       e.preventDefault();
-      $('#container').load('/login.html', function() { initLoginPanel(stream); });
+      $('#container').load('/login.html', function() { initLoginPanel(); });
     });
     
     $('#container').on('submit', '#form-signup', function (e) {
@@ -128,7 +141,7 @@ $(function() {
         success: function(data) {
           if(data.success) {
             // Load main panel
-            $('#container').load('/main.html', function() { initMainPanel(stream, data.success); });
+            $('#container').load('/main.html', function() { initMainPanel(data.success); });
           }
           else {
             $('#message').html(data.error).show();

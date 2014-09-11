@@ -170,7 +170,9 @@ $(function() {
       $('.make-your-own-area').show();
     } else {
       $('.make-your-own-area').hide();
-      $('#share-link').html('http://www.coolerthanopenseason.ch/' + username + '!');
+      var link = window.location.hostname + '/' + username;
+      $('#share-link').html(link + '!');
+      $('#share-link').attr("href", link);
       $('.share').show();
     }
   

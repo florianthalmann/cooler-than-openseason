@@ -197,8 +197,8 @@ function ChannelBus(gainFactor, pan) {
     this.output = Sound.audioContext.createGain();
     
     //var delay = new Sound.tuna.Delay();
-    var convolver = Sound.audioContext.createConvolver();
-    loadReverbFile(convolver);
+    //var convolver = Sound.audioContext.createConvolver();
+    //loadReverbFile(convolver);
     if (pan != 0) {
       var panner = Sound.audioContext.createPanner();
       panner.setPosition(pan,0,-0.5);

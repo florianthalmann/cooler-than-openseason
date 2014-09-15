@@ -162,7 +162,6 @@ $(function() {
    * Tracklist init
    */
   function initUserTracksAndChannels(username, version, justListening) {
-    $('.global-status').show();
     
     initTracks('/script/midi/wedancebassdrum.mid', 0, !justListening, 'Bassdrum', .6, 0);
     initTracks('/script/midi/wedancesnare.mid', 1, !justListening, 'Snare', .5, -.05);
@@ -229,8 +228,7 @@ $(function() {
     // init channel
     Sound.channels[trackIndex] = new ChannelBus(gain, pan);
     Sound.channels[trackIndex].connect(Sound.audioContext.destination);
-    
-    $('.global-status').fadeOut(300);
+
   }
   
   function pad(num, size) {

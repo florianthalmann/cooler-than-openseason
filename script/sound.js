@@ -124,10 +124,20 @@ var Sound = {
           });
         },
         beforeSend: function() {
-            $('[data-index="' + soundIndex + '"] .track-status').show();
+            if(soundIndex == 12) {
+                 $('.global-status').show();
+            }
+            else {
+                $('[data-index="' + soundIndex + '"] .track-status').show();
+            }
         },
         complete: function() {
-            $('[data-index="' + soundIndex + '"] .track-status').fadeOut(200);
+            if(soundIndex == 12) {
+                $('.global-status').fadeOut(1000);
+            }
+            else {
+                $('[data-index="' + soundIndex + '"] .track-status').fadeOut(200);
+            }
         }
       });
     },

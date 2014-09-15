@@ -105,7 +105,9 @@ var Sound = {
     loadSoundFile: function(url, soundIndex) {
       
       var cacheMix = false;
-      if(soundIndex == 11) {
+      
+      // mixIndex
+      if(soundIndex == 12) {
           cacheMix = true;
       }
     

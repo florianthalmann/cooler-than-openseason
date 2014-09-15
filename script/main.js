@@ -72,9 +72,9 @@ $(function() {
     }
   
     //load large osmix soundfile only once for better performance!
-    var mixIndex = 11;
+    var mixIndex = 12;
     if (!Sound.sounds[mixIndex]) {
-      initTracks('/script/midi/wedancemix.mid', 11, false, null, 1, 0, '/script/wav/wedancemix.wav');
+      initTracks('/script/midi/wedancemix.mid', mixIndex, false, null, 1, 0, '/script/audio/wedancemix.mp3');
     }
   
     initUserTracksAndChannels(username, version, justListening);
@@ -169,12 +169,13 @@ $(function() {
     initTracks('/script/midi/wedancehihat.mid', 2, !justListening, 'Hihat', .4, .15);
     initTracks('/script/midi/wedancetom.mid', 3, !justListening, 'Tom', .4, -.15);
     initTracks('/script/midi/wedanceshaker.mid', 4, !justListening, 'Shaker', .3, -.3);
-    initTracks('/script/midi/wedancehey.mid', 5, !justListening, 'Hey', .4, .15);
-    initTracks('/script/midi/wedanceyeah.mid', 6, !justListening, 'Yeah', .3, .3);
-    initTracks('/script/midi/wedanceyo.mid', 7, !justListening, 'Yo', .3, -.3);
-    initTracks('/script/midi/wedancename.mid', 8, !justListening, 'Producer name', .4, .1);
-    initTracks('/script/midi/wedancedrink.mid', 9, !justListening, 'Favorite drink', .4, -.1);
-    initTracks('/script/midi/wedancemusic.mid', 10, !justListening, 'Favorite music', .4, .1);
+    initTracks('/script/midi/wedanceclap.mid', 5, !justListening, 'Clap', .2, .05);
+    initTracks('/script/midi/wedancehey.mid', 6, !justListening, 'Hey', .25, .1);
+    initTracks('/script/midi/wedanceyeah.mid', 7, !justListening, 'Yeah', .25, .2);
+    initTracks('/script/midi/wedanceyo.mid', 8, !justListening, 'Yo', .25, -.2);
+    initTracks('/script/midi/wedancename.mid', 9, !justListening, 'Producer name', .3, .1);
+    initTracks('/script/midi/wedancedrink.mid', 10, !justListening, 'Favorite drink', .3, -.1);
+    initTracks('/script/midi/wedancemusic.mid', 11, !justListening, 'Favorite music', .3, .1);
     
     // Remove html template
     $('.tracklist li').first().remove();
@@ -201,7 +202,7 @@ $(function() {
   
   }
   
-  function initTracks(midiUrl, trackIndex, makeHtmlTrack, trackName, gain, pan, soundUrl) {
+  function initTracks(midiUrl, trackIndex, makeHtmlTrack, trackName, gain, pan, soundUrl, fileType) {
   
     // init html track only if necessary
     if (makeHtmlTrack) {
@@ -222,7 +223,7 @@ $(function() {
    
     // init soundfile
     if (soundUrl) {
-      Sound.loadSoundFile(soundUrl, trackIndex);
+      Sound.loadSoundFile(soundUrl, trackIndex, fileType);
     }
     
     // init channel

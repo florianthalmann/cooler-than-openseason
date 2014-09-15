@@ -77,19 +77,16 @@
 @-webkit-keyframes move {
   0% {
     background-position: 0 0; }
-
   100% {
     background-position: 72px 72px; } }
 @-moz-keyframes move {
   0% {
     background-position: 0 0; }
-
   100% {
     background-position: 72px 72px; } }
 @keyframes move {
   0% {
     background-position: 0 0; }
-
   100% {
     background-position: 72px 72px; } }
 * {
@@ -97,8 +94,8 @@
   padding: 0; }
 
 body {
-  background: #111111;
-  color: #eeeeee;
+  background: #111;
+  color: #eee;
   font-family: "BrandonGrotesque-Regular", Helvetica, Arial, sans-serif;
   line-height: 1.4; }
 
@@ -113,12 +110,17 @@ p,
 ul {
   margin-bottom: 20px; }
 
+p {
+  max-width: 24em;
+  margin-left: auto;
+  margin-right: auto; }
+
 ul {
   padding-left: 18px;
   list-style: none; }
 
 a {
-  color: #eeeeee; }
+  color: #eee; }
 
 input {
   -webkit-box-sizing: border-box;
@@ -153,7 +155,9 @@ input[type="password"] {
   top: 0;
   left: 0;
   bottom: 0;
-  right: 0; }
+  right: 0;
+  max-width: 1024px;
+  margin: 0 auto; }
 
 .center-screen {
   position: absolute;
@@ -163,8 +167,8 @@ input[type="password"] {
   width: 100%;
   height: 100%;
   background-color: #5b1133;
-  background-image: -webkit-radial-gradient(#5b1133, #111111);
-  background-image: radial-gradient(  #5b1133, #111111); }
+  background-image: -webkit-radial-gradient(#5b1133, #111);
+  background-image: radial-gradient(  #5b1133, #111); }
   .center-screen .center-content {
     display: table-cell;
     padding: 10px 40px;
@@ -307,6 +311,9 @@ button {
       -moz-animation: spin-reverse 5s linear infinite;
       animation: spin-reverse 5s linear infinite; }
 
+form button {
+  margin: 20px; }
+
 #app-bar {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -355,9 +362,17 @@ button {
   right: 0;
   bottom: 0;
   overflow-y: auto;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
+  padding: 0; }
+
+#share-menu {
+  display: none;
+  background: rgba(54, 2, 26, 0.9);
+  padding: 20px;
+  font-size: 1.2em;
+  text-align: center; }
+
+#share-link {
+  font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif; }
 
 #shown {
   padding: 15px 10px;
@@ -474,10 +489,3 @@ button {
 
 .versionlist > li:nth-child(9) {
   background-color: #595b42; }
-
-
-.make-your-own-area {
-    font-size: .9em;
-    letter-spacing: 0.05em;
-    text-align: center;
-    text-transform: uppercase; }

@@ -184,13 +184,18 @@ $(function() {
   
     if (justListening) {
       $('.share').hide();
+      $('#toggle-share').css('visibility', 'hidden');
       $('#are-you-cooler').html('Are you cooler than ' + username + '?');
       $('.make-your-own-area').show();
     } else {
       $('.make-your-own-area').hide();
       var link = window.location.hostname + '/' + username;
-      $('#share-link').html(link + '!');
-      $('#share-link').attr("href", link);
+      
+      $(".share-link").each(function () {
+        var href = $(this).attr('href');
+        $(this).attr("href", href + 'http://' + link);
+      });
+      
       $('.share').show();
     }
   

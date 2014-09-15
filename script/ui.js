@@ -94,9 +94,19 @@ $(function() {
     /*
      * Toggle Menu panel
      */
-    UI.delegate.on('click', '.sqbutton.menu', function(e) {
-        e.preventDefault();
-        $('#menu').slideDown();
+    UI.delegate.on('click', '#toggle-share', function(e) {
+        
+        var menu = $('#share-menu');
+        
+        menu.slideToggle( 'fast', function() {
+            if( menu.css('display') == 'none' ) {
+                $('#toggle-share span').html('Share!');
+            }
+            else {
+                $('#toggle-share span').html('Close');
+            }     
+        });
+        
     });
     
     
@@ -112,5 +122,22 @@ $(function() {
           Sound.stopAllSounds();
       }
     }
+    
+    UI.delegate.on('click', '.share-link', function(event) {
+    	var leftPosition, topPosition;
+    	var height = 355;
+    	var width = 500;
+    	
+        //Allow for borders.
+        leftPosition = (window.screen.width / 2) - ((width / 2) + 10);
+        //Allow for title and status bars.
+        topPosition = (window.screen.height / 2) - ((height / 2) + 50);
+        
+        var windowFeatures = "status=no,height=" + height + ",width=" + width + ",resizable=yes,left=" + leftPosition + ",top=" + topPosition + ",screenX=" + leftPosition + ",screenY=" + topPosition + ",toolbar=no,menubar=no,scrollbars=yes,location=yes,directories=no";
+        var u = this.href;
+        window.open(u, 'sharer', windowFeatures);
+        
+    	event.preventDefault();
+    });
     
 });

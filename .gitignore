@@ -1,4 +1,4 @@
 .DS_Store
 /userfiles
 /.codekit-cache
-/css/.sass-cache
+/_scss/.sass-cache

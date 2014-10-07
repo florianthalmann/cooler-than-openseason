@@ -74,6 +74,16 @@ $(function() {
       var buttonIndex = parseInt($(e.target).attr('id').slice(-2));
       Sound.playSoundAt(0, buttonIndex, 1);
     });
+  
+    /*
+     * Delete button event delegation
+     */      
+    UI.delegate.on('mousedown', '[id^="delete"]', function (e) {
+      //e.preventDefault();
+      var buttonIndex = parseInt($(e.target).attr('id').slice(-2));
+      Sound.deleteSoundAt(buttonIndex);
+    });
+
 
     /*
      * Play Song button event delegation

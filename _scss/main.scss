@@ -64,6 +64,9 @@ $color-button-record-text:  #c54121;
 $color-button-play:         #526440; // #54b290;
 $color-button-play-text:    white;
 
+$color-button-delete:       #F2FF20;
+$color-button-delete-text:  white;
+
 $font-stack:                Helvetica, Arial, sans-serif;
 $font-stack-regular:        'BrandonGrotesque-Regular', $font-stack;
 $font-stack-bold:           'BrandonGrotesque-Bold', $font-stack;
@@ -376,6 +379,40 @@ button {
             border-color: $color-button-play-text;
             @include animation(spin-reverse 5s linear infinite);
         }
+    }
+
+    /*
+     * TRACK DELETE BUTTON
+     */
+    &.delete {
+        &:before {
+            width: 16px;
+            height: 16px;
+            margin-left: -8px;
+            margin-top: -8px;
+
+            background: $color-button-delete-text;
+            border-radius: 16px;
+            content: '';
+            
+            @include transition(border-radius .3s linear);
+        }
+        
+        &.active {
+            background: lighten($color-button-delete, 10%);
+            
+            &:before {
+                width: 14px;
+                height: 14px;
+                margin-left: -7px;
+                margin-top: -7px;
+                
+                border-radius: 0;
+                background: white;
+                @include animation(spin-reverse 5s linear infinite);
+            }      
+        }
+
     }
 }
 form button {

@@ -159,6 +159,30 @@ var Sound = {
       var url = '/userfiles/' + username + '/' + soundIndex + '.wav';
       this.loadSoundFile(url, soundIndex);
     },
+  
+    /*
+     * Delete sound at given index
+     */
+    deleteSoundAt: function(soundIndex) {
+      if (this.sounds[soundIndex]) {
+        //remove sound
+        this.sounds[soundIndex] = null;
+        
+        //delete file
+        var fname = soundIndex + '.wav';
+      
+        $.ajax({
+          type: 'POST',
+          data: {
+            action: 'deletefile',
+            filename: fname,
+          },
+          url: '/php/ajax.delete.php',
+          success: function(msg) {
+          }
+        })
+      }
+    },
     
     
     /*

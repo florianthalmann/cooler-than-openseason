@@ -210,6 +210,7 @@ $(function() {
       var currentTrack = $('.tracklist li').first().clone();
       currentTrack.find('#record').attr('id', 'record'+indexString);
       currentTrack.find('#play').attr('id', 'play'+indexString);
+      currentTrack.find('#delete').attr('id', 'delete'+indexString);
       currentTrack.find('.track-name').html(trackName);
       currentTrack.attr('data-index', trackIndex);
       $('.tracklist').append(currentTrack);

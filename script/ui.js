@@ -50,9 +50,7 @@ $(function() {
       var buttonIndex = parseInt($(e.target).attr('id').slice(-2));
       
       if (!$(this).hasClass('active') && !Sound.recorder) {
-        Sound.recorder = new Recorder(window.mediaStreamSource, {
-          workerPath: "/script/lib/recorderjs/recorderWorker2.js"
-        });
+        Sound.recorder = new Recorder(window.mediaStreamSource);
         
         Sound.startRecorder(buttonIndex);
         

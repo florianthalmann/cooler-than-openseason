@@ -43,7 +43,7 @@ var Sound = {
       
       if (recorder) {
         Sound.recorder.getBuffer(function (buffers) {
-          var newBuffer = Sound.audioContext.createBuffer(1, buffers[0].length, 44100);
+          var newBuffer = Sound.audioContext.createBuffer(1, buffers[0].length, Sound.audioContext.sampleRate);
           newBuffer.getChannelData(0).set(buffers[0]);
           Sound.sounds[Sound.recordingSoundIndex] = newBuffer;
           

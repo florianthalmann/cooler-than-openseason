@@ -163,18 +163,18 @@ $(function() {
    */
   function initUserTracksAndChannels(username, version, justListening) {
     
-    initTracks('/script/midi/wedancebassdrum.mid', 0, !justListening, 'Bassdrum', .6, 0);
-    initTracks('/script/midi/wedancesnare.mid', 1, !justListening, 'Snare', .5, -.05);
-    initTracks('/script/midi/wedancehihat.mid', 2, !justListening, 'Hihat', .4, .15);
-    initTracks('/script/midi/wedancetom.mid', 3, !justListening, 'Tom', .4, -.15);
-    initTracks('/script/midi/wedanceshaker.mid', 4, !justListening, 'Shaker', .3, -.3);
-    initTracks('/script/midi/wedanceclap.mid', 5, !justListening, 'Clap', .2, .05);
-    initTracks('/script/midi/wedancehey.mid', 6, !justListening, 'Hey', .25, .1);
-    initTracks('/script/midi/wedanceyeah.mid', 7, !justListening, 'Yeah', .25, .2);
-    initTracks('/script/midi/wedanceyo.mid', 8, !justListening, 'Yo', .25, -.2);
-    initTracks('/script/midi/wedancename.mid', 9, !justListening, 'Producer name', .3, .1);
-    initTracks('/script/midi/wedancedrink.mid', 10, !justListening, 'Favorite drink', .3, -.1);
-    initTracks('/script/midi/wedancemusic.mid', 11, !justListening, 'Favorite music', .3, .1);
+    initTracks('/script/midi/wedancebassdrum.mid', 0, !justListening, 'Bassdrum', .55, 0);
+    initTracks('/script/midi/wedancesnare.mid', 1, !justListening, 'Snare', .5, 0);
+    initTracks('/script/midi/wedancehihat.mid', 2, !justListening, 'Hihat', .35, .15);
+    initTracks('/script/midi/wedancetom.mid', 3, !justListening, 'Tom', .35, -.15);
+    initTracks('/script/midi/wedanceshaker.mid', 4, !justListening, 'Shaker', .25, -.3);
+    initTracks('/script/midi/wedanceclap.mid', 5, !justListening, 'Clap', .25, -.1);
+    initTracks('/script/midi/wedancehey.mid', 6, !justListening, 'Hey', .2, .1);
+    initTracks('/script/midi/wedanceyeah.mid', 7, !justListening, 'Yeah', .2, .2);
+    initTracks('/script/midi/wedanceyo.mid', 8, !justListening, 'Yo', .2, -.2);
+    initTracks('/script/midi/wedancename.mid', 9, !justListening, 'Producer name', .25, .1);
+    initTracks('/script/midi/wedancedrink.mid', 10, !justListening, 'Favorite drink', .25, -.1);
+    initTracks('/script/midi/wedancemusic.mid', 11, !justListening, 'Favorite music', .25, .1);
     
     // Remove html template
     $('.tracklist li').first().remove();

@@ -195,7 +195,7 @@ var Sound = {
       if (this.sounds[soundIndex]) {
         //if a source is already playing this sound, stop it.
         if (this.sources[soundIndex]) {
-          this.sources[soundIndex].stop();
+          this.sources[soundIndex].stop(0);
         }
         
         //create the new source and start the sound at the given volume and pitch
@@ -217,7 +217,7 @@ var Sound = {
       var i;
       for (i = 0; i < this.sources.length; i++) {
         if (this.sources[i]) {
-          this.sources[i].stop();
+          this.sources[i].stop(0); //needs an argument in safari
         }
       }
       this.sources = [ ];

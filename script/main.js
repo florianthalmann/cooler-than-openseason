@@ -74,7 +74,7 @@ $(function() {
     //load large osmix soundfile only once for better performance!
     var mixIndex = 12;
     if (!Sound.sounds[mixIndex]) {
-      initTracks('/script/midi/wedancemix.mid', mixIndex, false, null, 1, 0, '/script/audio/wedancemix.mp3');
+      initTracks('/script/midi/wedancemix.mid', mixIndex, false, null, 0, 0, '/script/audio/wedancemix.mp3');
     }
   
     initUserTracksAndChannels(username, version, justListening);

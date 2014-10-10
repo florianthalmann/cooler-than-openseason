@@ -16,6 +16,7 @@ var Sound = {
     sources: [],
   
     MAX_RECORDING_TIME: 3000, //in milliseconds
+    GAIN_FADE_TIME: .05, //in seconds (max midi scheduleahead time!!)
     
     
     /*
@@ -192,24 +193,16 @@ var Sound = {
       if (!pitch) {
         pitch = 60;
       }
+      
       if (this.sounds[soundIndex]) {
         //if a source is already playing this sound, stop it.
-        if (this.sources[soundIndex]) {
-          this.sources[soundIndex].stop(0);
+        if (this.sources[soundIndex] && time > 0) {
+          this.sources[soundIndex].fadeOutAndStop(time-this.GAIN_FADE_TIME-.01);//10ms of security silence ;)
         }
         
         //create the new source and start the sound at the given volume and pitch
-        var source = this.audioContext.createBufferSource();
-        source.buffer = this.sounds[soundIndex];
-        source.connect(this.channels[soundIndex].input);
-        this.channels[soundIndex].adjustVolume(volume);
-        //play back normally at 60, and pitchShifted otherwise
-        var pitchRatio = Math.pow(Math.pow(2, 1 / 12),(pitch - 60));
-        source.playbackRate.value = pitchRatio;
-        source.start(time);
-        
-        //save source so that it can be stopped later
-        this.sources[soundIndex] = source;
+        this.sources[soundIndex] = new FadeableSource(this.sounds[soundIndex], volume, pitch, time);
+        this.sources[soundIndex].connect(this.channels[soundIndex].input);
       }
     },
   
@@ -217,11 +210,12 @@ var Sound = {
       var i;
       for (i = 0; i < this.sources.length; i++) {
         if (this.sources[i]) {
-          this.sources[i].stop(0); //needs an argument in safari
+          this.sources[i].fadeOutAndStop(0);
         }
       }
       this.sources = [ ];
     }
+      
 };
 
 
@@ -257,8 +251,9 @@ function ChannelBus(gainFactor, pan) {
     //delay.connect(this.output);
     //convolver.connect(this.output);
     
-    //initially volume is assumed to be 1
+    //gainFactor determines general gain level. volume can be changed within FadableSource object
     this.output.gain.value = gainFactor;
+  
     //delay.delayTime = 100;
     //delay.feedback = .1;
     /*console.log(compressor);
@@ -271,11 +266,6 @@ function ChannelBus(gainFactor, pan) {
     
     this.connect = function(target){
         this.output.connect(target);
-    };
-    
-    //gainFactor determines general gain level. volume can be changed within range of gainFactor
-    this.adjustVolume = function(volume) {
-        this.output.gain.value = gainFactor*volume;
     };
   
     /*
@@ -294,6 +284,37 @@ function ChannelBus(gainFactor, pan) {
           });
         }
       });
+    };
+}
+  
+/*
+ * FadeableSource Object
+ */
+function FadeableSource(buffer, volume, pitch, startingTime) {
+    this.output = Sound.audioContext.createGain();
+    this.output.gain.value = volume;
+    this.source = Sound.audioContext.createBufferSource();
+    this.source.buffer = buffer;
+    this.source.connect(this.output);
+    //play back normally at 60, and pitchShifted otherwise
+    var pitchRatio = Math.pow(Math.pow(2, 1 / 12),(pitch - 60));
+    this.source.playbackRate.value = pitchRatio;
+    this.source.start(startingTime);
+  
+    this.fadeOutAndStop = function(stoppingTime) {
+        console.log(stoppingTime);
+        if (!stoppingTime || stoppingTime <= Sound.audioContext.currentTime) {
+          stoppingTime = Sound.audioContext.currentTime;
+        }
+        //keep volume the same until fade time
+        this.output.gain.setValueAtTime(this.output.gain.value, stoppingTime);
+        //then fade out
+        this.output.gain.linearRampToValueAtTime(0, stoppingTime + Sound.GAIN_FADE_TIME);
+        this.source.stop(stoppingTime + Sound.GAIN_FADE_TIME); //needs an argument in safari!
+    };
+  
+    this.connect = function(target){
+        this.output.connect(target);
     };
   
 }

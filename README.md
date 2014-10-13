@@ -9,6 +9,7 @@ CREATE TABLE `users` (
   `passphrase` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `salt` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `token` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `lastactivity` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)

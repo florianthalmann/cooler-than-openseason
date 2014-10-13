@@ -30,7 +30,93 @@ $(function() {
   if( User.openUsername !== '' ) {
     $('#container').load('/main.html', function() { initMainPanel(User.openUsername, User.openVersion, true ); });
   } else {
-    if (!micStream) {
+    initWelcomePanel();
+  }
+  
+  function initWelcomePanel() {
+    // If the user is logged in, go straight to main panel
+    if( User.sessionRunning() !== '' ) {
+      $('#container').load('/main.html', function() { initMainPanel(User.username, User.openVersion, false ); });
+    // otherwise load signup panel
+    } else {
+      $('#container').load('/signup.html', function() { initSignupPanel(); });
+    }
+  }
+  
+  /*
+   * Signup panel init
+   */
+  function initSignupPanel() {
+    /*if( User.sessionRunning() !== '' ) {
+      //welcome user back
+    } else {
+      //load signup stuff
+    }*/
+  
+    updateRecentVersionsList();
+    
+    // Event Delegation for login link
+    $('#container').on('click', '#goto-login', function(e) {
+      e.preventDefault();
+      $('#container').load('/login.html', function() { initLoginPanel(); });
+    });
+    
+    $('#container').on('submit', '#form-signup', function (e) {
+      e.preventDefault();
+      
+      var fd = new FormData( $('#form-signup')[0] );
+      
+      $.ajax({
+        type: 'POST',
+        url: '/php/ajax.user.php',
+        processData: false,
+        contentType: false,
+        data: fd,
+        
+        success: function(data) {
+          if(data.success) {
+            // Load main panel
+            $('#container').load('/main.html', function() { initMainPanel(data.success); });
+          }
+          else {
+            $('#message').html(data.error).show();
+          }
+        }
+      });
+      
+    });
+  }
+  
+  
+  function updateRecentVersionsList() {
+    $.ajax({
+        type: 'GET',
+        url: '/php/ajax.recentusers.php',
+        dataType: 'json',
+        
+        success: function(data) {
+        
+            //add a link for each username
+            for (currentUsername of data.usernames) {
+                var currentUserlink = $('.recent-users li').first().clone();
+                currentUserlink.find('.userlink').attr('href', '/'+currentUsername);
+                currentUserlink.find('.userlink').html(currentUsername);
+                $('.recent-users').append(currentUserlink);
+            }
+            // Remove html template
+            $('.recent-users li').first().remove();
+           
+        }
+      });
+  }
+      
+  
+  /**
+   * Callback when loading Main Panel
+   * ++ also menu panel!
+   */
+  function initMainPanel(username, version, justListening) {
+    if (!justListening && !micStream) {
       navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
       navigator.getUserMedia({ 'audio': true },
       //success
@@ -42,27 +128,7 @@ $(function() {
       function() {
         $('#container').load('/error.html');
       });
-    } else {
-      initMainOrSignup();
     }
-  }
-  
-  function initMainOrSignup() {
-    // If the user is logged in, go straight to main panel
-    if( User.sessionRunning() !== '' ) {
-      $('#container').load('/main.html', function() { initMainPanel(User.username, User.openVersion, false ); });
-    // otherwise load signup panel
-    } else {
-      $('#container').load('/signup.html', function() { initSignupPanel(); });
-    }
-  }
-      
-  
-  /**
-   * Callback when loading Main Panel
-   * ++ also menu panel!
-   */
-  function initMainPanel(username, version, justListening) {
     
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     Sound.audioContext = new AudioContext();
@@ -74,7 +140,7 @@ $(function() {
     //load large osmix soundfile only once for better performance!
     var mixIndex = 12;
     if (!Sound.sounds[mixIndex]) {
-      initTracks('/script/midi/wedancemix.mid', mixIndex, false, null, 0, 0, '/script/audio/wedancemix.mp3');
+      initTracks('/script/midi/wedancemix.mid', mixIndex, false, null, 1, 0, '/script/audio/wedancemix.mp3');
     }
   
     initUserTracksAndChannels(username, version, justListening);
@@ -121,42 +187,6 @@ $(function() {
     });
   }
   
-  /*
-   * Signup panel init
-   */
-  function initSignupPanel() {
-    
-    // Event Delegation for login link
-    $('#container').on('click', '#goto-login', function(e) {
-      e.preventDefault();
-      $('#container').load('/login.html', function() { initLoginPanel(); });
-    });
-    
-    $('#container').on('submit', '#form-signup', function (e) {
-      e.preventDefault();
-      
-      var fd = new FormData( $('#form-signup')[0] );
-      
-      $.ajax({
-        type: 'POST',
-        url: '/php/ajax.user.php',
-        processData: false,
-        contentType: false,
-        data: fd,
-        
-        success: function(data) {
-          if(data.success) {
-            // Load main panel
-            $('#container').load('/main.html', function() { initMainPanel(data.success); });
-          }
-          else {
-            $('#message').html(data.error).show();
-          }
-        }
-      });
-      
-    });
-  }
   
   /*
    * Tracklist init

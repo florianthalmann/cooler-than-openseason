@@ -122,7 +122,7 @@ $(function() {
       //success
       function(stream) {
         micStream = stream;
-        initMainOrSignup();
+        initWelcomePanel();
       },
       //failure
       function() {

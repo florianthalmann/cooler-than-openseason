@@ -170,9 +170,9 @@ input[type="password"] {
   display: table;
   width: 100%;
   height: 100%;
-  background-color: #5b1133;
-  background-image: -webkit-radial-gradient(#5b1133, #111);
-  background-image: radial-gradient(  #5b1133, #111); }
+  background-color: rgba(91, 17, 51, 0.5);
+  background-image: -webkit-radial-gradient(rgba(91, 17, 51, 0.5), transparent);
+  background-image: radial-gradient(  rgba(91, 17, 51, 0.5), transparent); }
   .center-screen .center-content {
     display: table-cell;
     padding: 10px 40px;
@@ -186,7 +186,7 @@ input[type="password"] {
   left: 25px;
   right: 25px;
   padding: 10px;
-  background: #b88627;
+  background: rgba(54, 2, 26, 0.75);
   color: white;
   border-radius: 1px;
   box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.1);

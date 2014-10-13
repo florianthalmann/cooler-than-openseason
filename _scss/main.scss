@@ -194,7 +194,7 @@ input[type="password"] {
     width: 100%;
     height: 100%;
     
-    @include radial-gradient(#5b1133, $color-body);
+    @include radial-gradient(rgba(91,17,51,.5), transparent);
     
     .center-content {
         display: table-cell;
@@ -213,7 +213,7 @@ input[type="password"] {
     right: 25px;
     padding: 10px;
     
-    background: #b88627;
+    background: $color-bar;
     color: white;
     border-radius: 1px;
     box-shadow: 0 0 0 10px rgba(255,255,255,.1);

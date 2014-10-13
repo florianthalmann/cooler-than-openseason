@@ -130,6 +130,10 @@ $(function() {
       });
     }
     
+    // Show instructions
+    $('#message').html('<strong>INSTRUCTIONS</strong><br><br><img src="/img/instruct-record.png"> Record your sounds and play them loud along the track <img src="/img/instruct-play.png"><br><img src="/img/instruct-share.png"> Share your hip-shaking masterpiece with your friends!<br>Open Season loves you!<br><br>Tap/click to close instructions...').show();
+    
+    
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     Sound.audioContext = new AudioContext();
     Sound.tuna = new Tuna(Sound.audioContext);

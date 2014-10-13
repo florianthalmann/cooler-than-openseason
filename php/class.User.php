@@ -133,20 +133,20 @@ class User {
     public function createAccount($username, $email, $password) {
         
         if($this->usernameExists($username)) {
-            $error[] = 'Username is already taken.';
+            $error[] = 'Username is already taken.<br>';
         }
         if($this->emailExists($email)) {
-            $error[] = 'E-Mail is already taken.';
+            $error[] = 'E-Mail is already taken.<br>';
         }
         
         if(empty($username)) {
-            $error[] = 'Please enter a name.';
+            $error[] = 'Please enter a name.<br>';
         }
         if(empty($email)) {
-            $error[] = 'Please enter your e-mail address.';
+            $error[] = 'Please enter your e-mail address.<br>';
         }
         if(empty($password)) {
-            $error[] = 'Please enter a password.';
+            $error[] = 'Please enter a password.<br>';
         }
         
         if(!isset($error)) {
@@ -178,7 +178,7 @@ class User {
                 }
                 else {
                     
-                    $error[] = 'Error: could not login.';
+                    $error[] = 'Error: could not login.<br>';
                     
                 }
                 

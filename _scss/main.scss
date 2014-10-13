@@ -52,19 +52,19 @@ $color-body:                #111;
 $color-text-default:        #eee;
 $color-text-dim:            #aaa;
 
-$color-bar:                 #36021a;
-$color-bar-text:            #c54121;
+$color-bar:                 rgba(54,2,26,.75);
+$color-bar-text:            #c58121;
 
-$color-button-default:      #b52944;
+$color-button-default:      #e6006c;
 $color-button-default-text: white;
 
 $color-button-record:       rgba(255,255,255,.65); // #efb5d5;
 $color-button-record-text:  #c54121;
 
-$color-button-play:         #526440; // #54b290;
+$color-button-play:         #4e6439; // #54b290;
 $color-button-play-text:    white;
 
-$color-button-delete:       #F2FF20;
+$color-button-delete:       rgba(242,255,32,.35);
 $color-button-delete-text:  white;
 
 $font-stack:                Helvetica, Arial, sans-serif;
@@ -100,10 +100,16 @@ $track-gradient-base:       #510728;
     padding: 0;
 }
 
+html, body {
+    height: 100%;
+}
+
 // Common elements
 body {
     
-    background: $color-body;
+    background: $color-body url(../img/bg-fire.jpg) center top no-repeat;
+    background-size: cover;
+    
     color: $color-text-default;
     
     font-family: $font-stack-regular;
@@ -232,9 +238,9 @@ button {
     
     cursor: pointer;
     
-    outline: 1px solid transparent;
+    outline: 0px solid transparent;
     border-radius: 100%;
-    border: 1px solid rgba(255,255,255,.2);
+    border: 0px solid rgba(255,255,255,.2);
     background: $color-button-default;
     color: $color-button-default-text;
     
@@ -385,32 +391,11 @@ button {
      * TRACK DELETE BUTTON
      */
     &.delete {
-        &:before {
-            width: 16px;
-            height: 16px;
-            margin-left: -8px;
-            margin-top: -8px;
-
-            background: $color-button-delete-text;
-            border-radius: 16px;
-            content: '';
-            
-            @include transition(border-radius .3s linear);
-        }
+        background: $color-button-delete;
+        color: $color-button-delete-text;
         
-        &.active {
-            background: lighten($color-button-delete, 10%);
-            
-            &:before {
-                width: 14px;
-                height: 14px;
-                margin-left: -7px;
-                margin-top: -7px;
-                
-                border-radius: 0;
-                background: white;
-                @include animation(spin-reverse 5s linear infinite);
-            }      
+        &:active {
+            background: rgba(242,255,32,.65);     
         }
 
     }
@@ -503,7 +488,7 @@ form button {
 
 #share-menu {
     display: none;
-    background: transparentize($color-bar, .1);
+    background: rgba(54,2,26,.85);
     padding: 20px;
     
     font-size: 1.2em;
@@ -529,8 +514,14 @@ form button {
     li {
         position: relative;
         height: 54px;
-        margin: 0;
+        margin: 0 0 1px 0;
         padding: 10px;
+        
+        button.delete {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
     }
     
     .track-buttons {
@@ -544,9 +535,11 @@ form button {
         display: block;
         padding: 17px 5px 0 130px;
         
-        font-size: 1.1em;
+        font-family: $font-stack-bold;
+        font-size: 1.05em;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        
         
     }
     
@@ -581,7 +574,7 @@ form button {
 // loop
 @for $i from 1 through 15 {
     .tracklist > li:nth-child(#{$i}) {
-        background-color: tint($track-gradient-base, $i * 2.5);
+        background-color: transparentize(tint($track-gradient-base, $i * 2.5), .66);
     }
 }
 // end loop

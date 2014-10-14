@@ -108,7 +108,7 @@ var Sound = {
       var cacheMix = false;
       
       // mixIndex
-      if(soundIndex == 12) {
+      if(soundIndex == 13) {
           cacheMix = true;
       }
     
@@ -125,7 +125,7 @@ var Sound = {
           });
         },
         beforeSend: function() {
-            if(soundIndex == 12) {
+            if(soundIndex == 13) {
                  $('.global-status').show();
             }
             else {
@@ -133,7 +133,7 @@ var Sound = {
             }
         },
         complete: function() {
-            if(soundIndex == 12) {
+            if(soundIndex == 13) {
                 $('.global-status').fadeOut(1000);
             }
             else {

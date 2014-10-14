@@ -90,7 +90,7 @@ $(function() {
      */  
     UI.delegate.on('click', 'button#song', function (e) {
       e.preventDefault();
-      togglePlaySong();
+      Midi.togglePlaySong();
       if (Midi.isPlaying) {
         $(this).addClass('active');
       } else {
@@ -116,20 +116,7 @@ $(function() {
         });
         
     });
-    
-    
-    function togglePlaySong() {
-        
-      Midi.isPlaying = !Midi.isPlaying;
-      if (Midi.isPlaying) { // start playing
-          Midi.startingTime = Sound.audioContext.currentTime;
-          Midi.scheduleMidiEvents(); // kick off scheduling
-      }
-      else {
-          Midi.stopMidiScheduling();
-          Sound.stopAllSounds();
-      }
-    }
+  
     
     UI.delegate.on('click', '.share-link', function(event) {
     	var leftPosition, topPosition;

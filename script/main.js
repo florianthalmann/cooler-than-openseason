@@ -159,7 +159,7 @@ $(function() {
     }
   
     //load large osmix soundfile only once for better performance!
-    var mixIndex = 12;
+    var mixIndex = 13;
     if (!Sound.sounds[mixIndex]) {
       initTracks('/script/midi/wedancemix.mid', mixIndex, false, null, 1, 0, '/script/audio/wedancemix.mp3');
     }
@@ -222,19 +222,20 @@ $(function() {
     initTracks('/script/midi/wedancehihat.mid', 2, !justListening, 'Hihat', .35, .15);
     initTracks('/script/midi/wedancetom.mid', 3, !justListening, 'Tom', .35, -.15);
     initTracks('/script/midi/wedanceshaker.mid', 4, !justListening, 'Shaker', .25, -.3);
-    initTracks('/script/midi/wedanceclap.mid', 5, !justListening, 'Clap', .25, -.1);
-    initTracks('/script/midi/wedancehey.mid', 6, !justListening, 'Hey', .2, .1);
-    initTracks('/script/midi/wedanceyeah.mid', 7, !justListening, 'Yeah', .2, .2);
-    initTracks('/script/midi/wedanceyo.mid', 8, !justListening, 'Yo', .2, -.2);
-    initTracks('/script/midi/wedancename.mid', 9, !justListening, 'Producer name', .25, .1);
-    initTracks('/script/midi/wedancedrink.mid', 10, !justListening, 'Favorite drink', .25, -.1);
-    initTracks('/script/midi/wedancemusic.mid', 11, !justListening, 'Favorite music', .25, .1);
+    initTracks('/script/midi/wedanceclap.mid', 5, !justListening, 'Clap', .3, -.1);
+    initTracks('/script/midi/wedancehey.mid', 6, !justListening, 'Hey', .3, .1);
+    initTracks('/script/midi/wedanceyeah.mid', 7, !justListening, 'Yeah', .3, .2);
+    initTracks('/script/midi/wedanceyo.mid', 8, !justListening, 'Yo', .3, -.2);
+    initTracks('/script/midi/wedancename.mid', 9, !justListening, 'Producer name', .35, .1);
+    initTracks('/script/midi/wedancehome.mid', 10, !justListening, 'Hometown', .35, -.05);
+    initTracks('/script/midi/wedancedrink.mid', 11, !justListening, 'Favorite drink', .35, -.1);
+    initTracks('/script/midi/wedancemusic.mid', 12, !justListening, 'Favorite music', .35, .1);
     
     // Remove html template
     $('.tracklist li').first().remove();
   
     //load sound files potentially existing from previous sessions
-    Sound.loadUserSoundFiles(11, username, version);
+    Sound.loadUserSoundFiles(13, username, version);
   
     if (justListening) {
       $('.share').hide();

@@ -18,6 +18,27 @@ var Midi = {
     timerID: 0,
     startingTime: 0,
     isPlaying: false,
+  
+  
+    togglePlaySong: function() {
+        if (!this.isPlaying) {
+            this.startPlaying();
+        } else {
+            this.stopPlaying();
+        }
+    },
+    
+    startPlaying: function() {
+        this.startingTime = Sound.audioContext.currentTime;
+        this.scheduleMidiEvents(); // kick off scheduling
+        this.isPlaying = true;
+    },
+      
+    stopPlaying: function() {
+        this.stopMidiScheduling();
+        Sound.stopAllSounds();
+        this.isPlaying = false;
+    },
     
     /*
      * While there are notes that will need to play before the next interval, 

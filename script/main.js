@@ -143,6 +143,10 @@ $(function() {
     if (!justListening) {
       // Show instructions
       $('#message').html('<strong>INSTRUCTIONS</strong><br><br><img src="/img/instruct-record.png"> Record your sounds and play them loud along the track <img src="/img/instruct-play.png"><br><img src="/img/instruct-share.png"> Share your hip-shaking masterpiece with your friends!<br>Open Season loves you!<br><br>Tap/click to close instructions...').show();
+  
+      //show competition
+  
+      updateRecentVersionsList();
     }
     
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -235,8 +239,10 @@ $(function() {
       $('#toggle-share').css('visibility', 'hidden');
       $('#are-you-cooler').html('Are you cooler than ' + username + '?');
       $('.make-your-own-area').show();
+      $('.competition').hide();
     } else {
       $('.make-your-own-area').hide();
+      $('.competition').show();
       var link = window.location.hostname + '/' + username;
       
       $(".share-link").each(function () {

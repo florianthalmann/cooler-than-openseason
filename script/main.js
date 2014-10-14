@@ -99,7 +99,7 @@ $(function() {
             //add a link for each username
             for (currentUsername of data.usernames) {
                 var currentUserlink = $('.recent-users li').first().clone();
-                currentUserlink.find('.userlink').attr('href', '/'+currentUsername);
+                currentUserlink.find('.userlink').attr('onclick', "location.href='/"+currentUsername+"'");
                 currentUserlink.find('.userlink').html(currentUsername);
                 $('.recent-users').append(currentUserlink);
             }
@@ -116,23 +116,34 @@ $(function() {
    * ++ also menu panel!
    */
   function initMainPanel(username, version, justListening) {
-    if (!justListening && !micStream) {
-      navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-      navigator.getUserMedia({ 'audio': true },
-      //success
-      function(stream) {
-        micStream = stream;
-        initWelcomePanel();
-      },
-      //failure
-      function() {
-        $('#container').load('/error.html');
-      });
+    if (!justListening) {
+      if (!micStream) {
+        try {
+          navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+          navigator.getUserMedia({ 'audio': true },
+            //success
+            function(stream) {
+              micStream = stream;
+              initAudioAndMainPanel(username, version, justListening);
+            },
+            //failure
+            function() {
+              loadNoPermissionPanel();
+          });
+        } catch (err) {
+          loadNoPermissionPanel();
+        }
+      }
+    } else {
+      initAudioAndMainPanel(username, version, justListening);
     }
-    
-    // Show instructions
-    $('#message').html('<strong>INSTRUCTIONS</strong><br><br><img src="/img/instruct-record.png"> Record your sounds and play them loud along the track <img src="/img/instruct-play.png"><br><img src="/img/instruct-share.png"> Share your hip-shaking masterpiece with your friends!<br>Open Season loves you!<br><br>Tap/click to close instructions...').show();
-    
+  }
+  
+  function initAudioAndMainPanel(username, version, justListening) {
+    if (!justListening) {
+      // Show instructions
+      $('#message').html('<strong>INSTRUCTIONS</strong><br><br><img src="/img/instruct-record.png"> Record your sounds and play them loud along the track <img src="/img/instruct-play.png"><br><img src="/img/instruct-share.png"> Share your hip-shaking masterpiece with your friends!<br>Open Season loves you!<br><br>Tap/click to close instructions...').show();
+    }
     
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     Sound.audioContext = new AudioContext();
@@ -152,7 +163,10 @@ $(function() {
     $('#producer-name').html(username);
     
   }
-
+  
+  function loadNoPermissionPanel() {
+    $('#container').load('/nopermission.html');
+  }
   
   /*
    * Login panel init

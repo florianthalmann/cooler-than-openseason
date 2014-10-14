@@ -76,7 +76,7 @@ $(function() {
         success: function(data) {
           if(data.success) {
             // Load main panel
-            $('#container').load('/main.html', function() { initMainPanel(data.success); });
+            $('#container').load('/main.html', function() { initMainPanel(User.username, User.openVersion, false); });
           }
           else {
             $('#message').html(data.error).show();
@@ -117,6 +117,8 @@ $(function() {
    */
   function initMainPanel(username, version, justListening) {
     if (!justListening) {
+      //load no permission by default...
+      loadNoPermissionPanel();
       if (!micStream) {
         try {
           navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
@@ -124,7 +126,7 @@ $(function() {
             //success
             function(stream) {
               micStream = stream;
-              initAudioAndMainPanel(username, version, justListening);
+              $('#container').load('/main.html', function() { initAudioAndMainPanel(username, version, justListening); });
             },
             //failure
             function() {

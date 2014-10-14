@@ -302,7 +302,7 @@ function FadeableSource(buffer, volume, pitch, startingTime) {
     this.source.start(startingTime);
   
     this.fadeOutAndStop = function(stoppingTime) {
-        console.log(stoppingTime);
+        //console.log(stoppingTime);
         if (!stoppingTime || stoppingTime <= Sound.audioContext.currentTime) {
           stoppingTime = Sound.audioContext.currentTime;
         }

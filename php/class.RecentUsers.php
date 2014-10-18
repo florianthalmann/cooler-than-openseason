@@ -11,7 +11,7 @@ class RecentUsers {
         
         $this->dbh = $dbh;
         
-        $sql = "SELECT `username` FROM `users` ORDER BY `lastactivity` DESC LIMIT 10";
+        $sql = "SELECT `username` FROM `users` ORDER BY `lastactivity` DESC LIMIT 5";
 
         $stmtUsernames = $dbh->prepare($sql);
         $stmtUsernames->execute();

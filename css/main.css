@@ -195,16 +195,20 @@ input[type="password"] {
     vertical-align: middle;
     vertical-align: -webkit-baseline-middle; }
 
-.recent-users li {
-  display: inline; }
+.recent-users {
+  padding: 0;
+  margin: 0; }
 
 .userlink {
-  width: 100px;
-  height: 100px;
-  background: #67844c;
+  display: inline-block;
+  margin: .5em .2em;
+  padding: .5em 1em;
+  background: #4e6439;
+  border-radius: 2em;
   font-family: "BrandonGrotesque-Bold", Helvetica, Arial, sans-serif;
   letter-spacing: 2px;
   text-transform: uppercase;
+  text-decoration: none;
   font-size: 0.9em; }
 
 /* ==========================================================================
@@ -450,6 +454,11 @@ form button {
     -webkit-animation: move 1s linear infinite;
     -moz-animation: move 1s linear infinite;
     animation: move 1s linear infinite; }
+
+.competition {
+  padding: 1em;
+  background: rgba(54, 2, 26, 0.5);
+  text-align: center; }
 
 .tracklist > li:nth-child(1) {
   background-color: rgba(85, 13, 45, 0.34); }

@@ -147,7 +147,7 @@ $(function() {
   function initAudioAndMainPanel(username, version, justListening) {
     if (!justListening) {
       // Show instructions
-      $('#message').html('<strong>INSTRUCTIONS</strong><br><br><img src="/img/instruct-record.png"> Record your sounds and play them loud along the track <img src="/img/instruct-play.png"><br><img src="/img/instruct-share.png"> Share your hip-shaking masterpiece with your friends!<br>Open Season loves you!<br><br>Tap/click to close instructions...').show();
+      $('#message').html('<strong>INSTRUCTIONS</strong><br><br><img src="/img/instruct-record.png"> Record your sounds and check out how they fit in the track <img src="/img/instruct-play.png"><br><img src="/img/instruct-share.png"> Share your hip-shaking masterpiece with your friends!<br>Open Season loves you!<br><br>Tap/click to close instructions...').show();
   
       //show competition
   

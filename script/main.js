@@ -1,7 +1,10 @@
 /* global User */
 /* global Sound */
 /* global Midi */
-/* //global UI */
+/* global MidiFile */
+/* global Tuna */
+/* global AudioContext */
+/* global UI */
 
 /*!
  * main.js 
@@ -97,12 +100,12 @@ $(function() {
         success: function(data) {
         
             //add a link for each username
-            for (currentUsername of data.usernames) {
+            data.usernames.forEach( function(currentUsername, index) {
                 var currentUserlink = $('.recent-users li').first().clone();
                 currentUserlink.find('.userlink').attr('onclick', "location.href='/"+currentUsername+"'");
                 currentUserlink.find('.userlink').html(currentUsername);
                 $('.recent-users').append(currentUserlink);
-            }
+            });
             // Remove html template
             $('.recent-users li').first().remove();
            
@@ -291,7 +294,9 @@ $(function() {
   
   function pad(num, size) {
     var s = num+"";
-    while (s.length < size) s = "0" + s;
+    while (s.length < size) {
+        s = "0" + s;
+    }
     return s;
   }
   

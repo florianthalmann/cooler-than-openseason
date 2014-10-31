@@ -139,7 +139,7 @@ class User {
             $error[] = 'E-Mail is already taken.<br>';
         }
         
-        if(!preg_match('^[a-zA-Z0-9]+$', $username)) {
+        if(!preg_match('/^[a-zA-Z0-9]+$/', $username)) {
             $error[] = 'Please enter a name. It may only contain letters A–Z and numbers 0–9.<br>';
         }
         if(empty($email)) {
